@@ -10,7 +10,7 @@
       "128": "images/rct128.png",
       "64": "images/rct64.png"
    },
-   "name": "RCT",
+   "name": "Recently Closed Tabs",
    "permissions": [ "tabs" ],
-   "version": "0.81"
+   "version": "0.82"
 }
