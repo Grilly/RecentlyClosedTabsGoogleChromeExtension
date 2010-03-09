@@ -10,8 +10,7 @@
       "128": "images/rct128.png",
       "64": "images/rct64.png"
    },
-   "key": "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDT+fKejUXwouVZhTLj0bS83x0u/hc0UfX0ipb+nCeSYcfdfDVRAsnuJT8+1p3mNcKoDpeULbG8qDjxrn7SG5J+UUPKtX10q5jg+Ap8GHXiaKJxPrKL2xu0rcdhfcWgiVTXkR+m2JHxB7StcRbqaWfWfBM+HBPKQzMZbQ6PY+EncQIDAQAB",
    "name": "RCT",
    "permissions": [ "tabs" ],
-   "version": "0.9"
+   "version": "0.81"
 }
