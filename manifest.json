@@ -12,5 +12,5 @@
    },
    "name": "Recently Closed Tabs",
    "permissions": [ "tabs" ],
-   "version": "0.82"
+   "version": "0.9"
 }
