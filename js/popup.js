@@ -16,37 +16,60 @@ function getListOfRecentlyClosedTabs() {
 	var recentlyClosedTabsArray = bgPage.recentlyClosedTabs;
 	console.log(recentlyClosedTabsArray);
 
+	var rootDivElement = document.getElementById('rootDiv');
+	
 	if (recentlyClosedTabsArray.length == 0) {
-		document.write("No recently closed tabs.");
+		rootDivElement.appendChild(document.createTextNode('No recently closed tabs.'));
 	} else {
 		var size = recentlyClosedTabsArray.length;
-		document.write('<table>');
+		var tableElement = document.createElement('table');
 		for ( var key = size - 1; key >= 0; key--) {
-			// document.write(key + ': ');
 			var favicon = recentlyClosedTabsArray[key].favicon;
 			var tabShot = recentlyClosedTabsArray[key].tabShot;
-			document.write('<tr><td id=\"tabShotTD\">');
+			var trElement = document.createElement('tr');
+			var tdTabShotElement = document.createElement('td');
+			tdTabShotElement.setAttribute('class', 'tabShotTD');
 			if (tabShot !== undefined) {
-				document.write('<img src=\"' + recentlyClosedTabsArray[key].tabShot + '\" id=\"tabShotIMG\">');
+				var tabShotIMG = document.createElement('img');
+				tabShotIMG.setAttribute('id', 'tabShot' + key);
+				tabShotIMG.setAttribute('class', 'tabShotIMG');
+				tdTabShotElement.appendChild(tabShotIMG);
 			}
-			document.write('</td><td id=\"urlTD\">');
-			document.write('<a href=\"');
-			document.write('javascript:chrome.tabs.create({url: \'' + recentlyClosedTabsArray[key].url + '\'});');
-			document.write('bgPage.deleteRecentlyClosedTabById(\'' + key + '\');');
-			document.write('\" title=\"' + recentlyClosedTabsArray[key].title + '\">' + bgPage.getTitel(recentlyClosedTabsArray[key].title));
-			document.write('</a>');
-			document.write('</td><td id=\"faviconTD\">');
+			trElement.appendChild(tdTabShotElement);
+			
+			var tdUrlElement = document.createElement('td');
+			tdUrlElement.setAttribute('class', 'urlTD');
+			var linkElement = document.createElement('a');
+			linkElement.setAttribute('href', 'javascript:chrome.tabs.create({url: \'' + recentlyClosedTabsArray[key].url + '\'});bgPage.deleteRecentlyClosedTabById(\'' + key + '\');');
+			linkElement.setAttribute('title', recentlyClosedTabsArray[key].url);
+			var linkText = document.createTextNode(bgPage.getTitel(recentlyClosedTabsArray[key].title));
+			linkElement.appendChild(linkText);
+			tdUrlElement.appendChild(linkElement);
+			trElement.appendChild(tdUrlElement);
+			
+			var tdFavIconElement = document.createElement('td');
+			tdFavIconElement.setAttribute('class', 'faviconTD');
+			
 			if (favicon !== undefined) {
-				document.write('<a href=\"javascript:chrome.tabs.create({url: \''
-								+ recentlyClosedTabsArray[key].url
-								+ '\'});bgPage.deleteRecentlyClosedTabById(\''
-								+ key
-								+ '\');\" title=\"'
-								+ recentlyClosedTabsArray[key].title + '\">');
-				document.write('<img src=\"' + favicon + '\" id=\"faviconIMG\"></a>');
+				var linkElement = document.createElement('a');
+				linkElement.setAttribute('href', 'javascript:chrome.tabs.create({url: \'' + recentlyClosedTabsArray[key].url + '\'});bgPage.deleteRecentlyClosedTabById(\'' + key + '\');');
+				linkElement.setAttribute('title', recentlyClosedTabsArray[key].url);
+				var favIconIMG = document.createElement('img');
+				favIconIMG.setAttribute('id', 'tabShot' + key);
+				favIconIMG.setAttribute('class', 'faviconIMG');
+				favIconIMG.setAttribute('src', favicon);
+				linkElement.appendChild(favIconIMG);
+				tdFavIconElement.appendChild(linkElement);
 			}
-			document.write('</td></tr>');
+			trElement.appendChild(tdFavIconElement);
+			tableElement.appendChild(trElement);
+			
 		}
-		document.write('</table>');
+		rootDivElement.appendChild(tableElement);
+		for ( var key = size - 1; key >= 0; key--) {
+			if (tabShot !== undefined) {
+				document.getElementById('tabShot'+key).src = recentlyClosedTabsArray[key].tabShot;
+			}
+		}
 	}
 }
