@@ -25,13 +25,11 @@ function getListOfRecentlyClosedTabs() {
 			// document.write(key + ': ');
 			var favicon = recentlyClosedTabsArray[key].favicon;
 			var tabShot = recentlyClosedTabsArray[key].tabShot;
-			document.write('<tr>');
+			document.write('<tr><td id=\"tabShotTD\">');
 			if (tabShot !== undefined) {
-				document.write('<td id=\"tabShotTD\">');
-				document.write('<img src=\"' + recentlyClosedTabsArray[key].tabShot + '\" height=\"30px\" width=\"30px\">');
-				document.write('</td>');
+				document.write('<img src=\"' + recentlyClosedTabsArray[key].tabShot + '\" id=\"tabShotIMG\">');
 			}
-			document.write('<td id=\"urlTD\">');
+			document.write('</td><td id=\"urlTD\">');
 			document.write('<a href=\"');
 			document.write('javascript:chrome.tabs.create({url: \'' + recentlyClosedTabsArray[key].url + '\'});');
 			document.write('bgPage.deleteRecentlyClosedTabById(\'' + key + '\');');
@@ -45,7 +43,7 @@ function getListOfRecentlyClosedTabs() {
 								+ key
 								+ '\');\" title=\"'
 								+ recentlyClosedTabsArray[key].title + '\">');
-				document.write('<img src=\"' + favicon + '\" height=\"16px\" width=\"16px\"></a>');
+				document.write('<img src=\"' + favicon + '\" id=\"faviconIMG\"></a>');
 			}
 			document.write('</td></tr>');
 		}
