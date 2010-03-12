@@ -29,7 +29,7 @@ function getListOfRecentlyClosedTabs() {
 			var trElement = document.createElement('tr');
 			var tdTabShotElement = document.createElement('td');
 			tdTabShotElement.setAttribute('class', 'tabShotTD');
-			if (tabShot !== undefined) {
+			if (tabShot !== undefined && tabShot != null) {
 				var tabShotIMG = document.createElement('img');
 				tabShotIMG.setAttribute('id', 'tabShot' + key);
 				tabShotIMG.setAttribute('class', 'tabShotIMG');
