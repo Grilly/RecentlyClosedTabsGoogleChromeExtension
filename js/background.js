@@ -17,6 +17,7 @@ function main() {
 	chrome.tabs.onUpdated.addListener(updateAllOpenedTabs);
 	// Listener onRemoved
 	chrome.tabs.onRemoved.addListener(setClosedTab);
+	//chrome.tabs.onSelectionChanged.addListener(setImgDataUrl);
 }
 
 //------------------------------------------------------------------------------
@@ -34,8 +35,8 @@ function tabInfo(tabId, windowId, faviconUrl, dateOfUpdate, title, url, tabShot)
 //------------------------------------------------------------------------------
 // Puts the dataUrl of the tab specified by the given tabId into the object allOpenedTabs.
 function setImgDataUrl(tabId) {
-	chrome.tabs.captureVisibleTab(allOpenedTabs[tabId].windowId, function(dataUrl) {
-		allOpenedTabs[tabId].tabShot = dataUrl;
+	chrome.tabs.captureVisibleTab(allOpenedTabs[tabId].windowId, function(imageData) {
+		allOpenedTabs[tabId].tabShot = imageData;
 	})
 }
 
@@ -50,7 +51,9 @@ function getAllTabsInWindow(tabs) {
 		var tabTitle = tabs[key].title;
     
 		allOpenedTabs[tabId] = new tabInfo(tabId, windowId, tabFavIconUrl, new Date(), tabTitle, tabUrl, null);
-		setImgDataUrl(tabId);
+		if(tabs[key].selected) {
+			setImgDataUrl(tabId);
+		}
 	}
 }
 
@@ -67,7 +70,9 @@ function updateAllOpenedTabs(tabId, changeInfo, tab) {
 
 	if (changeInfo.status == "complete") {
 		allOpenedTabs[tabId] = new tabInfo(tabId, windowId, tabFavIconUrl, new Date(), tabTitle, tabUrl, null);
-		setImgDataUrl(tabId);  
+		if(tab.selected) {
+			setImgDataUrl(tabId);
+		}
 	}
 }
 
@@ -78,10 +83,24 @@ function setClosedTab(tabId) {
 
 	var closedTabInfo = allOpenedTabs[tabId];
   
+	delete allOpenedTabs[tabId];
+	
 	// Cancel function if tab is not loaded yet
 	if (closedTabInfo === undefined) {
 		//alert("closedTabInfo === undefined");
 		return;
+	}
+	
+	// Cancel function if tab is a new tab or blank 
+	if (closedTabInfo.url == 'chrome://newtab/' || closedTabInfo.url == 'about:blank') {
+		return;
+	}
+	
+	// Cancel function if tab is already in the list
+	for (key in recentlyClosedTabs) {
+		if (recentlyClosedTabs[key].url == closedTabInfo.url) {
+			return;
+		}
 	}
 
 	var length = recentlyClosedTabs.length;
@@ -90,8 +109,6 @@ function setClosedTab(tabId) {
 	} else {
 		recentlyClosedTabs[length] = {'timestamp':new Date(), 'favicon':closedTabInfo.faviconUrl, 'title':closedTabInfo.title, 'url':closedTabInfo.url, 'tabShot':closedTabInfo.tabShot };
 	}
-
-	delete allOpenedTabs[tabId];
 }
 
 //------------------------------------------------------------------------------
