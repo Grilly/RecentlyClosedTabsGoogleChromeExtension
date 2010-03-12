@@ -1,16 +1,19 @@
 {
    "background_page": "background.html",
-   "browser_action": {
+   "options_page": "options.html",
+   "browser_action":
+   {
       "default_icon": "images/rct64.png",
       "default_title": "Recently Closed Tabs",
       "popup": "popup.html"
    },
    "description": "List your recently closed tabs.",
-   "icons": {
+   "icons":
+   {
       "128": "images/rct128.png",
       "64": "images/rct64.png"
    },
    "name": "Recently Closed Tabs",
    "permissions": [ "tabs" ],
-   "version": "0.91"
+   "version": "0.92.1"
 }

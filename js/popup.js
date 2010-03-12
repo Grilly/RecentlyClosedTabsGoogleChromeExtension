@@ -23,10 +23,12 @@ function getListOfRecentlyClosedTabs() {
 	} else {
 		var size = recentlyClosedTabsArray.length;
 		var tableElement = document.createElement('table');
+		tableElement.setAttribute('id', 'table');
 		for ( var key = size - 1; key >= 0; key--) {
 			var favicon = recentlyClosedTabsArray[key].favicon;
 			var tabShot = recentlyClosedTabsArray[key].tabShot;
 			var trElement = document.createElement('tr');
+			trElement.setAttribute('id', 'tab' + key);
 			var tdTabShotElement = document.createElement('td');
 			tdTabShotElement.setAttribute('class', 'tabShotTD');
 			if (tabShot !== undefined && tabShot != null) {
@@ -40,7 +42,8 @@ function getListOfRecentlyClosedTabs() {
 			var tdUrlElement = document.createElement('td');
 			tdUrlElement.setAttribute('class', 'urlTD');
 			var linkElement = document.createElement('a');
-			linkElement.setAttribute('href', 'javascript:chrome.tabs.create({url: \'' + recentlyClosedTabsArray[key].url + '\'});bgPage.deleteRecentlyClosedTabById(\'' + key + '\');');
+			//linkElement.setAttribute('href', 'javascript:chrome.tabs.create({url: \'' + recentlyClosedTabsArray[key].url + '\'});bgPage.deleteRecentlyClosedTabById(\'' + key + '\');');
+			linkElement.setAttribute('href', 'javascript:createRecentlyClosedTab(' + key + ');');
 			linkElement.setAttribute('title', recentlyClosedTabsArray[key].url);
 			var linkText = document.createTextNode(bgPage.getTitel(recentlyClosedTabsArray[key].title));
 			linkElement.appendChild(linkText);
@@ -52,7 +55,8 @@ function getListOfRecentlyClosedTabs() {
 			
 			if (favicon !== undefined) {
 				var linkElement = document.createElement('a');
-				linkElement.setAttribute('href', 'javascript:chrome.tabs.create({url: \'' + recentlyClosedTabsArray[key].url + '\'});bgPage.deleteRecentlyClosedTabById(\'' + key + '\');');
+				//linkElement.setAttribute('href', 'javascript:chrome.tabs.create({url: \'' + recentlyClosedTabsArray[key].url + '\'});bgPage.deleteRecentlyClosedTabById(\'' + key + '\');');
+				linkElement.setAttribute('href', 'javascript:createRecentlyClosedTab(' + key + ');');
 				linkElement.setAttribute('title', recentlyClosedTabsArray[key].url);
 				var favIconIMG = document.createElement('img');
 				favIconIMG.setAttribute('id', 'tabShot' + key);
@@ -72,4 +76,16 @@ function getListOfRecentlyClosedTabs() {
 			}
 		}
 	}
+}
+
+//------------------------------------------------------------------------------
+//Creates list with recently closed tabs.
+function createRecentlyClosedTab(key) {
+	var recentlyClosedTabsArray = bgPage.recentlyClosedTabs;
+	chrome.tabs.create({url: bgPage.recentlyClosedTabs[key].url});
+	bgPage.deleteRecentlyClosedTabById(key);
+
+	console.log(document.getElementById('tab'+key));
+	//should remove this table row
+	document.getElementById("table").removeChild(document.getElementById('tab'+key));
 }

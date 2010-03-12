@@ -18,6 +18,9 @@ function main() {
 	// Listener onRemoved
 	chrome.tabs.onRemoved.addListener(setClosedTab);
 	//chrome.tabs.onSelectionChanged.addListener(setImgDataUrl);
+	// log all views
+	console.log(chrome.extension.getViews());
+	console.log(chrome.extension.getExtensionTabs());
 }
 
 //------------------------------------------------------------------------------
