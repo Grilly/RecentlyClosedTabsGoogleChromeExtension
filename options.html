@@ -1,20 +1,50 @@
 <html>
-  <head>
-  	<title>Recently Closed Tabs Extension Options</title>
-    <link href="css/options.css" rel="stylesheet" type="text/css" />
-    <script language="JavaScript" src="js/options.js"></script>
-  </head>
-  <body onload="restore_options();">
-  	Favorite tabsCount:
-	<select id="tabsCount">
- 		<option value="1">1</option>
- 		<option value="2">2</option>
- 		<option value="5">5</option>
- 		<option value="10">10</option>
- 		<option value="15">15</option>
-	</select>
-	<br>
-	<button onclick="save_options()">Save</button>
-	<div id="status"></div>
+	<head>
+		<title>Recently Closed Tabs Extension Options</title>
+		<link href="css/options.css" rel="stylesheet" type="text/css" />
+		<script language="JavaScript" src="js/options.js"></script>
+	</head>
+	<body onload="restore_options(); getListOfRecentlyClosedTabsComplete();">
+		<div>
+			<table class="topTable">
+            	<tr>
+                	<td style="width: 70px;">
+                    	<img id="rctIcon" src="images/rct128.png" width="66px" height="66px" alt="Recently Closed Tabs" />
+                	</td>
+                	<td style="text-align: left; valign: middle; width: 370px;">
+                    	<span style="font-size: 22px; font-weight: bold;">Recently Closed Tabs</span>
+                	</td>
+                	<td>
+                	</td>
+            	</tr>
+        </table>
+    </div>
+    <div class="topBoarder">
+        <h1>Extension Options</h1>
+    </div>
+    <table>
+    	<tr>
+    		<td>
+    			<div id="rootDiv"></div>
+    		</td>
+    		<td style="width: 200px; vertical-align: top;">
+    			Favorite tabsCount:
+				<select id="tabsCount">
+			 		<option value="1">1</option>
+			 		<option value="2">2</option>
+			 		<option value="5">5</option>
+			 		<option value="10">10</option>
+			 		<option value="15">15</option>
+				</select>
+				<button onclick="save_options()">Save</button>
+				<div id="status"></div>
+    		</td>
+    	</tr>
+    </table>
+	<div class="pageFooter">
+        <span class="footer">
+            &copy;<span class="footer">2010</span> Michael &amp; Drasko
+        </span>
+    </div>
   </body>
 </html>
