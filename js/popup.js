@@ -10,7 +10,7 @@ function main() {
 	getListOfRecentlyClosedTabs();
 }
 
-// ------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 // Creates list with recently closed tabs.
 function getListOfRecentlyClosedTabs() {
 	var recentlyClosedTabsArray = bgPage.recentlyClosedTabs;
@@ -22,9 +22,15 @@ function getListOfRecentlyClosedTabs() {
 		rootDivElement.appendChild(document.createTextNode('No recently closed tabs.'));
 	} else {
 		var size = recentlyClosedTabsArray.length;
+		var tabsCount = localStorage.getItem('tabsCount');
 		var tableElement = document.createElement('table');
 		tableElement.setAttribute('id', 'table');
-		for ( var key = size - 1; key >= 0; key--) {
+		var forEnd = 0;
+		if (size > tabsCount - 1) {
+			forEnd = size - (tabsCount + 1);
+		}		
+		//for (var key = size - 1; key >= (size - (1 + tabsCount)); key--) {
+		for (var key = size - 1; key >= forEnd; key--) {
 			var favicon = recentlyClosedTabsArray[key].favicon;
 			var tabShot = recentlyClosedTabsArray[key].tabShot;
 			var trElement = document.createElement('tr');
@@ -51,7 +57,6 @@ function getListOfRecentlyClosedTabs() {
 			var tdFavIconElement = document.createElement('td');
 			tdFavIconElement.setAttribute('class', 'faviconTD');
 			
-			
 			var linkElement = document.createElement('a');
 			//linkElement.setAttribute('href', 'javascript:chrome.tabs.create({url: \'' + recentlyClosedTabsArray[key].url + '\'});bgPage.deleteRecentlyClosedTabById(\'' + key + '\');');
 			linkElement.setAttribute('href', 'javascript:createRecentlyClosedTab(' + key + ');');
@@ -69,16 +74,17 @@ function getListOfRecentlyClosedTabs() {
 			
 			trElement.appendChild(tdFavIconElement);
 			tableElement.appendChild(trElement);
-			
 		}
 		rootDivElement.appendChild(tableElement);
-		for ( var key = size - 1; key >= 0; key--) {
-			var tabShotImageData = recentlyClosedTabsArray[key].tabShot;
+		//for ( var keyImage = size - 1; keyImage >=  (size - (1 + tabsCount)); keyImage--) {
+		for ( var keyImage = size - 1; keyImage >= forEnd; keyImage--) {
+			//document.getElementById('tdUrlElement' + key).onfocus = createRecentlyClosedTab(key);
+			var tabShotImageData = recentlyClosedTabsArray[keyImage].tabShot;
 			if (tabShotImageData !== undefined && tabShotImageData != null) {
-				document.getElementById('tabShot' + key).src = tabShotImageData;
+				document.getElementById('tabShot' + keyImage).src = tabShotImageData;
 			} else {
-				alert("inside");
-				document.getElementById('tabShot' + key).src = '../images/default_tabShot.png';
+				//alert("inside");
+				document.getElementById('tabShot' + keyImage).src = '../images/default_tabShot.png';
 			}
 		}
 	}
