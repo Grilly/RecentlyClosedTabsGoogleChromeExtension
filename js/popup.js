@@ -26,10 +26,9 @@ function getListOfRecentlyClosedTabs() {
 		var tableElement = document.createElement('table');
 		tableElement.setAttribute('id', 'table');
 		var forEnd = 0;
-		if (size > tabsCount - 1) {
-			forEnd = size - (tabsCount + 1);
+		if (size > tabsCount) {
+			forEnd = size - tabsCount;
 		}		
-		//for (var key = size - 1; key >= (size - (1 + tabsCount)); key--) {
 		for (var key = size - 1; key >= forEnd; key--) {
 			var favicon = recentlyClosedTabsArray[key].favicon;
 			var tabShot = recentlyClosedTabsArray[key].tabShot;
@@ -76,14 +75,11 @@ function getListOfRecentlyClosedTabs() {
 			tableElement.appendChild(trElement);
 		}
 		rootDivElement.appendChild(tableElement);
-		//for ( var keyImage = size - 1; keyImage >=  (size - (1 + tabsCount)); keyImage--) {
 		for ( var keyImage = size - 1; keyImage >= forEnd; keyImage--) {
-			//document.getElementById('tdUrlElement' + key).onfocus = createRecentlyClosedTab(key);
 			var tabShotImageData = recentlyClosedTabsArray[keyImage].tabShot;
 			if (tabShotImageData !== undefined && tabShotImageData != null) {
 				document.getElementById('tabShot' + keyImage).src = tabShotImageData;
 			} else {
-				//alert("inside");
 				document.getElementById('tabShot' + keyImage).src = '../images/default_tabShot.png';
 			}
 		}
@@ -93,11 +89,9 @@ function getListOfRecentlyClosedTabs() {
 //------------------------------------------------------------------------------
 //Creates list with recently closed tabs.
 function createRecentlyClosedTab(key) {
-	var recentlyClosedTabsArray = bgPage.recentlyClosedTabs;
 	chrome.tabs.create({url: bgPage.recentlyClosedTabs[key].url});
 	bgPage.deleteRecentlyClosedTabById(key);
 
-	console.log(document.getElementById('tab'+key));
 	//should remove this table row
 	document.getElementById("table").removeChild(document.getElementById('tab'+key));
 }
