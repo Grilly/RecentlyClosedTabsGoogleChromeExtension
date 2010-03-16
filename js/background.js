@@ -12,7 +12,6 @@ var recentlyClosedTabs = [];
 //------------------------------------------------------------------------------
 // Mainmethod: Everything starts here!
 function main() {
-	localStorage.setItem('tabsCount', '15');
 	chrome.tabs.getAllInWindow(null, getAllTabsInWindow)
 	// Listener onUpdated
 	chrome.tabs.onUpdated.addListener(updateAllOpenedTabs);
