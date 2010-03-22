@@ -4,7 +4,7 @@
 		<link href="css/options.css" rel="stylesheet" type="text/css" />
 		<script language="JavaScript" src="js/options.js"></script>
 	</head>
-	<body onload="restore_options(); getListOfRecentlyClosedTabsComplete();">
+	<body onload="main();">
 		<div>
 			<table class="topTable">
             	<tr>
@@ -28,7 +28,7 @@
     			<div id="rootDiv"></div>
     		</td>
     		<td style="width: 200px; vertical-align: top;">
-    			Favorite tabsCount:
+    			<h3>Favorite tabsCount:</h3>
 				<select id="tabsCount">
 			 		<option value="1">1</option>
 			 		<option value="2">2</option>
@@ -38,6 +38,7 @@
 				</select>
 				<button onclick="save_options()">Save</button>
 				<div id="status"></div>
+				<div id="filterDiv"></div>
     		</td>
     	</tr>
     </table>

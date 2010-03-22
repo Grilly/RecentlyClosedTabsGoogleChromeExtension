@@ -8,15 +8,18 @@ var allOpenedTabs = {};
 // URL of recently closed tabs
 var recentlyClosedTabs = [];
 //console.log(recentlyClosedTabs);
+// URL blacklist filters
+var urlFilterArray = ['chrome://newtab/', 'about:blank'];
+console.log(urlFilterArray);
 
 //------------------------------------------------------------------------------
 // Mainmethod: Everything starts here!
 function main() {
 	chrome.tabs.getAllInWindow(null, getAllTabsInWindow)
 	// Listener onUpdated
-	chrome.tabs.onUpdated.addListener(updateAllOpenedTabs);
+	chrome.tabs.onUpdated.addListener(updatedTabsListener);
 	// Listener onRemoved
-	chrome.tabs.onRemoved.addListener(setClosedTab);
+	chrome.tabs.onRemoved.addListener(removedTabsListener);
 	//chrome.tabs.onSelectionChanged.addListener(setImgDataUrl);
 	// log all views
 	console.log(chrome.extension.getViews());
@@ -63,7 +66,7 @@ function getAllTabsInWindow(tabs) {
 //------------------------------------------------------------------------------
 // Puts the tabInfo into the object allOpenedTabs. 
 // Result: object with all opened tabs.
-function updateAllOpenedTabs(tabId, changeInfo, tab) {
+function updatedTabsListener(tabId, changeInfo, tab) {
 	var tabId = tab.id;
 	var windowId = tab.windowId;
 	var tabFavIconUrl = tab.favIconUrl;
@@ -79,10 +82,11 @@ function updateAllOpenedTabs(tabId, changeInfo, tab) {
 	}
 }
 
+
 //------------------------------------------------------------------------------
 // Puts the ctabInfo of the currently closed tab into the object recentlyClosedTabs.
 // Result: object with all recently closed tabs.
-function setClosedTab(tabId) {
+function removedTabsListener(tabId) {
 
 	var closedTabInfo = allOpenedTabs[tabId];
   

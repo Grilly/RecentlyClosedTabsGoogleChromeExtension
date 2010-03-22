@@ -4,6 +4,14 @@
 // Global variables.
 var bgPage = chrome.extension.getBackgroundPage();
 
+
+function main() {
+    restore_options();
+    createListOfFilters();
+    getListOfRecentlyClosedTabsComplete();
+}
+
+
 //------------------------------------------------------------------------------
 // Saves options to localStorage.
 function save_options() {
@@ -33,6 +41,31 @@ function restore_options() {
     }
   }
 }
+
+
+//------------------------------------------------------------------------------
+//Creates list of filters.
+function createListOfFilters() {
+
+    var size = bgPage.urlFilterArray.length;
+    
+	var filterDivElement = document.getElementById('filterDiv');
+	var heading = document.createElement('h3');
+	heading.appendChild(document.createTextNode('Active URL filters:'));
+	filterDivElement.appendChild(heading);
+	var tableElement = document.createElement('table');
+	tableElement.setAttribute('id', 'filterTable');
+    for (var i = 0; i < size; i++) {
+        var trElement = document.createElement('tr');
+        var tdElement = document.createElement('td');
+        var text = document.createTextNode(bgPage.urlFilterArray[i]);
+        tdElement.appendChild(text);
+        trElement.appendChild(tdElement);
+        tableElement.appendChild(trElement);
+    }
+    filterDivElement.appendChild(tableElement);
+}
+
 
 //------------------------------------------------------------------------------
 //Creates list with recently closed tabs.
