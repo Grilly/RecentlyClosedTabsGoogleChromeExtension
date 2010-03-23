@@ -85,14 +85,20 @@ table {
 .titleDivElement {
 	height: 15px;
 	border: 0;
-	text-align: right;
+	text-align: left;
 	padding: 1px;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
 }
 .linkDivElement {
 	height: 15px;
 	border: 0;
-	text-align: right;
+	text-align: left;
 	padding: 1px;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
 }
 .linkElement:hover {
 	font-weight: bold;
