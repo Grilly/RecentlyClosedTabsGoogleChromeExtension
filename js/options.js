@@ -4,14 +4,14 @@
 // Global variables.
 //------------------------------------------------------------------------------
 var bgPage = chrome.extension.getBackgroundPage();
-var rootDivElement = null;
+var rootDivElement;
 
 //------------------------------------------------------------------------------
 // Everything starts here
 //------------------------------------------------------------------------------
 function main() {
-	this.rootDivElement = document.getElementById('rootDiv');
-    restore_options();
+    rootDivElement = document.getElementById('rootDiv');
+    showMaxPopupTableLength();
     createListOfFilters();
     getListOfRecentlyClosedTabsComplete();
 }
@@ -19,11 +19,9 @@ function main() {
 //------------------------------------------------------------------------------
 // Saves options to localStorage.
 //------------------------------------------------------------------------------
-function save_options() {
+function saveMaxPopupTableLength() {
   var select_tabsCount = document.getElementById("tabsCount");
-  var tabsCount = select_tabsCount.children[select_tabsCount.selectedIndex].value;
-  localStorage.setItem('tabsCount', tabsCount);
-  
+  bgPage.setMaxPopupTableLength(select_tabsCount.children[select_tabsCount.selectedIndex].value);
   // Update status to let user know options were saved.
   var status = document.getElementById("status");
   status.innerHTML = "Options Saved.";
@@ -33,16 +31,11 @@ function save_options() {
 //------------------------------------------------------------------------------
 // Restores select box state to saved value from localStorage.
 //------------------------------------------------------------------------------
-function restore_options() {
-  var tabsCount = localStorage["tabsCount"];
-  if (!tabsCount) {
-	tabsCount = 15;
-	localStorage.setItem('tabsCount', tabsCount);
-  }
+function showMaxPopupTableLength() {
   var select = document.getElementById("tabsCount");
   for (var i = 0; i < select.children.length; i++) {
     var child = select.children[i];
-    if (child.value == tabsCount) {
+    if (child.value == bgPage.maxPopupTableLength) {
       child.selected = "true";
       break;
     }
@@ -57,12 +50,12 @@ function createListOfFilters() {
 
     var size = bgPage.urlFilterArray.length;
     
-	var filterDivElement = document.getElementById('filterDiv');
-	var heading = document.createElement('h3');
-	heading.appendChild(document.createTextNode('Active URL filters:'));
-	filterDivElement.appendChild(heading);
-	var tableElement = document.createElement('table');
-	tableElement.setAttribute('id', 'filterTable');
+    var filterDivElement = document.getElementById('filterDiv');
+    var heading = document.createElement('h3');
+    heading.appendChild(document.createTextNode('Active URL filters:'));
+    filterDivElement.appendChild(heading);
+    var tableElement = document.createElement('table');
+    tableElement.setAttribute('id', 'filterTable');
     for (var i = 0; i < size; i++) {
         addFilterRowToListTable(bgPage.urlFilterArray[i], tableElement);
     }

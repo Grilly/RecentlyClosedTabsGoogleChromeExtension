@@ -4,7 +4,7 @@
    "browser_action":
    {
       "default_icon": "images/rct64.png",
-      "default_title": "Recently Closed Tabs",
+      "default_title": "Recently Closed Tabs (dev)",
       "popup": "popup.html"
    },
    "description": "Manage your recently closed tabs.",
@@ -15,5 +15,5 @@
    },
    "name": "Recently Closed Tabs",
    "permissions": [ "tabs" ],
-   "version": "1.0.1"
+   "version": "1.0.3"
 }
