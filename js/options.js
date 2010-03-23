@@ -84,7 +84,6 @@ function getListOfRecentlyClosedTabsComplete() {
 		
 		for (var key = size - 1; key >= 0; key--) {
 			var favicon = recentlyClosedTabsArray[key].favicon;
-			var tabShot = recentlyClosedTabsArray[key].tabShot;
 			
 			//previewElement building
 			var tabShotDivElement = document.createElement('div');
@@ -93,7 +92,6 @@ function getListOfRecentlyClosedTabsComplete() {
 			var tabShotIMG = document.createElement('img');
 			tabShotIMG.setAttribute('id', 'tabShot' + key);
 			tabShotIMG.setAttribute('class', 'tabShotIMG');
-			tabShotIMG.setAttribute('src', tabShot);
 			tabShotDivElement.appendChild(tabShotIMG);
 	
 			var linkElement = document.createElement('a');
@@ -119,7 +117,6 @@ function getListOfRecentlyClosedTabsComplete() {
 				var linkDivElement = document.createElement('div');
 				linkDivElement.setAttribute('id', 'linkDivElement' + key);
 				linkDivElement.setAttribute('class', 'linkDivElement');
-//				linkDivElement.innerHTML = linkElement;
 				linkDivElement.appendChild(linkElement);
 				contentDivElement.appendChild(linkDivElement);
 	
@@ -158,19 +155,15 @@ function getListOfRecentlyClosedTabsComplete() {
 	
 			this.rootDivElement.appendChild(rctDivElement);
 		}
-//		for ( var keyImage = size - 1; keyImage >= 0; keyImage--) {
-//			var tabShotImageData = recentlyClosedTabsArray[keyImage].tabShot;
-//			if (tabShotImageData !== undefined && tabShotImageData != null) {
-//				document.getElementById('tabShot' + keyImage).src = tabShotImageData;
-//			} else {
-//				document.getElementById('tabShot' + keyImage).src = '../images/default_tabShot.png';
-//			}
-//		}
+		for ( var keyImage = size - 1; keyImage >= 0; keyImage--) {
+			var tabShotImageData = recentlyClosedTabsArray[keyImage].tabShot;
+			if (tabShotImageData !== undefined && tabShotImageData != null) {
+				document.getElementById('tabShot' + keyImage).src = tabShotImageData;
+			} else {
+				document.getElementById('tabShot' + keyImage).src = '../images/default_tabShot.png';
+			}
+		}
 	}
-}
-
-function returnFalse() {
-	return false;
 }
 
 //------------------------------------------------------------------------------
