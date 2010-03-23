@@ -217,17 +217,6 @@ function deleteRecentlyClosedTabById(id) {
 }
 
 //------------------------------------------------------------------------------
-// Gets the first letters of the title.
-//------------------------------------------------------------------------------
-function getTitel(title) {
-	var result = title;
-	if(title.length > 45) {
-		result = title.substring(0,44) + '...';
-	}
-	return result;
-}
-
-//------------------------------------------------------------------------------
 // Rearranges the index of the recentlyClosedTabs.
 //------------------------------------------------------------------------------
 function rearrangeRecentlyClosedTab() {
