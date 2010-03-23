@@ -117,7 +117,7 @@ function getListOfRecentlyClosedTabsComplete() {
 				var titleDivElement = document.createElement('div');
 				titleDivElement.setAttribute('id', 'titleDivElement' + key);
 				titleDivElement.setAttribute('class', 'titleDivElement');
-				titleDivElement.innerHTML = bgPage.getTitel(recentlyClosedTabsArray[key].title);
+				titleDivElement.innerHTML = recentlyClosedTabsArray[key].title;
 				contentDivElement.appendChild(titleDivElement);
 	
 				//linkElement building
