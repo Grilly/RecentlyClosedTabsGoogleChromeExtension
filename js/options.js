@@ -3,14 +3,16 @@
 //------------------------------------------------------------------------------
 // Global variables.
 var bgPage = chrome.extension.getBackgroundPage();
+var rootDivElement = null;
 
-
+//------------------------------------------------------------------------------
+// Everything starts here
 function main() {
+	this.rootDivElement = document.getElementById('rootDiv');
     restore_options();
     createListOfFilters();
     getListOfRecentlyClosedTabsComplete();
 }
-
 
 //------------------------------------------------------------------------------
 // Saves options to localStorage.
@@ -25,6 +27,7 @@ function save_options() {
   setTimeout(function() { status.innerHTML = ""; }, 750);
 }
 
+//------------------------------------------------------------------------------
 // Restores select box state to saved value from localStorage.
 function restore_options() {
   var tabsCount = localStorage["tabsCount"];
@@ -73,46 +76,57 @@ function getListOfRecentlyClosedTabsComplete() {
 	var recentlyClosedTabsArray = bgPage.recentlyClosedTabs;
 	console.log(recentlyClosedTabsArray);
 
-	var rootDivElement = document.getElementById('rootDiv');
-	
 	if (recentlyClosedTabsArray.length == 0) {
-		rootDivElement.appendChild(document.createTextNode('No recently closed tabs.'));
+		showNoRCTs();
 	} else {
 		var size = recentlyClosedTabsArray.length;
 		var tabsCount = localStorage.getItem('tabsCount');
-		var tableElement = document.createElement('table');
-		tableElement.setAttribute('id', 'table');	
+		
 		for (var key = size - 1; key >= 0; key--) {
 			var favicon = recentlyClosedTabsArray[key].favicon;
 			var tabShot = recentlyClosedTabsArray[key].tabShot;
-			var trElement = document.createElement('tr');
-			trElement.setAttribute('id', 'tab' + key);
-			var tdTabShotElement = document.createElement('td');
-			tdTabShotElement.setAttribute('class', 'tabShotTD');
+			
+			//previewElement building
+			var tabShotDivElement = document.createElement('div');
+			tabShotDivElement.setAttribute('id', 'tabShotDivElement' + key);
+			tabShotDivElement.setAttribute('class', 'tabShotDivElement');
 			var tabShotIMG = document.createElement('img');
 			tabShotIMG.setAttribute('id', 'tabShot' + key);
 			tabShotIMG.setAttribute('class', 'tabShotIMG');
-			tdTabShotElement.appendChild(tabShotIMG);
-			trElement.appendChild(tdTabShotElement);
-			
-			var tdUrlElement = document.createElement('td');
-			tdUrlElement.setAttribute('class', 'urlTD');
+			tabShotIMG.setAttribute('src', tabShot);
+			tabShotDivElement.appendChild(tabShotIMG);
+	
 			var linkElement = document.createElement('a');
-			//linkElement.setAttribute('href', 'javascript:chrome.tabs.create({url: \'' + recentlyClosedTabsArray[key].url + '\'});bgPage.deleteRecentlyClosedTabById(\'' + key + '\');');
-			linkElement.setAttribute('href', 'javascript:createRecentlyClosedTab(' + key + ');');
-			linkElement.setAttribute('title', recentlyClosedTabsArray[key].url);
-			var linkText = document.createTextNode(bgPage.getTitel(recentlyClosedTabsArray[key].title));
-			linkElement.appendChild(linkText);
-			tdUrlElement.appendChild(linkElement);
-			trElement.appendChild(tdUrlElement);
+			linkElement.setAttribute('class', 'linkElement');
+			linkElement.setAttribute('href', 'javascript:createRecentlyClosedTab(' + key + ')');
+			linkElement.setAttribute('name', recentlyClosedTabsArray[key].url);
+			var linkElementText = document.createTextNode(recentlyClosedTabsArray[key].url);
+			linkElement.appendChild(linkElementText);
 			
-			var tdFavIconElement = document.createElement('td');
-			tdFavIconElement.setAttribute('class', 'faviconTD');
-			
-			var linkElement = document.createElement('a');
-			//linkElement.setAttribute('href', 'javascript:chrome.tabs.create({url: \'' + recentlyClosedTabsArray[key].url + '\'});bgPage.deleteRecentlyClosedTabById(\'' + key + '\');');
-			linkElement.setAttribute('href', 'javascript:createRecentlyClosedTab(' + key + ');');
-			linkElement.setAttribute('title', recentlyClosedTabsArray[key].url);
+			//contentElement building
+			var contentDivElement = document.createElement('div');
+			contentDivElement.setAttribute('id', 'contentDivElement' + key);
+			contentDivElement.setAttribute('class', 'contentDivElement');
+	
+				//titleElement building
+				var titleDivElement = document.createElement('div');
+				titleDivElement.setAttribute('id', 'titleDivElement' + key);
+				titleDivElement.setAttribute('class', 'titleDivElement');
+				titleDivElement.innerHTML = bgPage.getTitel(recentlyClosedTabsArray[key].title);
+				contentDivElement.appendChild(titleDivElement);
+	
+				//linkElement building
+				var linkDivElement = document.createElement('div');
+				linkDivElement.setAttribute('id', 'linkDivElement' + key);
+				linkDivElement.setAttribute('class', 'linkDivElement');
+//				linkDivElement.innerHTML = linkElement;
+				linkDivElement.appendChild(linkElement);
+				contentDivElement.appendChild(linkDivElement);
+	
+			//faviconElement building
+			var favIconDivElement = document.createElement('div');
+			favIconDivElement.setAttribute('id', 'favIconDivElement' + key);
+			favIconDivElement.setAttribute('class', 'favIconDivElement');
 			var favIconIMG = document.createElement('img');
 			favIconIMG.setAttribute('id', 'favIcon' + key);
 			favIconIMG.setAttribute('class', 'faviconIMG');
@@ -121,35 +135,42 @@ function getListOfRecentlyClosedTabsComplete() {
 			} else {
 				favIconIMG.setAttribute('src', '../images/default_favicon.png');
 			}
-			linkElement.appendChild(favIconIMG);
-			tdFavIconElement.appendChild(linkElement);
+			favIconDivElement.appendChild(favIconIMG);
 			
-			trElement.appendChild(tdFavIconElement);
-			
-			var tdDeleteElement = document.createElement('td');
-			tdDeleteElement.setAttribute('class', 'tdDelete');
-			
-			var input = document.createElement('input');
-			input.setAttribute('type', 'button');
-			input.setAttribute('onclick', 'javascript:deleteRecentlyClosedTab(' + key + ');');
-			input.setAttribute('value', 'Delete Element');
-			
-			tdDeleteElement.appendChild(input);
-			
-			trElement.appendChild(tdDeleteElement);
-			
-			tableElement.appendChild(trElement);
+			//deleteButtonElement building
+			var deleteButtonDivElement = document.createElement('div');
+			deleteButtonDivElement.setAttribute('id', 'deleteButtonDivElement' + key);
+			deleteButtonDivElement.setAttribute('class', 'deleteButtonDivElement');
+			var deleteButtonInput = document.createElement('input');
+			deleteButtonInput.setAttribute('type', 'button');
+			deleteButtonInput.setAttribute('onclick', 'javascript:deleteRecentlyClosedTab(' + key + ');');
+			deleteButtonInput.setAttribute('value', 'Delete Element');
+			deleteButtonDivElement.appendChild(deleteButtonInput);
+	
+			//rctElement building
+			var rctDivElement = document.createElement('div');
+			rctDivElement.setAttribute('id', 'rctElement' + key);
+			rctDivElement.setAttribute('class', 'rctDivElement');
+			rctDivElement.appendChild(tabShotDivElement);
+			rctDivElement.appendChild(contentDivElement);
+			rctDivElement.appendChild(favIconDivElement);
+			rctDivElement.appendChild(deleteButtonDivElement);
+	
+			this.rootDivElement.appendChild(rctDivElement);
 		}
-		rootDivElement.appendChild(tableElement);
-		for ( var keyImage = size - 1; keyImage >= 0; keyImage--) {
-			var tabShotImageData = recentlyClosedTabsArray[keyImage].tabShot;
-			if (tabShotImageData !== undefined && tabShotImageData != null) {
-				document.getElementById('tabShot' + keyImage).src = tabShotImageData;
-			} else {
-				document.getElementById('tabShot' + keyImage).src = '../images/default_tabShot.png';
-			}
-		}
+//		for ( var keyImage = size - 1; keyImage >= 0; keyImage--) {
+//			var tabShotImageData = recentlyClosedTabsArray[keyImage].tabShot;
+//			if (tabShotImageData !== undefined && tabShotImageData != null) {
+//				document.getElementById('tabShot' + keyImage).src = tabShotImageData;
+//			} else {
+//				document.getElementById('tabShot' + keyImage).src = '../images/default_tabShot.png';
+//			}
+//		}
 	}
+}
+
+function returnFalse() {
+	return false;
 }
 
 //------------------------------------------------------------------------------
@@ -165,5 +186,15 @@ function deleteRecentlyClosedTab(key) {
 	bgPage.deleteRecentlyClosedTabById(key);
 
 	//should remove this table row
-	document.getElementById("table").removeChild(document.getElementById('tab'+key));
+	document.getElementById('rootDiv').removeChild(document.getElementById('rctElement' + key));
+	//show 'no rcts'-String
+	if (bgPage.recentlyClosedTabs.length == 0) {
+		showNoRCTs();
+	}
+}
+
+//------------------------------------------------------------------------------
+// Appends a 'no rcts'-String to the rootDivElement.
+function showNoRCTs() {
+	rootDivElement.appendChild(document.createTextNode('No recently closed tabs.'));
 }
