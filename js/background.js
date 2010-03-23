@@ -2,25 +2,32 @@
 
 //------------------------------------------------------------------------------
 // Global variables
-// Info for all opened tabs
+//------------------------------------------------------------------------------
+// Map of all opened tabs keyed by tabId
 var allOpenedTabs = {};
-//console.log(allOpenedTabs);
-// URL of recently closed tabs
+// Array of recently closed tabs
 var recentlyClosedTabs = [];
-//console.log(recentlyClosedTabs);
 // URL blacklist filters
 var urlFilterArray = ['chrome://newtab/', 'about:blank'];
+
+// Debuging
+console.log(allOpenedTabs);
+console.log(recentlyClosedTabs);
 console.log(urlFilterArray);
 
+
 //------------------------------------------------------------------------------
-// Mainmethod: Everything starts here!
+// Main method: Everything starts here!
+//------------------------------------------------------------------------------
 function main() {
 	chrome.tabs.getAllInWindow(null, getAllTabsInWindow)
 	// Listener onUpdated
 	chrome.tabs.onUpdated.addListener(updatedTabsListener);
 	// Listener onRemoved
 	chrome.tabs.onRemoved.addListener(removedTabsListener);
-	//chrome.tabs.onSelectionChanged.addListener(setImgDataUrl);
+    // Listener onSelectionChanged
+	//chrome.tabs.onSelectionChanged.addListener(function(integer tabId, object selectInfo) {...});
+	chrome.tabs.onSelectionChanged.addListener(selectionChangedTabsListener);
 	// log all views
 	console.log(chrome.extension.getViews());
 	console.log(chrome.extension.getExtensionTabs());
@@ -28,6 +35,7 @@ function main() {
 
 //------------------------------------------------------------------------------
 // Function defining the tabInfo-object.
+//------------------------------------------------------------------------------
 function tabInfo(tabId, windowId, faviconUrl, dateOfUpdate, title, url, tabShot) {
 	this.tabId = tabId;
 	this.windowId = windowId;
@@ -39,8 +47,18 @@ function tabInfo(tabId, windowId, faviconUrl, dateOfUpdate, title, url, tabShot)
 }
 
 //------------------------------------------------------------------------------
+// Listen to SelectionChanged event and update a preview image
+//------------------------------------------------------------------------------
+function selectionChangedTabsListener(tabId, selectInfo) {
+    console.log(selectInfo);
+    setImgDataUrl(tabId);
+}
+
+//------------------------------------------------------------------------------
 // Puts the dataUrl of the tab specified by the given tabId into the object allOpenedTabs.
+//------------------------------------------------------------------------------
 function setImgDataUrl(tabId) {
+    if (allOpenedTabs[tabId] != undefined)
 	chrome.tabs.captureVisibleTab(allOpenedTabs[tabId].windowId, function(imageData) {
 		allOpenedTabs[tabId].tabShot = imageData;
 	})
@@ -48,6 +66,7 @@ function setImgDataUrl(tabId) {
 
 //------------------------------------------------------------------------------
 // Puts all open tabs into the object allOpenedTabs on the start of this extension.
+//------------------------------------------------------------------------------
 function getAllTabsInWindow(tabs) {
 	for (var key in tabs) {
 		var tabId = tabs[key].id;
@@ -66,6 +85,7 @@ function getAllTabsInWindow(tabs) {
 //------------------------------------------------------------------------------
 // Puts the tabInfo into the object allOpenedTabs. 
 // Result: object with all opened tabs.
+//------------------------------------------------------------------------------
 function updatedTabsListener(tabId, changeInfo, tab) {
 	var tabId = tab.id;
 	var windowId = tab.windowId;
@@ -86,6 +106,7 @@ function updatedTabsListener(tabId, changeInfo, tab) {
 //------------------------------------------------------------------------------
 // Puts the ctabInfo of the currently closed tab into the object recentlyClosedTabs.
 // Result: object with all recently closed tabs.
+//------------------------------------------------------------------------------
 function removedTabsListener(tabId) {
 
 	var closedTabInfo = allOpenedTabs[tabId];
@@ -111,15 +132,12 @@ function removedTabsListener(tabId) {
 	}
 
 	var length = recentlyClosedTabs.length;
-	if(length == 0) {
-		recentlyClosedTabs[0] = { 'timestamp':new Date(), 'favicon':closedTabInfo.faviconUrl, 'title':closedTabInfo.title, 'url':closedTabInfo.url, 'tabShot':closedTabInfo.tabShot };
-	} else {
-		recentlyClosedTabs[length] = {'timestamp':new Date(), 'favicon':closedTabInfo.faviconUrl, 'title':closedTabInfo.title, 'url':closedTabInfo.url, 'tabShot':closedTabInfo.tabShot };
-	}
+    recentlyClosedTabs[length] = {'timestamp':new Date(), 'favicon':closedTabInfo.faviconUrl, 'title':closedTabInfo.title, 'url':closedTabInfo.url, 'tabShot':closedTabInfo.tabShot };
 }
 
 //------------------------------------------------------------------------------
 // Deletes an element from the recentlyClosedTabs by id.
+//------------------------------------------------------------------------------
 function deleteRecentlyClosedTabById(id) {
 	if (recentlyClosedTabs.length >= 1) {
 		delete recentlyClosedTabs[id];
@@ -129,6 +147,7 @@ function deleteRecentlyClosedTabById(id) {
 
 //------------------------------------------------------------------------------
 // Gets the first letters of the title.
+//------------------------------------------------------------------------------
 function getTitel(title) {
 	var result = title;
 	if(title.length > 45) {
@@ -139,6 +158,7 @@ function getTitel(title) {
 
 //------------------------------------------------------------------------------
 // Rearranges the index of the recentlyClosedTabs.
+//------------------------------------------------------------------------------
 function rearrangeRecentlyClosedTab() {
 	var tmpArray = [];
 	var counter = 0;

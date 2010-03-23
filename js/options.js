@@ -2,11 +2,13 @@
 
 //------------------------------------------------------------------------------
 // Global variables.
+//------------------------------------------------------------------------------
 var bgPage = chrome.extension.getBackgroundPage();
 var rootDivElement = null;
 
 //------------------------------------------------------------------------------
 // Everything starts here
+//------------------------------------------------------------------------------
 function main() {
 	this.rootDivElement = document.getElementById('rootDiv');
     restore_options();
@@ -16,6 +18,7 @@ function main() {
 
 //------------------------------------------------------------------------------
 // Saves options to localStorage.
+//------------------------------------------------------------------------------
 function save_options() {
   var select_tabsCount = document.getElementById("tabsCount");
   var tabsCount = select_tabsCount.children[select_tabsCount.selectedIndex].value;
@@ -29,6 +32,7 @@ function save_options() {
 
 //------------------------------------------------------------------------------
 // Restores select box state to saved value from localStorage.
+//------------------------------------------------------------------------------
 function restore_options() {
   var tabsCount = localStorage["tabsCount"];
   if (!tabsCount) {
@@ -48,6 +52,7 @@ function restore_options() {
 
 //------------------------------------------------------------------------------
 //Creates list of filters.
+//------------------------------------------------------------------------------
 function createListOfFilters() {
 
     var size = bgPage.urlFilterArray.length;
@@ -59,19 +64,28 @@ function createListOfFilters() {
 	var tableElement = document.createElement('table');
 	tableElement.setAttribute('id', 'filterTable');
     for (var i = 0; i < size; i++) {
-        var trElement = document.createElement('tr');
-        var tdElement = document.createElement('td');
-        var text = document.createTextNode(bgPage.urlFilterArray[i]);
-        tdElement.appendChild(text);
-        trElement.appendChild(tdElement);
-        tableElement.appendChild(trElement);
+        addFilterRowToListTable(bgPage.urlFilterArray[i], tableElement);
     }
     filterDivElement.appendChild(tableElement);
 }
 
 
 //------------------------------------------------------------------------------
-//Creates list with recently closed tabs.
+//Creates list of recently closed tabs.
+//------------------------------------------------------------------------------
+function addFilterRowToListTable(urlString, tableElement) {
+    var trElement = document.createElement('tr');
+    var tdElement = document.createElement('td');
+    var text = document.createTextNode(urlString);
+    tdElement.appendChild(text);
+    trElement.appendChild(tdElement);
+    tableElement.appendChild(trElement);
+ }
+
+
+//------------------------------------------------------------------------------
+//Creates list of recently closed tabs.
+//------------------------------------------------------------------------------
 function getListOfRecentlyClosedTabsComplete() {
 	var recentlyClosedTabsArray = bgPage.recentlyClosedTabs;
 	console.log(recentlyClosedTabsArray);
@@ -168,6 +182,7 @@ function getListOfRecentlyClosedTabsComplete() {
 
 //------------------------------------------------------------------------------
 //Creates recently closed tab.
+//------------------------------------------------------------------------------
 function createRecentlyClosedTab(key) {
 	chrome.tabs.create({url: bgPage.recentlyClosedTabs[key].url});
 	deleteRecentlyClosedTab(key);
@@ -175,7 +190,15 @@ function createRecentlyClosedTab(key) {
 
 //------------------------------------------------------------------------------
 //Deletes element from the list of recently closed tabs.
+//------------------------------------------------------------------------------
 function deleteRecentlyClosedTab(key) {
+    var urlPattern = prompt("Ignore this URL in future?", bgPage.recentlyClosedTabs[key].url);
+    console.log(urlPattern);
+    if (urlPattern != null) {
+        bgPage.urlFilterArray[bgPage.urlFilterArray.length] = urlPattern;
+        addFilterRowToListTable(urlPattern, document.getElementById('filterTable'));
+    }
+
 	bgPage.deleteRecentlyClosedTabById(key);
 
 	//should remove this table row
@@ -188,6 +211,7 @@ function deleteRecentlyClosedTab(key) {
 
 //------------------------------------------------------------------------------
 // Appends a 'no rcts'-String to the rootDivElement.
+//------------------------------------------------------------------------------
 function showNoRCTs() {
 	rootDivElement.appendChild(document.createTextNode('No recently closed tabs.'));
 }
