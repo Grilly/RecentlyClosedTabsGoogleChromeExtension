@@ -45,7 +45,7 @@ function restoreState() {
 //------------------------------------------------------------------------------
 function fetchUrlFilterArray() {
 	var urlFilterString = localStorage['urlFilterArray'];
-    if (urlFilterString == undefined) {
+    if (urlFilterString === undefined) {
     	storeUrlFilterArray(['chrome://newtab/', 'about:blank']);
     } else {
         urlFilterArray = JSON.parse(urlFilterString);
@@ -57,7 +57,7 @@ function fetchUrlFilterArray() {
 // Modify/Persist the urlFilterArray to the localStorage
 //------------------------------------------------------------------------------
 function storeUrlFilterArray(newUrlFilterArray) {
-  if (newUrlFilterArray != undefined) urlFilterArray = newUrlFilterArray;
+  if (newUrlFilterArray !== undefined) urlFilterArray = newUrlFilterArray;
   localStorage.setItem('urlFilterArray', JSON.stringify(urlFilterArray));
 }
 
@@ -66,7 +66,7 @@ function storeUrlFilterArray(newUrlFilterArray) {
 //------------------------------------------------------------------------------
 function fetchMaxPopupTableLength() {
 	maxPopupTableLength = localStorage['maxPopupTableLength'];
-	if (maxPopupTableLength == undefined) storeMaxPopupTableLength(15);
+	if (maxPopupTableLength === undefined) storeMaxPopupTableLength(15);
 	console.log(maxPopupTableLength);
 }
 
@@ -83,7 +83,7 @@ function storeMaxPopupTableLength(newMaxLength) {
 //------------------------------------------------------------------------------
 function fetchRecentlyClosedTabs() {
 	var recentlyClosedTabsString = localStorage['recentlyClosedTabs'];
-    if (recentlyClosedTabsString == undefined) {
+    if (recentlyClosedTabsString === undefined) {
     	storeRecentlyClosedTabs([]);
     } else {
     	recentlyClosedTabs = JSON.parse(recentlyClosedTabsString);
@@ -95,7 +95,7 @@ function fetchRecentlyClosedTabs() {
 // Modify/Persist the recentlyClosedTabs to the localStorage
 //------------------------------------------------------------------------------
 function storeRecentlyClosedTabs(newRecentlyClosedTabs) {
-	if (newRecentlyClosedTabs != undefined) recentlyClosedTabs = newRecentlyClosedTabs;
+	if (newRecentlyClosedTabs !== undefined) recentlyClosedTabs = newRecentlyClosedTabs;
     localStorage.setItem('recentlyClosedTabs', JSON.stringify(recentlyClosedTabs));
 }
 
@@ -124,7 +124,7 @@ function selectionChangedTabsListener(tabId, selectInfo) {
 // Puts the dataUrl of the tab specified by the given tabId into the object allOpenedTabs.
 //------------------------------------------------------------------------------
 function setImgDataUrl(tabId) {
-    if (allOpenedTabs[tabId] != undefined)
+    if (allOpenedTabs[tabId] !== undefined)
 	chrome.tabs.captureVisibleTab(allOpenedTabs[tabId].windowId, function(imageData) {
 		allOpenedTabs[tabId].tabShot = imageData;
 	})
@@ -149,7 +149,7 @@ function updatedTabsListener(tabId, changeInfo, tab) {
 //
 //------------------------------------------------------------------------------
 function processOpenedTab(tab) {
-	if (tab == undefined) return;
+	if (tab === undefined) return;
 	var tabUrl = tab.url;
 	if (shouldBeIgnored(tabUrl)) return;
 	var tabId = tab.id;
@@ -168,7 +168,7 @@ function processOpenedTab(tab) {
 //
 //------------------------------------------------------------------------------
 function shouldBeIgnored(tabUrl) {
-	if (tabUrl == undefined) return true;
+	if (tabUrl === undefined) return true;
 	for (key in urlFilterArray) if (tabUrl == urlFilterArray[key]) return true;
 	return false;
 }
@@ -186,7 +186,7 @@ function removeClosedTabWithThisUrl(tabUrl) {
 //
 //------------------------------------------------------------------------------
 function processClosedTab(tabInfo) {
-    if (tabInfo == undefined) return;
+    if (tabInfo === undefined) return;
     delete allOpenedTabs[tabInfo.tabId];
     removeClosedTabWithThisUrl(tabInfo.url)
     // Add at the end a new instance with a current timestamp
