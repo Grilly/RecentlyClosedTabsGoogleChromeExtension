@@ -79,7 +79,7 @@ function storeMaxPopupTableLength(newMaxLength) {
 }
 
 //------------------------------------------------------------------------------
-//Fetch/Initialise the recentlyClosedTabs from the localStorage
+// Fetch/Initialise the recentlyClosedTabs from the localStorage
 //------------------------------------------------------------------------------
 function fetchRecentlyClosedTabs() {
 	var recentlyClosedTabsString = localStorage['recentlyClosedTabs'];
@@ -113,7 +113,7 @@ function tabInfo(tabId, windowId, faviconUrl, dateOfUpdate, title, url, tabShot)
 }
 
 //------------------------------------------------------------------------------
-// Listen to SelectionChanged event and update a preview image
+//Listen to SelectionChanged event and update a preview image
 //------------------------------------------------------------------------------
 function selectionChangedTabsListener(tabId, selectInfo) {
     console.log(selectInfo);
@@ -178,7 +178,7 @@ function shouldBeIgnored(tabUrl) {
 //------------------------------------------------------------------------------
 function removeClosedTabWithThisUrl(tabUrl) {
     for (key in recentlyClosedTabs) {
-        if (recentlyClosedTabs[key].url == tabUrl) delete recentlyClosedTabs[key];
+        if (recentlyClosedTabs[key] == null || recentlyClosedTabs[key].url == tabUrl)  recentlyClosedTabs.splice(key, 1);
     }
 }
 
@@ -189,9 +189,9 @@ function processClosedTab(tabInfo) {
     if (tabInfo === undefined) return;
     delete allOpenedTabs[tabInfo.tabId];
     removeClosedTabWithThisUrl(tabInfo.url)
-    // Add at the end a new instance with a current timestamp
-    var length = recentlyClosedTabs.length;
-    recentlyClosedTabs[length] = {'timestamp':new Date(), 'favicon':tabInfo.faviconUrl, 'title':tabInfo.title, 'url':tabInfo.url, 'tabShot':tabInfo.tabShot };
+    // Add at the begining a new instance with a current timestamp
+    tabInfo.timestamp = new Date();
+    recentlyClosedTabs.unshift(tabInfo);
     storeRecentlyClosedTabs();
     console.log(recentlyClosedTabs);
 }
@@ -231,3 +231,73 @@ function rearrangeRecentlyClosedTab() {
 	}
 	recentlyClosedTabs = tmpArray;
 }
+
+//------------------------------------------------------------------------------
+// Construct a HTML table row out of tabInfo
+//------------------------------------------------------------------------------
+function createTableRow(tabInfo) {
+  var trElement = document.createElement('tr');
+  if (tabInfo == null) return trElement;
+
+  var tdTabShotElement = document.createElement('td');
+  tdTabShotElement.setAttribute('class', 'tabShotTD');
+  var tabShotIMG = document.createElement('img');
+  tabShotIMG.setAttribute('class', 'tabShotIMG');
+  tdTabShotElement.appendChild(tabShotIMG);
+  trElement.appendChild(tdTabShotElement);
+
+  var tdUrlElement = document.createElement('td');
+  tdUrlElement.setAttribute('class', 'urlTD');
+  var textLinkElement = document.createElement('a');
+  var linkText = document.createTextNode(tabInfo.title);
+  textLinkElement.appendChild(linkText);
+  tdUrlElement.appendChild(textLinkElement);
+  trElement.appendChild(tdUrlElement);
+
+  var tdFavIconElement = document.createElement('td');
+  tdFavIconElement.setAttribute('class', 'faviconTD');
+  var iconLinkElement = document.createElement('a');
+  var favIconIMG = document.createElement('img');
+//  favIconIMG.setAttribute('id', 'favIcon' + key);
+  favIconIMG.setAttribute('class', 'faviconIMG');
+  iconLinkElement.appendChild(favIconIMG);
+  tdFavIconElement.appendChild(iconLinkElement);
+  trElement.appendChild(tdFavIconElement);
+
+  with (tabInfo) {
+    trElement.setAttribute('id', tabId);
+    tabShotIMG.setAttribute('id', 'tabShot' + tabId);
+    if (tabShot !== undefined && tabShot != null) {
+ 	  tabShotIMG.src = tabShot;
+    } else {
+      tabShotIMG.src = '../images/default_tabShot.png';
+    }
+    textLinkElement.setAttribute('href', 'javascript:bgPage.openRecentlyClosedTab(' + tabId + '); removeRecentlyClosedTab(' + tabId + ');');
+    textLinkElement.setAttribute('title', url);
+    iconLinkElement.setAttribute('href', 'javascript:bgPage.openRecentlyClosedTab(' + tabId + '); removeRecentlyClosedTab(' + tabId + ');');
+    iconLinkElement.setAttribute('title', url);
+    if (tabInfo.faviconUrl !== undefined) {
+      favIconIMG.setAttribute('src', faviconUrl);
+    } else {
+      favIconIMG.setAttribute('src', '../images/default_favicon.png');
+    }
+  }
+  return trElement;
+}
+
+//------------------------------------------------------------------------------
+// Open selected RecentlyClosedTab
+//------------------------------------------------------------------------------
+function openRecentlyClosedTab(tabId) {
+  for (index in recentlyClosedTabs) {
+    if (recentlyClosedTabs[index].tabId == tabId) {
+      chrome.tabs.create({url: recentlyClosedTabs[index].url});
+      recentlyClosedTabs.splice(index, 1);
+
+      //should remove this table row
+      // TODO: how to find the parent node without assuming that its id is 'table'
+      //document.getElementById('table').removeChild(document.getElementById(tabId));
+    }
+  }
+}
+

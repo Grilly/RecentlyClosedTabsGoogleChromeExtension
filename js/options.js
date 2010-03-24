@@ -87,82 +87,82 @@ function getListOfRecentlyClosedTabsComplete() {
 		showNoRCTs();
 	} else {
 		var size = recentlyClosedTabsArray.length;
-		var tabsCount = localStorage.getItem('tabsCount');
 		
 		for (var key = size - 1; key >= 0; key--) {
-			if (recentlyClosedTabsArray[key] != null) {
-				var favicon = recentlyClosedTabsArray[key].favicon;
+            if (recentlyClosedTabsArray[key] != null) {
+            
+		var favicon = recentlyClosedTabsArray[key].favicon;
 				
-				//previewElement building
-				var tabShotDivElement = document.createElement('div');
-				tabShotDivElement.setAttribute('id', 'tabShotDivElement' + key);
-				tabShotDivElement.setAttribute('class', 'tabShotDivElement');
-				var tabShotIMG = document.createElement('img');
-				tabShotIMG.setAttribute('id', 'tabShot' + key);
-				tabShotIMG.setAttribute('class', 'tabShotIMG');
-				tabShotDivElement.appendChild(tabShotIMG);
-		
-				var linkElement = document.createElement('a');
-				linkElement.setAttribute('class', 'linkElement');
-				linkElement.setAttribute('href', 'javascript:createRecentlyClosedTab(' + key + ')');
-				linkElement.setAttribute('name', recentlyClosedTabsArray[key].url);
-				var linkElementText = document.createTextNode(recentlyClosedTabsArray[key].url);
-				linkElement.appendChild(linkElementText);
-				
-				//contentElement building
-				var contentDivElement = document.createElement('div');
-				contentDivElement.setAttribute('id', 'contentDivElement' + key);
-				contentDivElement.setAttribute('class', 'contentDivElement');
-		
-					//titleElement building
-					var titleDivElement = document.createElement('div');
-					titleDivElement.setAttribute('id', 'titleDivElement' + key);
-					titleDivElement.setAttribute('class', 'titleDivElement');
-					titleDivElement.innerHTML = recentlyClosedTabsArray[key].title;
-					contentDivElement.appendChild(titleDivElement);
-		
-					//linkElement building
-					var linkDivElement = document.createElement('div');
-					linkDivElement.setAttribute('id', 'linkDivElement' + key);
-					linkDivElement.setAttribute('class', 'linkDivElement');
-					linkDivElement.appendChild(linkElement);
-					contentDivElement.appendChild(linkDivElement);
-		
-				//faviconElement building
-				var favIconDivElement = document.createElement('div');
-				favIconDivElement.setAttribute('id', 'favIconDivElement' + key);
-				favIconDivElement.setAttribute('class', 'favIconDivElement');
-				var favIconIMG = document.createElement('img');
-				favIconIMG.setAttribute('id', 'favIcon' + key);
-				favIconIMG.setAttribute('class', 'faviconIMG');
-				if (favicon !== undefined) {
-					favIconIMG.setAttribute('src', favicon);
-				} else {
-					favIconIMG.setAttribute('src', '../images/default_favicon.png');
-				}
-				favIconDivElement.appendChild(favIconIMG);
-				
-				//deleteButtonElement building
-				var deleteButtonDivElement = document.createElement('div');
-				deleteButtonDivElement.setAttribute('id', 'deleteButtonDivElement' + key);
-				deleteButtonDivElement.setAttribute('class', 'deleteButtonDivElement');
-				var deleteButtonInput = document.createElement('input');
-				deleteButtonInput.setAttribute('type', 'button');
-				deleteButtonInput.setAttribute('onclick', 'javascript:deleteRecentlyClosedTab(' + key + ');');
-				deleteButtonInput.setAttribute('value', 'Delete Element');
-				deleteButtonDivElement.appendChild(deleteButtonInput);
-		
-				//rctElement building
-				var rctDivElement = document.createElement('div');
-				rctDivElement.setAttribute('id', 'rctElement' + key);
-				rctDivElement.setAttribute('class', 'rctDivElement');
-				rctDivElement.appendChild(tabShotDivElement);
-				rctDivElement.appendChild(contentDivElement);
-				rctDivElement.appendChild(favIconDivElement);
-				rctDivElement.appendChild(deleteButtonDivElement);
-		
-				this.rootDivElement.appendChild(rctDivElement);
-			}
+		//previewElement building
+		var tabShotDivElement = document.createElement('div');
+		tabShotDivElement.setAttribute('id', 'tabShotDivElement' + key);
+		tabShotDivElement.setAttribute('class', 'tabShotDivElement');
+		var tabShotIMG = document.createElement('img');
+		tabShotIMG.setAttribute('id', 'tabShot' + key);
+		tabShotIMG.setAttribute('class', 'tabShotIMG');
+		tabShotDivElement.appendChild(tabShotIMG);
+
+		var linkElement = document.createElement('a');
+		linkElement.setAttribute('class', 'linkElement');
+		linkElement.setAttribute('href', 'javascript:createRecentlyClosedTab(' + key + ')');
+		linkElement.setAttribute('name', recentlyClosedTabsArray[key].url);
+		var linkElementText = document.createTextNode(recentlyClosedTabsArray[key].url);
+		linkElement.appendChild(linkElementText);
+
+		//contentElement building
+		var contentDivElement = document.createElement('div');
+		contentDivElement.setAttribute('id', 'contentDivElement' + key);
+		contentDivElement.setAttribute('class', 'contentDivElement');
+
+		//titleElement building
+		var titleDivElement = document.createElement('div');
+		titleDivElement.setAttribute('id', 'titleDivElement' + key);
+		titleDivElement.setAttribute('class', 'titleDivElement');
+		titleDivElement.innerHTML = recentlyClosedTabsArray[key].title;
+		contentDivElement.appendChild(titleDivElement);
+
+		//linkElement building
+		var linkDivElement = document.createElement('div');
+		linkDivElement.setAttribute('id', 'linkDivElement' + key);
+		linkDivElement.setAttribute('class', 'linkDivElement');
+		linkDivElement.appendChild(linkElement);
+		contentDivElement.appendChild(linkDivElement);
+
+		//faviconElement building
+		var favIconDivElement = document.createElement('div');
+		favIconDivElement.setAttribute('id', 'favIconDivElement' + key);
+		favIconDivElement.setAttribute('class', 'favIconDivElement');
+		var favIconIMG = document.createElement('img');
+		favIconIMG.setAttribute('id', 'favIcon' + key);
+		favIconIMG.setAttribute('class', 'faviconIMG');
+		if (favicon !== undefined) {
+			favIconIMG.setAttribute('src', favicon);
+		} else {
+			favIconIMG.setAttribute('src', '../images/default_favicon.png');
+		}
+		favIconDivElement.appendChild(favIconIMG);
+
+		//deleteButtonElement building
+		var deleteButtonDivElement = document.createElement('div');
+		deleteButtonDivElement.setAttribute('id', 'deleteButtonDivElement' + key);
+		deleteButtonDivElement.setAttribute('class', 'deleteButtonDivElement');
+		var deleteButtonInput = document.createElement('input');
+		deleteButtonInput.setAttribute('type', 'button');
+		deleteButtonInput.setAttribute('onclick', 'javascript:deleteRecentlyClosedTab(' + key + ');');
+		deleteButtonInput.setAttribute('value', 'Delete Element');
+		deleteButtonDivElement.appendChild(deleteButtonInput);
+
+		//rctElement building
+		var rctDivElement = document.createElement('div');
+		rctDivElement.setAttribute('id', 'rctElement' + key);
+		rctDivElement.setAttribute('class', 'rctDivElement');
+		rctDivElement.appendChild(tabShotDivElement);
+		rctDivElement.appendChild(contentDivElement);
+		rctDivElement.appendChild(favIconDivElement);
+		rctDivElement.appendChild(deleteButtonDivElement);
+
+		this.rootDivElement.appendChild(rctDivElement);
+	}
 		}
 		if (recentlyClosedTabsArray[key] != null) {
 			for ( var keyImage = size - 1; keyImage >= 0; keyImage--) {
