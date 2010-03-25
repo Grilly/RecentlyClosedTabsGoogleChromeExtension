@@ -3,6 +3,8 @@
 //------------------------------------------------------------------------------
 // Global variables
 //------------------------------------------------------------------------------
+//
+var version;
 // Map of all opened tabs keyed by tabId
 var allOpenedTabs = {};
 // Array of recently closed tabs
@@ -16,6 +18,7 @@ var maxPopupTableLength;
 // Main method: Everything starts here!
 //------------------------------------------------------------------------------
 function main() {
+	version = getVersion();
 	// Restore state from localStorage
 	restoreState();
 	// Process all open tabs
@@ -31,7 +34,31 @@ function main() {
 //------------------------------------------------------------------------------
 //
 //------------------------------------------------------------------------------
+function getVersion() {
+    var version = 'NaN';
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', chrome.extension.getURL('manifest.json'), false);
+    xhr.onreadystatechange = function() {
+        if (this.readyState == 4) {
+          var manifest = JSON.parse(this.responseText);
+          version = manifest.version;
+        }
+    };
+    xhr.send();
+    return version;
+}
+
+//------------------------------------------------------------------------------
+//
+//------------------------------------------------------------------------------
 function restoreState() {
+	var storedVersion = localStorage['version'];
+	if (version != storedVersion) {
+        chrome.tabs.create({'url': chrome.extension.getURL('infonews.html'), 'selected': 'true'}, function(tab) {
+            // Tab opened.
+        });
+        localStorage.setItem('version', version);
+    }
     //
     fetchUrlFilterArray();
     //
