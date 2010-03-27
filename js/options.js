@@ -13,7 +13,7 @@ function main() {
     rootDivElement = document.getElementById('rootDiv');
     showMaxPopupTableLength();
     createListOfFilters();
-    getListOfRecentlyClosedTabsComplete();
+    createListOfRecentlyClosedTabs();
 }
 
 //------------------------------------------------------------------------------
@@ -73,9 +73,83 @@ function addFilterRowToListTable(urlString, tableElement) {
     tdElement.appendChild(text);
     trElement.appendChild(tdElement);
     tableElement.appendChild(trElement);
- }
+}
 
 
+//------------------------------------------------------------------------------
+//Creates list of recently closed tabs.
+//------------------------------------------------------------------------------
+function createListOfRecentlyClosedTabs() {
+  var recentlyClosedTabsArray = bgPage.recentlyClosedTabs;
+  console.log(recentlyClosedTabsArray);
+
+  var rootDivElement = document.getElementById('rootDiv');
+
+  if (recentlyClosedTabsArray.length == 0) {
+	  showNoRCTs();
+  } else {
+    var tableElement = document.createElement('table');
+    tableElement.setAttribute('id', 'table');
+    rootDivElement.appendChild(tableElement);
+    for (var i = 0; i < recentlyClosedTabsArray.length && i < bgPage.maxPopupTableLength; i++) {
+      var trElement = bgPage.createTableRow(recentlyClosedTabsArray[i]);
+
+      //deleteButtonElement building
+      var deleteButtonDivElement = document.createElement('td');
+      deleteButtonDivElement.setAttribute('id', 'deleteButtonDivElement' + i);
+      deleteButtonDivElement.setAttribute('class', 'deleteButtonDivElement');
+      var deleteButtonInput = document.createElement('input');
+      deleteButtonInput.setAttribute('type', 'button');
+      deleteButtonInput.setAttribute('onclick', 'javascript:deleteRecentlyClosedTab(' + i + ');');
+      deleteButtonInput.setAttribute('value', 'Delete Element');
+      deleteButtonDivElement.appendChild(deleteButtonInput);
+
+      trElement.appendChild(deleteButtonDivElement);
+      tableElement.appendChild(trElement);
+    }
+  }
+}
+
+//------------------------------------------------------------------------------
+// Removes selected RecentlyClosedTab row
+//------------------------------------------------------------------------------
+function removeRecentlyClosedTab(tabId) {
+  //should remove this table row
+  // TODO: how to find the parent node without assuming that its id is 'table'
+  document.getElementById('table').removeChild(document.getElementById(tabId));
+}
+
+//------------------------------------------------------------------------------
+//Deletes element from the list of recently closed tabs.
+//------------------------------------------------------------------------------
+function deleteRecentlyClosedTab(key) {
+  var urlPattern = prompt("Ignore this URL in future?", bgPage.recentlyClosedTabs[key].url);
+  console.log(urlPattern);
+  if (urlPattern != null) {
+    bgPage.urlFilterArray[bgPage.urlFilterArray.length] = urlPattern;
+    addFilterRowToListTable(urlPattern, document.getElementById('filterTable'));
+  }
+
+  //should remove this table row
+  removeRecentlyClosedTab(bgPage.recentlyClosedTabs[key].tabId);
+  //show 'no rcts'-String
+  if (bgPage.recentlyClosedTabs.length == 0) {
+	showNoRCTs();
+  }
+
+  bgPage.removeClosedTabWithThisUrl(bgPage.recentlyClosedTabs[key].url);
+}
+
+//------------------------------------------------------------------------------
+//Appends a 'no rcts'-String to the rootDivElement.
+//------------------------------------------------------------------------------
+function showNoRCTs() {
+  rootDivElement.appendChild(document.createTextNode('No recently closed tabs.'));
+}
+
+
+//------------------------------------------------------------------------------
+// SHOULD BE REMOVED !!!
 //------------------------------------------------------------------------------
 //Creates list of recently closed tabs.
 //------------------------------------------------------------------------------
@@ -183,32 +257,4 @@ function getListOfRecentlyClosedTabsComplete() {
 function createRecentlyClosedTab(key) {
 	chrome.tabs.create({url: bgPage.recentlyClosedTabs[key].url});
 	deleteRecentlyClosedTab(key);
-}
-
-//------------------------------------------------------------------------------
-//Deletes element from the list of recently closed tabs.
-//------------------------------------------------------------------------------
-function deleteRecentlyClosedTab(key) {
-    var urlPattern = prompt("Ignore this URL in future?", bgPage.recentlyClosedTabs[key].url);
-    console.log(urlPattern);
-    if (urlPattern != null) {
-        bgPage.urlFilterArray[bgPage.urlFilterArray.length] = urlPattern;
-        addFilterRowToListTable(urlPattern, document.getElementById('filterTable'));
-    }
-
-	bgPage.deleteRecentlyClosedTabById(key);
-
-	//should remove this table row
-	document.getElementById('rootDiv').removeChild(document.getElementById('rctElement' + key));
-	//show 'no rcts'-String
-	if (bgPage.recentlyClosedTabs.length == 0) {
-		showNoRCTs();
-	}
-}
-
-//------------------------------------------------------------------------------
-// Appends a 'no rcts'-String to the rootDivElement.
-//------------------------------------------------------------------------------
-function showNoRCTs() {
-	rootDivElement.appendChild(document.createTextNode('No recently closed tabs.'));
 }
