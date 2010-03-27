@@ -54,7 +54,7 @@ function getVersion() {
 function restoreState() {
 	var storedVersion = localStorage['version'];
 	if (version != storedVersion) {
-        chrome.tabs.create({'url': chrome.extension.getURL('infonews.html'), 'selected': 'true'}, function(tab) {
+        chrome.tabs.create({'url': chrome.extension.getURL('infonews.html'), 'selected': true}, function(tab) {
             // Tab opened.
         });
         localStorage.setItem('version', version);
@@ -143,7 +143,7 @@ function tabInfo(tabId, windowId, faviconUrl, dateOfUpdate, title, url, tabShot)
 //Listen to SelectionChanged event and update a preview image
 //------------------------------------------------------------------------------
 function selectionChangedTabsListener(tabId, selectInfo) {
-    console.log(selectInfo);
+    console.log("selectionChangedTabsListener: " + selectInfo);
     setImgDataUrl(tabId);
 }
 
@@ -152,8 +152,31 @@ function selectionChangedTabsListener(tabId, selectInfo) {
 //------------------------------------------------------------------------------
 function setImgDataUrl(tabId) {
     if (allOpenedTabs[tabId] !== undefined)
-	chrome.tabs.captureVisibleTab(allOpenedTabs[tabId].windowId, function(imageData) {
-		allOpenedTabs[tabId].tabShot = imageData;
+	chrome.tabs.captureVisibleTab(allOpenedTabs[tabId].windowId, function(snapshotData) {
+		console.log("receiving snapshot data for tabId = " + tabId);
+		var orgImage = new Image();
+	    orgImage.onload = function() {
+	    	console.log("orgImage size = " + orgImage.width + "x" + orgImage.height);
+	    	var newHeight = 110;
+	    	var newWidth = orgImage.width * newHeight / orgImage.height;
+	        // Create a canvas with the desired dimensions
+	        var canvas = document.createElement("canvas");
+	        canvas.width = newWidth + 10;
+	        canvas.height = newHeight + 10;
+	        var context = canvas.getContext("2d");
+
+	        // Scale and draw the source image to the canvas
+	        context.drawImage(orgImage, 5, 5, newWidth, newHeight);
+
+	        // Convert the canvas to a data URL in PNG format
+			allOpenedTabs[tabId].tabShot = canvas.toDataURL();
+
+			// Check the result
+			var chkImage = new Image();
+			chkImage.onload = function() { console.log("chkImage size = " + chkImage.width + "x" + chkImage.height); }
+			chkImage.src = allOpenedTabs[tabId].tabShot;
+	    }
+	    orgImage.src = snapshotData;
 	})
 }
 
@@ -233,31 +256,6 @@ function removedTabsListener(tabId) {
 	processClosedTab(closedTabInfo);
 }
 
-//------------------------------------------------------------------------------
-// Deletes an element from the recentlyClosedTabs by id.
-//------------------------------------------------------------------------------
-function deleteRecentlyClosedTabById(id) {
-	if (recentlyClosedTabs.length >= 1) {
-		delete recentlyClosedTabs[id];
-		rearrangeRecentlyClosedTab();
-	}
-}
-
-//------------------------------------------------------------------------------
-// Rearranges the index of the recentlyClosedTabs.
-//------------------------------------------------------------------------------
-function rearrangeRecentlyClosedTab() {
-	var tmpArray = [];
-	var counter = 0;
-  
-	for (key in recentlyClosedTabs) {
-		if (recentlyClosedTabs[key] !== undefined) {
-			tmpArray[counter] = recentlyClosedTabs[key];
-			counter++;
-		}
-	}
-	recentlyClosedTabs = tmpArray;
-}
 
 //------------------------------------------------------------------------------
 // Construct a HTML table row out of tabInfo
