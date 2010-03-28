@@ -4,16 +4,17 @@
 // Global variables.
 //------------------------------------------------------------------------------
 var bgPage = chrome.extension.getBackgroundPage();
-var rootDivElement;
+//var rootDivElement;
 
 //------------------------------------------------------------------------------
 // Everything starts here
 //------------------------------------------------------------------------------
 function main() {
-    rootDivElement = document.getElementById('rootDiv');
-    showMaxPopupTableLength();
-    createListOfFilters();
-    createListOfRecentlyClosedTabs();
+  //rootDivElement = document.getElementById('rootDiv');
+  document.getElementById('extName').innerHTML = bgPage.appConfig.name + " " + bgPage.appConfig.version;
+  showMaxPopupTableLength();
+  createListOfFilters();
+  createListOfRecentlyClosedTabs();
 }
 
 //------------------------------------------------------------------------------
@@ -21,7 +22,7 @@ function main() {
 //------------------------------------------------------------------------------
 function saveMaxPopupTableLength() {
   var select_tabsCount = document.getElementById("tabsCount");
-  bgPage.setMaxPopupTableLength(select_tabsCount.children[select_tabsCount.selectedIndex].value);
+  bgPage.storeMaxPopupTableLength(select_tabsCount.children[select_tabsCount.selectedIndex].value);
   // Update status to let user know options were saved.
   var status = document.getElementById("status");
   status.innerHTML = "Options Saved.";
@@ -91,7 +92,7 @@ function createListOfRecentlyClosedTabs() {
     var tableElement = document.createElement('table');
     tableElement.setAttribute('id', 'table');
     rootDivElement.appendChild(tableElement);
-    for (var i = 0; i < recentlyClosedTabsArray.length && i < bgPage.maxPopupTableLength; i++) {
+    for (var i = 0; i < recentlyClosedTabsArray.length; i++) {
       var trElement = bgPage.createTableRow(recentlyClosedTabsArray[i]);
 
       //deleteButtonElement building

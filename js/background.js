@@ -4,7 +4,7 @@
 // Global variables
 //------------------------------------------------------------------------------
 //
-var version;
+var appConfig;
 // Map of all opened tabs keyed by tabId
 var allOpenedTabs = {};
 // Array of recently closed tabs
@@ -18,7 +18,7 @@ var maxPopupTableLength;
 // Main method: Everything starts here!
 //------------------------------------------------------------------------------
 function main() {
-	version = getVersion();
+	loadAppConfig();
 	// Restore state from localStorage
 	restoreState();
 	// Process all open tabs
@@ -34,18 +34,15 @@ function main() {
 //------------------------------------------------------------------------------
 //
 //------------------------------------------------------------------------------
-function getVersion() {
-    var version = 'NaN';
+function loadAppConfig() {
     var xhr = new XMLHttpRequest();
     xhr.open('GET', chrome.extension.getURL('manifest.json'), false);
     xhr.onreadystatechange = function() {
         if (this.readyState == 4) {
-          var manifest = JSON.parse(this.responseText);
-          version = manifest.version;
+          appConfig = JSON.parse(this.responseText);
         }
     };
     xhr.send();
-    return version;
 }
 
 //------------------------------------------------------------------------------
@@ -53,11 +50,11 @@ function getVersion() {
 //------------------------------------------------------------------------------
 function restoreState() {
 	var storedVersion = localStorage['version'];
-	if (version != storedVersion) {
+	if (appConfig.version != storedVersion) {
         chrome.tabs.create({'url': chrome.extension.getURL('infonews.html'), 'selected': true}, function(tab) {
-          // Tab opened.
+          // Tab opened: possible migration procedures
         });
-        localStorage.setItem('version', version);
+        localStorage.setItem('version', appConfig.version);
     }
     //
     fetchUrlFilterArray();
@@ -115,7 +112,8 @@ function fetchRecentlyClosedTabs() {
     } else {
         recentlyClosedTabs = JSON.parse(recentlyClosedTabsString);
         for (var i in recentlyClosedTabs)
-          if (recentlyClosedTabs[i] == null)  recentlyClosedTabs.splice(i, 1);
+          if (recentlyClosedTabs[i] == null || recentlyClosedTabs[i].tabId == undefined)
+            recentlyClosedTabs.splice(i, 1);
     }
 	console.log(recentlyClosedTabs);
 }
