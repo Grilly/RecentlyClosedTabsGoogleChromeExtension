@@ -100,7 +100,7 @@ function createListOfRecentlyClosedTabs() {
       deleteButtonDivElement.setAttribute('class', 'deleteButtonDivElement');
       var deleteButtonInput = document.createElement('input');
       deleteButtonInput.setAttribute('type', 'button');
-      deleteButtonInput.setAttribute('onclick', 'javascript:deleteRecentlyClosedTab(' + i + ');');
+      deleteButtonInput.setAttribute('onclick', 'javascript:deleteRecentlyClosedTab(' + bgPage.recentlyClosedTabs[i].tabId + ');');
       deleteButtonInput.setAttribute('value', 'Delete Element');
       deleteButtonDivElement.appendChild(deleteButtonInput);
 
@@ -120,10 +120,11 @@ function removeRecentlyClosedTab(tabId) {
 }
 
 //------------------------------------------------------------------------------
-//Deletes element from the list of recently closed tabs.
+// Deletes element from the list of recently closed tabs.
 //------------------------------------------------------------------------------
-function deleteRecentlyClosedTab(key) {
-  var urlPattern = prompt("Ignore this URL in future?", bgPage.recentlyClosedTabs[key].url);
+function deleteRecentlyClosedTab(tabId) {
+  var url = bgPage.getClosedTabById(tabId).url;
+  var urlPattern = prompt("Ignore this URL in future?", url);
   console.log(urlPattern);
   if (urlPattern != null) {
     bgPage.urlFilterArray[bgPage.urlFilterArray.length] = urlPattern;
@@ -131,17 +132,17 @@ function deleteRecentlyClosedTab(key) {
   }
 
   //should remove this table row
-  removeRecentlyClosedTab(bgPage.recentlyClosedTabs[key].tabId);
+  removeRecentlyClosedTab(tabId);
   //show 'no rcts'-String
   if (bgPage.recentlyClosedTabs.length == 0) {
 	showNoRCTs();
   }
 
-  bgPage.removeClosedTabWithThisUrl(bgPage.recentlyClosedTabs[key].url);
+  bgPage.removeClosedTabWithThisUrl(url);
 }
 
 //------------------------------------------------------------------------------
-//Appends a 'no rcts'-String to the rootDivElement.
+// Appends a 'no rcts'-String to the rootDivElement.
 //------------------------------------------------------------------------------
 function showNoRCTs() {
   rootDivElement.appendChild(document.createTextNode('No recently closed tabs.'));

@@ -55,7 +55,7 @@ function restoreState() {
 	var storedVersion = localStorage['version'];
 	if (version != storedVersion) {
         chrome.tabs.create({'url': chrome.extension.getURL('infonews.html'), 'selected': true}, function(tab) {
-            // Tab opened.
+          // Tab opened.
         });
         localStorage.setItem('version', version);
     }
@@ -111,9 +111,11 @@ function storeMaxPopupTableLength(newMaxLength) {
 function fetchRecentlyClosedTabs() {
 	var recentlyClosedTabsString = localStorage['recentlyClosedTabs'];
     if (recentlyClosedTabsString === undefined) {
-    	storeRecentlyClosedTabs([]);
+        storeRecentlyClosedTabs([]);
     } else {
-    	recentlyClosedTabs = JSON.parse(recentlyClosedTabsString);
+        recentlyClosedTabs = JSON.parse(recentlyClosedTabsString);
+        for (var i in recentlyClosedTabs)
+          if (recentlyClosedTabs[i] == null)  recentlyClosedTabs.splice(i, 1);
     }
 	console.log(recentlyClosedTabs);
 }
@@ -181,22 +183,21 @@ function setImgDataUrl(tabId) {
 }
 
 //------------------------------------------------------------------------------
-// Puts all open tabs into the object allOpenedTabs on the start of this extension.
+// Send all tabs to be processed
 //------------------------------------------------------------------------------
 function getAllTabsInWindow(tabs) {
 	for (var key in tabs) processOpenedTab(tabs[key]);
 }
 
 //------------------------------------------------------------------------------
-// Puts the tabInfo into the object allOpenedTabs. 
-// Result: object with all opened tabs.
+// After every tab update process the new data
 //------------------------------------------------------------------------------
 function updatedTabsListener(tabId, changeInfo, tab) {
 	if (changeInfo.status == "complete") processOpenedTab(tab);
 }
 
 //------------------------------------------------------------------------------
-//
+// Process opened tab by inserting a corresponding tabInfo into allOpenedTabs
 //------------------------------------------------------------------------------
 function processOpenedTab(tab) {
 	if (tab === undefined) return;
@@ -226,10 +227,17 @@ function shouldBeIgnored(tabUrl) {
 //------------------------------------------------------------------------------
 // Remove previous occurance of the same URL
 //------------------------------------------------------------------------------
+function getClosedTabById(tabId) {
+    for (i in recentlyClosedTabs)
+      if (recentlyClosedTabs[i].tabId == tabId)  return recentlyClosedTabs[i];
+}
+
+//------------------------------------------------------------------------------
+// Remove previous occurance of the same URL
+//------------------------------------------------------------------------------
 function removeClosedTabWithThisUrl(tabUrl) {
-    for (key in recentlyClosedTabs) {
-        if (recentlyClosedTabs[key] == null || recentlyClosedTabs[key].url == tabUrl)  recentlyClosedTabs.splice(key, 1);
-    }
+    for (i in recentlyClosedTabs)
+      if (recentlyClosedTabs[i].url == tabUrl)  recentlyClosedTabs.splice(i, 1);
 }
 
 //------------------------------------------------------------------------------
