@@ -147,12 +147,66 @@ function selectionChangedTabsListener(tabId, selectInfo) {
     setImgDataUrl(tabId);
 }
 
+var orgImage = new Image();
+var canvas = document.createElement("canvas");
+
 //------------------------------------------------------------------------------
 // Puts the dataUrl of the tab specified by the given tabId into the object allOpenedTabs.
 //------------------------------------------------------------------------------
 function setImgDataUrl(tabId) {
     if (allOpenedTabs[tabId] !== undefined)
 	chrome.tabs.captureVisibleTab(allOpenedTabs[tabId].windowId, function(snapshotData) {
+		console.log("receiving snapshot data for tabId = " + tabId);
+	    orgImage.onload = function() {
+	    	console.log("orgImage size = " + orgImage.width + "x" + orgImage.height);
+	    	var newHeight = 110;
+	    	var newWidth = orgImage.width * newHeight / orgImage.height;
+	        // Create a canvas with the desired dimensions
+	        canvas.width = newWidth + 10;
+	        canvas.height = newHeight + 10;
+	        var context = canvas.getContext("2d");
+
+	        // Scale and draw the source image to the canvas
+	        context.drawImage(orgImage, 5, 5, newWidth, newHeight);
+
+	        // Convert the canvas to a data URL in PNG format
+			allOpenedTabs[tabId].tabShot = canvas.toDataURL();
+
+			// Check the result
+			var chkImage = new Image();
+			chkImage.onload = function() { console.log("chkImage size = " + chkImage.width + "x" + chkImage.height); }
+			chkImage.src = allOpenedTabs[tabId].tabShot;
+	    }
+	    orgImage.src = snapshotData;
+	})
+}
+
+function scalingWithCanvas(snapshotData) {
+		console.log("receiving snapshot data for tabId = " + tabId);
+	    orgImage.onload = function() {
+	    	console.log("orgImage size = " + orgImage.width + "x" + orgImage.height);
+	    	var newHeight = 110;
+	    	var newWidth = orgImage.width * newHeight / orgImage.height;
+	        // Create a canvas with the desired dimensions
+	        canvas.width = newWidth + 10;
+	        canvas.height = newHeight + 10;
+	        var context = canvas.getContext("2d");
+
+	        // Scale and draw the source image to the canvas
+	        context.drawImage(orgImage, 5, 5, newWidth, newHeight);
+
+	        // Convert the canvas to a data URL in PNG format
+			allOpenedTabs[tabId].tabShot = canvas.toDataURL();
+
+			// Check the result
+			var chkImage = new Image();
+			chkImage.onload = function() { console.log("chkImage size = " + chkImage.width + "x" + chkImage.height); }
+			chkImage.src = allOpenedTabs[tabId].tabShot;
+	    }
+	    orgImage.src = snapshotData;
+	}
+
+function scalingWithCanvas2(snapshotData) {
 		console.log("receiving snapshot data for tabId = " + tabId);
 		var orgImage = new Image();
 	    orgImage.onload = function() {
@@ -177,8 +231,7 @@ function setImgDataUrl(tabId) {
 			chkImage.src = allOpenedTabs[tabId].tabShot;
 	    }
 	    orgImage.src = snapshotData;
-	})
-}
+	}
 
 //------------------------------------------------------------------------------
 // Send all tabs to be processed
