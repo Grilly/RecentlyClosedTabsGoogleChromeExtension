@@ -1,3 +1,5 @@
+@import "background.css";
+
 body {
 	min-width: 150px;
 	max-width: 600px;
@@ -8,23 +10,9 @@ body {
 	margin: 0px;
 }
 
-.rootDiv {
-	padding: 0 18px 0 0;
-}
-
 table {
 	width: 320px;
 	font-size: 10px;
-}
-
-a {
-	color: black;
-	text-decoration: none;
-}
-
-.faviconTD {
-	width: 20px;
-	padding: 1px;
 }
 
 .urlTD {
@@ -36,23 +24,11 @@ a {
 	text-align: right;
 	padding: 1px;
 }
-
-.urlTD:hover {
-	background-color: #BDD6F5;
-	padding: 1px;
-}
-
-.tabShotTD {
-	width: 34px;
-	padding: 1px;
-}
-
-.faviconIMG {
-	height: 16px;
-	width: 16px;
-}
-
-.tabShotIMG {
-	height: 30px;
-	width: auto;
+.urlTdDiv {
+	float: right;
+  width: 245px;
+  text-align: right;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }

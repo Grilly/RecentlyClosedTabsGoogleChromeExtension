@@ -335,7 +335,11 @@ function createTableRow(tabInfo) {
   var textLinkElement = document.createElement('a');
   var linkText = document.createTextNode(tabInfo.title);
   textLinkElement.appendChild(linkText);
-  tdUrlElement.appendChild(textLinkElement);
+  var divUrlElement = document.createElement('div');
+  divUrlElement.setAttribute('class', 'urlTdDiv');
+  divUrlElement.appendChild(textLinkElement);
+  //tdUrlElement.appendChild(textLinkElement);
+  tdUrlElement.appendChild(divUrlElement);
   trElement.appendChild(tdUrlElement);
 
   var tdFavIconElement = document.createElement('td');

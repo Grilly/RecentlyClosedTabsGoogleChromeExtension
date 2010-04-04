@@ -1,14 +1,4 @@
 @import "background.css";
-@import "popup.css";
-
-html, body {
-	margin: 0;
-	padding: 0;
-	max-width: 100%;
-	font-family: Arial,Helvetica,sans-serif;
-	font-size: 10px;
-	background: #fff;
-}
 
 table {
 	width: 100%;
@@ -17,16 +7,26 @@ table {
 
 .urlTD {
 	width: 400px;
+	height: 22px;
+  border-radius: 5px;
+  border: 1px solid #B7C5E3;
+  background-color: #F1F6FD;
+  text-align: right;
+  padding: 1px;
+}
+.urlTdDiv {
+	float: right;
+  width: 395px;
+  text-align: right;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .tabShotDivElement {
 	float: left;
 	width: 32px;
 	padding: 3px 1px 1px 1px;
-}
-.tabShotIMG {
-	height: 30px;
-	width: 30px;
 }
 
 .contentDivElement {
@@ -55,7 +55,7 @@ table {
 .linkDivElement {
 	height: 15px;
 	border: 0;
-	text-align: left;
+	text-align: right;
 	padding: 1px;
 	text-overflow: ellipsis;
 	overflow: hidden;
@@ -70,10 +70,6 @@ table {
 	width: 20px;
 	padding: 10px 1px 1px 1px;
 }
-.favIconIMG {
-	height: 16px;
-	width: 16px;
-}
 
 .deleteButtonDivElement {
 	float: left;
@@ -87,4 +83,8 @@ table {
 	border: 0;
 	vertical-align: middle;
 	padding: 1px;
+}
+
+.filterDiv {
+	width: 200px;
 }

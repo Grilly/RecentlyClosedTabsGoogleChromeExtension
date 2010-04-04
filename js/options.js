@@ -72,6 +72,7 @@ function createListOfFilters() {
     var size = bgPage.urlFilterArray.length;
     
     var filterDivElement = document.getElementById('filterDiv');
+    filterDivElement.setAttribute('class', 'filterDiv');
     var heading = document.createElement('h3');
     heading.appendChild(document.createTextNode('Active URL filters:'));
     filterDivElement.appendChild(heading);
