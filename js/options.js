@@ -11,10 +11,20 @@ var bgPage = chrome.extension.getBackgroundPage();
 //------------------------------------------------------------------------------
 function main() {
   //rootDivElement = document.getElementById('rootDiv');
-  document.getElementById('extName').innerHTML = bgPage.appConfig.name + " " + bgPage.appConfig.version;
+  this.createOptionsHeader();
   showMaxPopupTableLength();
   createListOfFilters();
   createListOfRecentlyClosedTabs();
+}
+
+//------------------------------------------------------------------------------
+// Creates the header for the options page.
+//------------------------------------------------------------------------------
+function createOptionsHeader() {
+  document.getElementById('topTableDiv').appendChild(bgPage.createHeader());
+  var topBorderDiv = document.getElementById('topBorderDiv');
+  topBorderDiv.setAttribute('class', 'topBorderDiv');
+  topBorderDiv.appendChild(bgPage.createHeaderBorder('Options'));
 }
 
 //------------------------------------------------------------------------------
