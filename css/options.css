@@ -18,31 +18,6 @@ table {
 	width: 400px;
 }
 
-.pageFooter {
-	border-top-color: #DEE7F7;
-	border-top-style: solid;
-	border-top-width: 1px;
-	display: block;
-	height: 44px;
-	margin-bottom: 11px;
-	margin-left: 11px;
-	margin-right: 11px;
-	margin-top: 30px;
-	padding-bottom: 0px;
-	padding-left: 0px;
-	padding-right: 0px;
-	padding-top: 12px;
-	text-align: center;
-}
-.footer {
-	vertical-align: top;
-	font-weight: normal;
-	height: 50px;
-	font-size: 12px;
-	color: #bbb;
-}
-
-
 .tabShotDivElement {
 	float: left;
 	width: 32px;

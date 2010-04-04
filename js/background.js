@@ -390,14 +390,14 @@ function openRecentlyClosedTab(tabId) {
 //------------------------------------------------------------------------------
 function createHeader() {
 	var topTable = document.createElement('table');
-	topTable.setAttribute('class', 'header_topTable');
+	topTable.setAttribute('class', 'header_table');
 	
 	var trElement = document.createElement('tr');
 	
 	var tdImgElement = document.createElement('td');
 	tdImgElement.setAttribute('class', 'header_tdImg');
 	var imgElement = document.createElement('img');
-	imgElement.setAttribute('class', 'header_topImg');
+	imgElement.setAttribute('class', 'header_img');
 	imgElement.setAttribute('src', 'images/rct128.png');
 	imgElement.setAttribute('alt', 'Recently Closed Tabs');
 	tdImgElement.appendChild(imgElement);
@@ -419,7 +419,7 @@ function createHeader() {
 }
 
 //------------------------------------------------------------------------------
-//Creates the header border for the options and infonews defined by the title.
+// Creates the header border for the options and infonews defined by the title.
 //------------------------------------------------------------------------------
 function createHeaderBorder(title) {
 	var h1Element = document.createElement('h1');
@@ -427,5 +427,12 @@ function createHeaderBorder(title) {
 	h1Element.appendChild(titleElement);
 	
 	return h1Element;
+}
+
+//------------------------------------------------------------------------------
+// Creates the footer.
+//------------------------------------------------------------------------------
+function getFooterInfo() {
+	return '&copy; 2010 Michael &amp; Drasko';
 }
 

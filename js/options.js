@@ -12,6 +12,7 @@ var bgPage = chrome.extension.getBackgroundPage();
 function main() {
   //rootDivElement = document.getElementById('rootDiv');
   this.createOptionsHeader();
+  this.createOptionsFooter();
   showMaxPopupTableLength();
   createListOfFilters();
   createListOfRecentlyClosedTabs();
@@ -21,10 +22,19 @@ function main() {
 // Creates the header for the options page.
 //------------------------------------------------------------------------------
 function createOptionsHeader() {
-  document.getElementById('topTableDiv').appendChild(bgPage.createHeader());
-  var topBorderDiv = document.getElementById('topBorderDiv');
-  topBorderDiv.setAttribute('class', 'topBorderDiv');
+  document.getElementById('headerTableDiv').appendChild(bgPage.createHeader());
+  var topBorderDiv = document.getElementById('headerBorderDiv');
+  topBorderDiv.setAttribute('class', 'headerBorderDiv');
   topBorderDiv.appendChild(bgPage.createHeaderBorder('Options'));
+}
+
+//------------------------------------------------------------------------------
+// Creates the footer for the options page.
+//------------------------------------------------------------------------------
+function createOptionsFooter() {
+	var footerDiv = document.getElementById('footerDiv');
+	footerDiv.innerHTML = bgPage.getFooterInfo();
+	footerDiv.setAttribute('class', 'footerDiv');
 }
 
 //------------------------------------------------------------------------------
