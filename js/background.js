@@ -315,64 +315,6 @@ function removedTabsListener(tabId) {
 	processClosedTab(closedTabInfo);
 }
 
-
-//------------------------------------------------------------------------------
-// Construct a HTML table row out of tabInfo
-//------------------------------------------------------------------------------
-function createTableRow(tabInfo) {
-  var trElement = document.createElement('tr');
-  if (tabInfo == null) return trElement;
-
-  var tdTabShotElement = document.createElement('td');
-  tdTabShotElement.setAttribute('class', 'tabShotTD');
-  var tabShotIMG = document.createElement('img');
-  tabShotIMG.setAttribute('class', 'tabShotIMG');
-  tdTabShotElement.appendChild(tabShotIMG);
-  trElement.appendChild(tdTabShotElement);
-
-  var tdUrlElement = document.createElement('td');
-  tdUrlElement.setAttribute('class', 'urlTD');
-  var textLinkElement = document.createElement('a');
-  var linkText = document.createTextNode(tabInfo.title);
-  textLinkElement.appendChild(linkText);
-  var divUrlElement = document.createElement('div');
-  divUrlElement.setAttribute('class', 'urlTdDiv');
-  divUrlElement.appendChild(textLinkElement);
-  //tdUrlElement.appendChild(textLinkElement);
-  tdUrlElement.appendChild(divUrlElement);
-  trElement.appendChild(tdUrlElement);
-
-  var tdFavIconElement = document.createElement('td');
-  tdFavIconElement.setAttribute('class', 'faviconTD');
-  var iconLinkElement = document.createElement('a');
-  var favIconIMG = document.createElement('img');
-//  favIconIMG.setAttribute('id', 'favIcon' + key);
-  favIconIMG.setAttribute('class', 'faviconIMG');
-  iconLinkElement.appendChild(favIconIMG);
-  tdFavIconElement.appendChild(iconLinkElement);
-  trElement.appendChild(tdFavIconElement);
-
-  with (tabInfo) {
-    trElement.setAttribute('id', tabId);
-    tabShotIMG.setAttribute('id', 'tabShot' + tabId);
-    if (tabShot !== undefined && tabShot != null) {
- 	  tabShotIMG.src = tabShot;
-    } else {
-      tabShotIMG.src = '../images/default_tabShot.png';
-    }
-    textLinkElement.setAttribute('href', 'javascript:bgPage.openRecentlyClosedTab(' + tabId + '); removeRecentlyClosedTab(' + tabId + ');');
-    textLinkElement.setAttribute('title', url);
-    iconLinkElement.setAttribute('href', 'javascript:bgPage.openRecentlyClosedTab(' + tabId + '); removeRecentlyClosedTab(' + tabId + ');');
-    iconLinkElement.setAttribute('title', url);
-    if (tabInfo.faviconUrl !== undefined) {
-      favIconIMG.setAttribute('src', faviconUrl);
-    } else {
-      favIconIMG.setAttribute('src', '../images/default_favicon.png');
-    }
-  }
-  return trElement;
-}
-
 //------------------------------------------------------------------------------
 // Open selected RecentlyClosedTab
 //------------------------------------------------------------------------------
