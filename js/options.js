@@ -11,30 +11,11 @@ var bgPage = chrome.extension.getBackgroundPage();
 //------------------------------------------------------------------------------
 function main() {
   //rootDivElement = document.getElementById('rootDiv');
-  this.createOptionsHeader();
-  this.createOptionsFooter();
+  this.createHeader('Options');
+  this.createFooter();
   showMaxPopupTableLength();
   createListOfFilters();
   createListOfRecentlyClosedTabs();
-}
-
-//------------------------------------------------------------------------------
-// Creates the header for the options page.
-//------------------------------------------------------------------------------
-function createOptionsHeader() {
-  document.getElementById('headerTableDiv').appendChild(bgPage.createHeader());
-  var topBorderDiv = document.getElementById('headerBorderDiv');
-  topBorderDiv.setAttribute('class', 'headerBorderDiv');
-  topBorderDiv.appendChild(bgPage.createHeaderBorder('Options'));
-}
-
-//------------------------------------------------------------------------------
-// Creates the footer for the options page.
-//------------------------------------------------------------------------------
-function createOptionsFooter() {
-	var footerDiv = document.getElementById('footerDiv');
-	footerDiv.innerHTML = bgPage.getFooterInfo();
-	footerDiv.setAttribute('class', 'footerDiv');
 }
 
 //------------------------------------------------------------------------------
