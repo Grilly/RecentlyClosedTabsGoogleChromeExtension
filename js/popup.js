@@ -12,16 +12,13 @@ function main() {
   var recentlyClosedTabsArray = bgPage.recentlyClosedTabs;
   console.log(recentlyClosedTabsArray);
 
-  var rootDivElement = document.getElementById('rootDiv');
 
   if (recentlyClosedTabsArray.length == 0) {
-    rootDivElement.appendChild(document.createTextNode('No recently closed tabs.'));
+    $('#rootDiv').text('No recently closed tabs.');
   } else {
-    var tableElement = document.createElement('table');
-    tableElement.setAttribute('id', 'table');
-    rootDivElement.appendChild(tableElement);
+    $('<table>').attr({ id: 'rctTable' }).appendTo($('#rootDiv'));
     for (var i = 0; i < recentlyClosedTabsArray.length && i < bgPage.maxPopupTableLength; i++) {
-      tableElement.appendChild(bgPage.createTableRow(recentlyClosedTabsArray[i]));
+      this.createTableRow(recentlyClosedTabsArray[i], i);
     }
   }
 }
@@ -32,5 +29,5 @@ function main() {
 function removeRecentlyClosedTab(tabId) {
   //should remove this table row
   // TODO: how to find the parent node without assuming that its id is 'table'
-  document.getElementById('table').removeChild(document.getElementById(tabId));
+	$('#' + tabId).remove();
 }
