@@ -4,13 +4,11 @@
 // Global variables.
 //------------------------------------------------------------------------------
 var bgPage = chrome.extension.getBackgroundPage();
-//var rootDivElement;
 
 //------------------------------------------------------------------------------
 // Everything starts here
 //------------------------------------------------------------------------------
 function main() {
-  //rootDivElement = document.getElementById('rootDiv');
   this.createHeader('Options');
   this.createFooter();
   showMaxPopupTableLength();
@@ -49,33 +47,23 @@ function showMaxPopupTableLength() {
 //Creates list of filters.
 //------------------------------------------------------------------------------
 function createListOfFilters() {
-
     var size = bgPage.urlFilterArray.length;
     
-    var filterDivElement = document.getElementById('filterDiv');
-    filterDivElement.setAttribute('class', 'filterDiv');
-    var heading = document.createElement('h3');
-    heading.appendChild(document.createTextNode('Active URL filters:'));
-    filterDivElement.appendChild(heading);
-    var tableElement = document.createElement('table');
-    tableElement.setAttribute('id', 'filterTable');
+    var filterDivElement = $('#filterDiv').addClass('filterDiv');
+    $('<h3>').text('Active URL filters:').appendTo(filterDivElement);
+    var tableElement = $('<table>').attr({ id: 'filterTable' }).appendTo(filterDivElement);
     for (var i = 0; i < size; i++) {
-        addFilterRowToListTable(bgPage.urlFilterArray[i], tableElement);
+    	addFilterRowToListTable(bgPage.urlFilterArray[i]);
     }
-    filterDivElement.appendChild(tableElement);
 }
 
 
 //------------------------------------------------------------------------------
-//Creates list of recently closed tabs.
+// Adds a new row to the filter list.
 //------------------------------------------------------------------------------
-function addFilterRowToListTable(urlString, tableElement) {
-    var trElement = document.createElement('tr');
-    var tdElement = document.createElement('td');
-    var text = document.createTextNode(urlString);
-    tdElement.appendChild(text);
-    trElement.appendChild(tdElement);
-    tableElement.appendChild(trElement);
+function addFilterRowToListTable(urlString) {
+	var trElement = $('<tr>').appendTo($('#filterTable'));
+    var tdElement = $('<td>').text(urlString).appendTo(trElement);
 }
 
 
@@ -86,29 +74,12 @@ function createListOfRecentlyClosedTabs() {
   var recentlyClosedTabsArray = bgPage.recentlyClosedTabs;
   console.log(recentlyClosedTabsArray);
 
-  var rootDivElement = document.getElementById('rootDiv');
-
   if (recentlyClosedTabsArray.length == 0) {
 	  showNoRCTs();
   } else {
-    var tableElement = document.createElement('table');
-    tableElement.setAttribute('id', 'table');
-    rootDivElement.appendChild(tableElement);
+    $('<table>').attr({ id: 'rctTable' }).appendTo($('#rootDiv'));
     for (var i = 0; i < recentlyClosedTabsArray.length; i++) {
-      var trElement = bgPage.createTableRow(recentlyClosedTabsArray[i]);
-
-      //deleteButtonElement building
-      var deleteButtonDivElement = document.createElement('td');
-      deleteButtonDivElement.setAttribute('id', 'deleteButtonDivElement' + i);
-      deleteButtonDivElement.setAttribute('class', 'deleteButtonDivElement');
-      var deleteButtonInput = document.createElement('input');
-      deleteButtonInput.setAttribute('type', 'button');
-      deleteButtonInput.setAttribute('onclick', 'javascript:deleteRecentlyClosedTab(' + bgPage.recentlyClosedTabs[i].tabId + ');');
-      deleteButtonInput.setAttribute('value', 'Delete Element');
-      deleteButtonDivElement.appendChild(deleteButtonInput);
-
-      trElement.appendChild(deleteButtonDivElement);
-      tableElement.appendChild(trElement);
+      this.createTableRowWithButtons(recentlyClosedTabsArray[i], i);
     }
   }
 }
@@ -119,21 +90,13 @@ function createListOfRecentlyClosedTabs() {
 function removeRecentlyClosedTab(tabId) {
   //should remove this table row
   // TODO: how to find the parent node without assuming that its id is 'table'
-  document.getElementById('table').removeChild(document.getElementById(tabId));
+	$('#' + tabId).remove();
 }
 
 //------------------------------------------------------------------------------
 // Deletes element from the list of recently closed tabs.
 //------------------------------------------------------------------------------
 function deleteRecentlyClosedTab(tabId) {
-  var url = bgPage.getClosedTabById(tabId).url;
-  var urlPattern = prompt("Ignore this URL in future?", url);
-  console.log(urlPattern);
-  if (urlPattern != null) {
-    bgPage.urlFilterArray[bgPage.urlFilterArray.length] = urlPattern;
-    addFilterRowToListTable(urlPattern, document.getElementById('filterTable'));
-  }
-
   //should remove this table row
   removeRecentlyClosedTab(tabId);
   //show 'no rcts'-String
@@ -141,118 +104,25 @@ function deleteRecentlyClosedTab(tabId) {
 	showNoRCTs();
   }
 
-  bgPage.removeClosedTabWithThisUrl(url);
+  bgPage.removeClosedTabWithThisUrl(bgPage.getClosedTabById(tabId).url);
+}
+
+function addRecentlyClosedTabToFiltersAndDelete(tabId) {
+	var url = bgPage.getClosedTabById(tabId).url;
+	var urlPattern = prompt("Ignore this URL in future?", url);
+	console.log(urlPattern);
+	if (urlPattern != null) {
+		bgPage.urlFilterArray[bgPage.urlFilterArray.length] = urlPattern;
+		addFilterRowToListTable(urlPattern);
+		deleteRecentlyClosedTab(tabId);
+	}
 }
 
 //------------------------------------------------------------------------------
 // Appends a 'no rcts'-String to the rootDivElement.
 //------------------------------------------------------------------------------
 function showNoRCTs() {
-  rootDivElement.appendChild(document.createTextNode('No recently closed tabs.'));
-}
-
-
-//------------------------------------------------------------------------------
-// SHOULD BE REMOVED !!!
-//------------------------------------------------------------------------------
-//Creates list of recently closed tabs.
-//------------------------------------------------------------------------------
-function getListOfRecentlyClosedTabsComplete() {
-	var recentlyClosedTabsArray = bgPage.recentlyClosedTabs;
-	console.log(recentlyClosedTabsArray);
-
-	if (recentlyClosedTabsArray.length == 0) {
-		showNoRCTs();
-	} else {
-		var size = recentlyClosedTabsArray.length;
-		
-		for (var key = size - 1; key >= 0; key--) {
-            if (recentlyClosedTabsArray[key] != null) {
-            
-		var favicon = recentlyClosedTabsArray[key].favicon;
-				
-		//previewElement building
-		var tabShotDivElement = document.createElement('div');
-		tabShotDivElement.setAttribute('id', 'tabShotDivElement' + key);
-		tabShotDivElement.setAttribute('class', 'tabShotDivElement');
-		var tabShotIMG = document.createElement('img');
-		tabShotIMG.setAttribute('id', 'tabShot' + key);
-		tabShotIMG.setAttribute('class', 'tabShotIMG');
-		tabShotDivElement.appendChild(tabShotIMG);
-
-		var linkElement = document.createElement('a');
-		linkElement.setAttribute('class', 'linkElement');
-		linkElement.setAttribute('href', 'javascript:createRecentlyClosedTab(' + key + ')');
-		linkElement.setAttribute('name', recentlyClosedTabsArray[key].url);
-		var linkElementText = document.createTextNode(recentlyClosedTabsArray[key].url);
-		linkElement.appendChild(linkElementText);
-
-		//contentElement building
-		var contentDivElement = document.createElement('div');
-		contentDivElement.setAttribute('id', 'contentDivElement' + key);
-		contentDivElement.setAttribute('class', 'contentDivElement');
-
-		//titleElement building
-		var titleDivElement = document.createElement('div');
-		titleDivElement.setAttribute('id', 'titleDivElement' + key);
-		titleDivElement.setAttribute('class', 'titleDivElement');
-		titleDivElement.innerHTML = recentlyClosedTabsArray[key].title;
-		contentDivElement.appendChild(titleDivElement);
-
-		//linkElement building
-		var linkDivElement = document.createElement('div');
-		linkDivElement.setAttribute('id', 'linkDivElement' + key);
-		linkDivElement.setAttribute('class', 'linkDivElement');
-		linkDivElement.appendChild(linkElement);
-		contentDivElement.appendChild(linkDivElement);
-
-		//faviconElement building
-		var favIconDivElement = document.createElement('div');
-		favIconDivElement.setAttribute('id', 'favIconDivElement' + key);
-		favIconDivElement.setAttribute('class', 'favIconDivElement');
-		var favIconIMG = document.createElement('img');
-		favIconIMG.setAttribute('id', 'favIcon' + key);
-		favIconIMG.setAttribute('class', 'faviconIMG');
-		if (favicon !== undefined) {
-			favIconIMG.setAttribute('src', favicon);
-		} else {
-			favIconIMG.setAttribute('src', '../images/default_favicon.png');
-		}
-		favIconDivElement.appendChild(favIconIMG);
-
-		//deleteButtonElement building
-		var deleteButtonDivElement = document.createElement('div');
-		deleteButtonDivElement.setAttribute('id', 'deleteButtonDivElement' + key);
-		deleteButtonDivElement.setAttribute('class', 'deleteButtonDivElement');
-		var deleteButtonInput = document.createElement('input');
-		deleteButtonInput.setAttribute('type', 'button');
-		deleteButtonInput.setAttribute('onclick', 'javascript:deleteRecentlyClosedTab(' + key + ');');
-		deleteButtonInput.setAttribute('value', 'Delete Element');
-		deleteButtonDivElement.appendChild(deleteButtonInput);
-
-		//rctElement building
-		var rctDivElement = document.createElement('div');
-		rctDivElement.setAttribute('id', 'rctElement' + key);
-		rctDivElement.setAttribute('class', 'rctDivElement');
-		rctDivElement.appendChild(tabShotDivElement);
-		rctDivElement.appendChild(contentDivElement);
-		rctDivElement.appendChild(favIconDivElement);
-		rctDivElement.appendChild(deleteButtonDivElement);
-
-		this.rootDivElement.appendChild(rctDivElement);
-	}
-		}
-		if (recentlyClosedTabsArray[key] != null) {
-			for ( var keyImage = size - 1; keyImage >= 0; keyImage--) {
-				var tabShotImageData = recentlyClosedTabsArray[keyImage].tabShot;
-				if (tabShotImageData !== undefined && tabShotImageData != null) {
-					document.getElementById('tabShot' + keyImage).src = tabShotImageData;
-				} else {
-					document.getElementById('tabShot' + keyImage).src = '../images/default_tabShot.png';
-				}
-			}
-		}
-	}
+  $('#rootDiv').text('No recently closed tabs.');
 }
 
 //------------------------------------------------------------------------------
