@@ -77,6 +77,11 @@ table {
 	width: 50px;
 	padding: 6px 1px 1px 1px;
 }
+.addToFiltersButtonElement {
+	float: left;
+  width: 50px;
+  padding: 6px 1px 1px 1px;
+}
 
 .rctDivElement {
 	float: relative;
