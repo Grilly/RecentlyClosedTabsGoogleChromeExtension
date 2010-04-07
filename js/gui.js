@@ -25,7 +25,7 @@ function createHeader(title) {
 // Creates the footer.
 //------------------------------------------------------------------------------
 function createFooter() {
-	$('#footerDiv').addClass('footerDiv').text('&copy; 2010 Michael &amp; Drasko');
+	$('#footerDiv').addClass('footerDiv').text('©2010 Michael & Draško');
 }
 
 // THE DOUPLICATED CODE LINES OF THE FOLLOWING TWO METHODS SHOULD BE COMPRESSED
