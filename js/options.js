@@ -44,7 +44,8 @@ function showMaxPopupTableLength() {
 //------------------------------------------------------------------------------
 function createListOfFilters() {
 	var bgPage = chrome.extension.getBackgroundPage();
-    var size = bgPage.urlFilterArray.length;
+	var urlFilterArray = bgPage.fetchUrlFilterArray();
+    var size = urlFilterArray.length;
     
     var filterDivElement = $('#filterDiv').addClass('filterDiv');
     var h3Element = $('<h3>').text('Active URL filters:').appendTo(filterDivElement);
