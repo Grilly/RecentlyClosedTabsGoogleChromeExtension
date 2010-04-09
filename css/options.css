@@ -1,85 +1,21 @@
-@import "background.css";
 @import "gui.css";
 
-table {
-	width: 100%;
-	font-size: 10px;
-}
-
-.urlTD {
-	width: 400px;
-	height: 22px;
-  border-radius: 5px;
-  border: 1px solid #B7C5E3;
-  background-color: #F1F6FD;
-  text-align: right;
-  padding: 1px;
-}
-.urlTdDiv {
-	float: right;
-  width: 395px;
-  text-align: right;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
-}
-
-.tabShotDivElement {
-	float: left;
-	width: 32px;
-	padding: 3px 1px 1px 1px;
+.rctDivElement {
+  width: 800px;
 }
 
 .contentDivElement {
-	float: left;
-	height: 34px;
-	width: 600px;
-	border-radius: 5px;
-	border: 1px solid #B7C5E3;
-	background-color: #F1F6FD;
-	text-align: right;
-	padding: 1px;
-}
-.contentDivElement:hover {
-	background-color: #BDD6F5;
-}
-
-.titleDivElement {
-	height: 15px;
-	border: 0;
-	text-align: left;
-	padding: 1px;
-	text-overflow: ellipsis;
-	overflow: hidden;
-	white-space: nowrap;
-}
-.linkDivElement {
-	height: 15px;
-	border: 0;
-	text-align: right;
-	padding: 1px;
-	text-overflow: ellipsis;
-	overflow: hidden;
-	white-space: nowrap;
-}
-.linkElement:hover {
-	font-weight: bold;
-}
-
-.favIconDivElement {
-	float: left;
-	width: 20px;
-	padding: 10px 1px 1px 1px;
+  width: 463px;
 }
 
 .deleteButtonDivElement {
 	float: left;
-	width: 50px;
+	width: 100px;
 	padding: 6px 1px 1px 1px;
 }
-.addToFiltersButtonElement {
+.addToFiltersButtonDivElement {
 	float: left;
-  width: 50px;
+  width: 100px;
   padding: 6px 1px 1px 1px;
 }
 

@@ -1,34 +1,16 @@
-@import "background.css";
+@import "gui.css";
 
 body {
 	min-width: 150px;
 	max-width: 600px;
 	overflow-x: hidden;
 	overflow-y: scroll;
-	font-family: arial,verdana;
-	font-size: 10px;
-	margin: 0px;
 }
 
-table {
-	width: 320px;
-	font-size: 10px;
+.rctDivElement {
+  width: 320px;
 }
 
-.urlTD {
-	width: 250px;
-	height: 22px;
-	border-radius: 5px;
-	border: 1px solid #B7C5E3;
-	background-color: #F1F6FD;
-	text-align: right;
-	padding: 1px;
-}
-.urlTdDiv {
-	float: right;
+.contentDivElement {
   width: 245px;
-  text-align: right;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
 }
