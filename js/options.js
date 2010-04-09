@@ -45,13 +45,14 @@ function showMaxPopupTableLength() {
 function createListOfFilters() {
 	var bgPage = chrome.extension.getBackgroundPage();
 	var urlFilterArray = bgPage.fetchUrlFilterArray();
+	console.log(urlFilterArray);
     var size = urlFilterArray.length;
     
     var filterDivElement = $('#filterDiv').addClass('filterDiv');
     var h3Element = $('<h3>').text('Active URL filters:').appendTo(filterDivElement);
     var tableElement = $('<table>').attr({ id: 'filterTable' }).appendTo(filterDivElement);
     for (var i = 0; i < size; i++) {
-    	addFilterRowToListTable(bgPage.urlFilterArray[i]);
+    	addFilterRowToListTable(urlFilterArray[i]);
     }
 }
 

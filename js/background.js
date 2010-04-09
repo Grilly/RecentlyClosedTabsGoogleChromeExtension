@@ -9,7 +9,7 @@ var appConfig;
 var allOpenedTabs = {};
 // Array of recently closed tabs
 var recentlyClosedTabs;
-console.log('recentlyClosedTabs: ' + recentlyClosedTabs);
+//console.log('recentlyClosedTabs: ' + recentlyClosedTabs);
 
 //------------------------------------------------------------------------------
 // Main method: Everything starts here!
@@ -66,14 +66,14 @@ function restoreState() {
 //------------------------------------------------------------------------------
 function fetchUrlFilterArray() {
 	var urlFilterString = localStorage['urlFilterArray'];
-	var urlFilerArray;
+	var urlFilterArray;
     if (urlFilterString === undefined) {
     	storeUrlFilterArray(['chrome://newtab/', 'about:blank']);
     } else {
         urlFilterArray = JSON.parse(urlFilterString);
     }
 	//console.log(urlFilterArray);
-    return urlFilerArray;
+    return urlFilterArray;
 }
 
 //------------------------------------------------------------------------------
@@ -149,8 +149,7 @@ function selectionChangedTabsListener(tabId, selectInfo) {
 }
 
 var canvas = document.createElement('canvas');
-var context = null;
-var orgImage = null;
+var orgImage = new Image();
 
 //------------------------------------------------------------------------------
 // Puts the dataUrl of the tab specified by the given tabId into the object allOpenedTabs.
@@ -159,20 +158,17 @@ function setImgDataUrl(tabId) {
     if (allOpenedTabs[tabId] !== undefined)
 	chrome.tabs.captureVisibleTab(allOpenedTabs[tabId].windowId, function(snapshotData) {
 		//console.log("receiving snapshot data for tabId = " + tabId);
-		orgImage = new Image();
 	    orgImage.onload = function() {
-	    	orgImage = new Image();
 	    	//console.log("orgImage size = " + orgImage.width + "x" + orgImage.height);
 	    	var newHeight = 110;
 	    	var newWidth = orgImage.width * newHeight / orgImage.height;
 	        // Create a canvas with the desired dimensions
 	        canvas.width = newWidth + 10;
 	        canvas.height = newHeight + 10;
-	        context = canvas.getContext("2d");
+	        var context = canvas.getContext("2d");
 
 	        // Scale and draw the source image to the canvas
 	        context.drawImage(orgImage, 5, 5, newWidth, newHeight);
-	        context = null;
 	        
 	        // Convert the canvas to a data URL in PNG format
 			allOpenedTabs[tabId].tabShot = undefined;
@@ -225,6 +221,7 @@ function processOpenedTab(tab) {
 //------------------------------------------------------------------------------
 function shouldBeIgnored(tabUrl) {
 	if (tabUrl === undefined) return true;
+	var urlFilterArray = fetchUrlFilterArray();
 	for (key in urlFilterArray) if (tabUrl == urlFilterArray[key]) return true;
 	return false;
 }
