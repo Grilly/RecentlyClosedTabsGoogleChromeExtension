@@ -12,11 +12,9 @@ function main() {
   var recentlyClosedTabsArray = bgPage.recentlyClosedTabs;
   console.log(recentlyClosedTabsArray);
 
-
   if (recentlyClosedTabsArray.length == 0) {
     var rootDiv = $('#rootDiv').text('No recently closed tabs.');
   } else {
-    $('<table>').attr({ id: 'rctTable' }).appendTo($('#rootDiv'));
     for (var i = 0; i < recentlyClosedTabsArray.length && i < bgPage.maxPopupTableLength; i++) {
       this.createRctDivForPopup(recentlyClosedTabsArray[i], i);
     }
