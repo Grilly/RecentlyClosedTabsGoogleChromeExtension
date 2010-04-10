@@ -77,25 +77,25 @@ function createRCTListEditButtons(tabInfo, i) {
 		//deleteButtonDivElement building
 		var deleteButtonDivElement = $('<div>')
 			.addClass('deleteButtonDivElement')
-			.attr({ id: 'deleteButtonDivElement' + i })
+			.attr({ id: 'deleteButtonDivElement' + tabId })
 			.appendTo($('#rctDivElement' + tabId));
 		var deleteButtonInputElement = $('<input>')
 			.attr({
 				type: 'button',
 				value: 'Delete Entry' })
-			.click(function() {deleteRecentlyClosedTab(tabInfo, i);return false;})
+			.click(function() {deleteRecentlyClosedTab(tabId);return false;})
 			.appendTo(deleteButtonDivElement);
 		
 		//addToFiltersButtonDivElement building
 		var addToFiltersButtonDivElement = $('<div>')
 			.addClass('addToFiltersButtonDivElement')
-			.attr({id: 'addToFiltersButtonDivElement' + i})
+			.attr({id: 'addToFiltersButtonDivElement' + tabId})
 			.appendTo($('#rctDivElement' + tabId));
 		var addToFiltersInputElement = $('<input>')
 			.attr({
 				type: 'button',
 				value: 'Add To Filters And Delete' })
-			.click(function() {addRecentlyClosedTabToFilters(bgPage.recentlyClosedTabs[i].tabId);deleteRecentlyClosedTab(tabInfo, i);return false;})
+			.click(function() {addRecentlyClosedTabToFilters(tabId);deleteRecentlyClosedTab(tabId);return false;})
 			.appendTo(addToFiltersButtonDivElement);
 	}
 }
@@ -110,7 +110,7 @@ function createRctDiv(tabInfo, i) {
 		
 		var rctListDivElement = $('<div>')
 		.addClass('rctListDivElement')
-		.attr({ id: 'rctDivElement' + tabId })
+		.attr({ id: 'rctListDivElement' + tabId })
 		.click(function() {bgPage.openRecentlyClosedTab(tabId); removeRecentlyClosedTab(tabInfo, i); return false;})
 		.appendTo($('#rctDivElement' + tabId));
 		

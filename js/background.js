@@ -91,7 +91,7 @@ function storeFilterArray(newFilterArray) {
 function fetchMaxPopupTableLength() {
 	maxPopupTableLength = localStorage['maxPopupTableLength'];
 	if (maxPopupTableLength === undefined) storeMaxPopupTableLength(15);
-	console.log(maxPopupTableLength);
+	//console.log(maxPopupTableLength);
 }
 
 //------------------------------------------------------------------------------
@@ -115,7 +115,7 @@ function fetchRecentlyClosedTabs() {
           if (recentlyClosedTabs[i] == null || recentlyClosedTabs[i].tabId === undefined)
             recentlyClosedTabs.splice(i, 1);
     }
-	console.log(recentlyClosedTabs);
+	//console.log(recentlyClosedTabs);
 }
 
 //------------------------------------------------------------------------------
@@ -143,7 +143,6 @@ function tabInfo(tabId, windowId, favIconUrl, dateOfUpdate, title, url, tabShot)
 // Listens to SelectionChanged event and update a preview image
 //------------------------------------------------------------------------------
 function selectionChangedTabsListener(tabId, selectInfo) {
-    console.log("selectionChangedTabsListener: " + selectInfo);
     setImgDataUrl(tabId);
 }
 
@@ -174,9 +173,9 @@ function setImgDataUrl(tabId) {
 			allOpenedTabs[tabId].tabShot = canvas.toDataURL();
 
 			// Check the result
-			var chkImage = new Image();
-			chkImage.onload = function() { console.log("chkImage size = " + chkImage.width + "x" + chkImage.height); }
-			chkImage.src = allOpenedTabs[tabId].tabShot;
+//			var chkImage = new Image();
+//			chkImage.onload = function() { console.log("chkImage size = " + chkImage.width + "x" + chkImage.height); }
+//			chkImage.src = allOpenedTabs[tabId].tabShot;
 	    }
 	    orgImage.src = snapshotData;
 	})
@@ -210,8 +209,8 @@ function processOpenedTab(tab) {
 	var tabShot = null;
 	allOpenedTabs[tabId] = new tabInfo(tabId, windowId, tabFavIconUrl, new Date(), tabTitle, tabUrl, null);
 	if(tab.selected) setImgDataUrl(tabId);
-    console.log(allOpenedTabs[tabId]);
-    removeClosedTabWithThisUrl(tabUrl);
+    //console.log(allOpenedTabs[tabId]);
+    removeClosedTabByUrl(tabUrl);
     storeRecentlyClosedTabs();
 }
 
@@ -225,7 +224,7 @@ function shouldBeIgnored(tabUrl) {
 }
 
 //------------------------------------------------------------------------------
-// Removes previous occurance of the same URL
+// Gets a rct by tabId.
 //------------------------------------------------------------------------------
 function getClosedTabById(tabId) {
     for (i in recentlyClosedTabs)
@@ -233,11 +232,18 @@ function getClosedTabById(tabId) {
 }
 
 //------------------------------------------------------------------------------
-// Removes previous occurance of the same URL
+// Removes a rct by url.
 //------------------------------------------------------------------------------
-function removeClosedTabWithThisUrl(tabUrl) {
+function removeClosedTabByUrl(tabUrl) {
     for (i in recentlyClosedTabs)
       if (recentlyClosedTabs[i].url == tabUrl)  recentlyClosedTabs.splice(i, 1);
+}
+
+//------------------------------------------------------------------------------
+// Removes a rct by tabId.
+//------------------------------------------------------------------------------
+function removeClosedTabByTabId(tabId) {
+	delete recentlyClosedTabs[tabId];
 }
 
 //------------------------------------------------------------------------------
@@ -246,12 +252,12 @@ function removeClosedTabWithThisUrl(tabUrl) {
 function processClosedTab(tabInfo) {
     if (tabInfo === undefined) return;
     delete allOpenedTabs[tabInfo.tabId];
-    removeClosedTabWithThisUrl(tabInfo.url)
+    removeClosedTabByUrl(tabInfo.url)
     // Add at the beginning a new instance with a current timestamp
     tabInfo.timestamp = new Date();
     recentlyClosedTabs.unshift(tabInfo);
     storeRecentlyClosedTabs();
-    console.log(recentlyClosedTabs);
+    //console.log(recentlyClosedTabs);
 }
 
 

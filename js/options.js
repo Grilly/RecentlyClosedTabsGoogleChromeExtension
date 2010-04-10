@@ -4,6 +4,7 @@
 // Global variables.
 //------------------------------------------------------------------------------
 var bgPage = chrome.extension.getBackgroundPage();
+console.log(bgPage.filterArray);
 
 //------------------------------------------------------------------------------
 // Everything starts here
@@ -37,7 +38,6 @@ function showMaxPopupTableLength() {
 	$('#tabsCount').selectOptions(bgPage.maxPopupTableLength, true);
 }
 
-
 //------------------------------------------------------------------------------
 // Creates list of filters.
 //------------------------------------------------------------------------------
@@ -53,32 +53,31 @@ function createListOfFilters() {
     }
 }
 
-
 //------------------------------------------------------------------------------
 // Adds a filter to the filter list.
 //------------------------------------------------------------------------------
 function addFilterToFilterList(urlPattern, i) {
-	
+	console.log(urlPattern);
 	var filterListElementDivElement = $('<div>')
 		.addClass('filterListElementDivElement')
-		.attr({ id: 'filterListElementDivElement' + i })
+		.attr({ id: 'filterListElementDivElement' + i})
 		.appendTo($('#filterListDivElement'));
 	
 	var filterDivElement = $('<div>')
 		.addClass('filterDivElement')
-		.attr({ id: 'filterElementDiv' + i })
+		.attr({ id: 'filterElementDiv' + i})
 		.text(urlPattern)
-		.appendTo($('#filterListElementDivElement' + i));
+		.appendTo(filterListElementDivElement);
 	
 	// filterDeleteButton building
 	var filterDeleteButtonDivElement = $('<div>')
 		.addClass('filterDeleteButtonDivElement')
-		.attr({ id: 'filterDeleteButtonDivElement' + i })
-		.appendTo($('#filterListElementDivElement' + i));
+		.attr({ id: 'filterDeleteButtonDivElement' + i})
+		.appendTo(filterListElementDivElement);
 	var filterDeleteButtonElement = $('<button>')
-		.attr({ id: 'filterDeleteButtonElement' + i })
+		.attr({ id: 'filterDeleteButtonElement'})
 		.text('Delete Filter')
-		.click(function() {alert('Please implement me! :-(');return false;})
+		.click(function() {deleteUrlFromFilters(i);return false;})
 		.appendTo(filterDeleteButtonDivElement);
 }
 
@@ -88,7 +87,7 @@ function addFilterToFilterList(urlPattern, i) {
 //------------------------------------------------------------------------------
 function createListOfRecentlyClosedTabs() {
   var recentlyClosedTabsArray = bgPage.recentlyClosedTabs;
-  console.log(recentlyClosedTabsArray);
+  //console.log(recentlyClosedTabsArray);
 
   if (recentlyClosedTabsArray.length == 0) {
 	  showNoRCTs();
@@ -112,17 +111,16 @@ function removeRecentlyClosedTab(tabInfo, i) {
 //------------------------------------------------------------------------------
 // Deletes element from the list of recently closed tabs.
 //------------------------------------------------------------------------------
-function deleteRecentlyClosedTab(tabInfo, i) {
+function deleteRecentlyClosedTab(tabId) {
   //should remove this table row
-	var tabId = bgPage.recentlyClosedTabs[i].tabId;
-	$('#rctDivElement' + tabInfo.tabId).remove();
+	$('#rctDivElement' + tabId).remove();
   //show 'no rcts'-String
   if (bgPage.recentlyClosedTabs.length == 0) {
 	showNoRCTs();
   }
 	
   //bgPage.removeClosedTabWithThisUrl(bgPage.getClosedTabById(tabId).url);
-  bgPage.removeClosedTabWithThisUrl(tabInfo.url);
+  bgPage.removeClosedTabByTabId(tabId);
 }
 
 //------------------------------------------------------------------------------
@@ -133,7 +131,15 @@ function addRecentlyClosedTabToFilters(tabId) {
 	var urlPattern = prompt("Ignore this URL in future?", url);
 	if (urlPattern != null) {
 		addUrlToFilters(urlPattern);
+		storeFilterToArray(urlPattern);
 	}
+}
+
+function storeFilterToArray(urlPattern) {
+	var newFilterArray = bgPage.filterArray;
+	newFilterArray.splice(1, 0, urlPattern);
+	
+	bgPage.storeFilterArray(newFilterArray);
 }
 
 //------------------------------------------------------------------------------
@@ -141,7 +147,12 @@ function addRecentlyClosedTabToFilters(tabId) {
 //------------------------------------------------------------------------------
 function addUrlToFilters(pattern) {
   bgPage.filterArray[bgPage.filterArray.length] = pattern;
-  addFilterRowToListTable(pattern);
+  addFilterToFilterList(pattern);
+}
+
+function deleteUrlFromFilters(i) {
+	$('#filterListElementDivElement' + i).remove();
+	bgPage.filterArray.splice(i, 1);
 }
 
 //------------------------------------------------------------------------------

@@ -29,18 +29,17 @@
 
 .filterListDivElement {
 	float: left;
-	width: 250px;
 }
 
 .filterListElementDivElement {
 	float: left;
-	width: 250px;
+	width: 350px;
 	border: 1px solid #FFFFFF;
 }
 
 .filterDivElement {
 	float: left;
-  width: 150px;
+  width: 250px;
   height: 25px;
   vertical-align: middle;
   border-radius: 5px;
@@ -50,5 +49,5 @@
 
 .filterDeleteButtonDivElement {
 	float: left;
-	with: 50px;
+	with: 70px;
 }
