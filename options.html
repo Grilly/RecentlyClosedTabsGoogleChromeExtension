@@ -4,6 +4,7 @@
 		<title>Recently Closed Tabs - Extension Options</title>
 		<link href="css/options.css" rel="stylesheet" type="text/css" />
 		<script type="text/javascript" src="js/3dparty/jquery.js"></script>
+		<script type="text/javascript" src="js/3dparty/jquery.selectboxes.pack.js"></script>
 		<script language="JavaScript" src="js/options.js"></script>
 		<script language="JavaScript" src="js/gui.js"></script>
 	</head>
@@ -12,21 +13,13 @@
     <div id="headerBorderDiv"></div>
     <table>
     	<tr>
-            <td style="width: 800px; vertical-align: top;">
-              <div id="rootDiv"></div>
-            </td>
+        <td style="width: 800px; vertical-align: top;">
+          <div id="rootDiv"></div>
+        </td>
     		<td style="width: 200px; vertical-align: top;">
-    			<h3>Favorite tabsCount:</h3>
-				<select id="tabsCount">
-			 		<option value="1">1</option>
-			 		<option value="2">2</option>
-					<option value="5">5</option>
-				 	<option value="10">10</option>
-			 		<option value="15">15</option>
-				</select>
-				<button onclick="saveMaxPopupTableLength()">Save</button>
-				<div id="status"></div>
-				<div id="filterDiv"></div>
+    			<div id="maxPopupLengthSelect"></div>
+				  <div id="status"></div>
+				  <div id="filterListDivElement"></div>
     		</td>
     		<td></td>
     	</tr>
