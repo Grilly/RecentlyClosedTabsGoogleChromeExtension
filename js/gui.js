@@ -29,9 +29,8 @@ function createFooter() {
 	var footerDiv = $('#footerDiv').addClass('footerDiv').text('©2010 Michael & Draško');
 }
 
-// THE DOUPLICATED CODE LINES OF THE FOLLOWING TWO METHODS SHOULD BE COMPRESSED
 //------------------------------------------------------------------------------
-// Construct a HTML table row out of tabInfo
+// Creates the rct list for the options page with the buttons to edit the list.
 //------------------------------------------------------------------------------
 function createRctDivForOptions(tabInfo, i) {
 	createRctDivElement(tabInfo, i);
@@ -39,11 +38,17 @@ function createRctDivForOptions(tabInfo, i) {
 	createRCTListEditButtons(tabInfo, i);
 }
 
+//------------------------------------------------------------------------------
+// Creates the rct list for the popup page.
+//------------------------------------------------------------------------------
 function createRctDivForPopup(tabInfo, i) {
 	createRctDivElement(tabInfo, i);
 	createRctDiv(tabInfo, i);
 }
 
+//------------------------------------------------------------------------------
+// Creates the rct div element that later contains all rcts.
+//------------------------------------------------------------------------------
 function createRctDivElement(tabInfo, i) {
 	var bgPage = chrome.extension.getBackgroundPage();
 	if (tabInfo != null) {
@@ -56,6 +61,9 @@ function createRctDivElement(tabInfo, i) {
 	}
 }
 
+//------------------------------------------------------------------------------
+// Creates the edit buttons for the options page.
+//------------------------------------------------------------------------------
 function createRCTListEditButtons(tabInfo, i) {
 	var bgPage = chrome.extension.getBackgroundPage();
 	if (tabInfo != null) {
@@ -87,11 +95,14 @@ function createRCTListEditButtons(tabInfo, i) {
 			.attr({
 				type: 'button',
 				value: 'Add To Filters And Delete' })
-			.click(function() {addRecentlyClosedTabToFiltersAndDelete(bgPage.recentlyClosedTabs[i].tabId);return false;})
+			.click(function() {addRecentlyClosedTabToFilters(bgPage.recentlyClosedTabs[i].tabId);deleteRecentlyClosedTab(tabInfo, i);return false;})
 			.appendTo(addToFiltersButtonDivElement);
 	}
 }
 
+//------------------------------------------------------------------------------
+// Creates the div element of one rct.
+//------------------------------------------------------------------------------
 function createRctDiv(tabInfo, i) {
 	if (tabInfo != null) {
 		var bgPage = chrome.extension.getBackgroundPage();
@@ -140,7 +151,7 @@ function createRctDiv(tabInfo, i) {
 			.appendTo(favIconDivElement);
 		
 		with (tabInfo) {
-			console.log(tabInfo);
+//			console.log(tabInfo);
 			var tabShot = tabInfo.tabShot;
 			if (tabShot !== undefined && tabShot != null) {
 				tabShotIMG.attr({ src: tabShot });
@@ -155,4 +166,30 @@ function createRctDiv(tabInfo, i) {
 			}
 		}
 	}
+}
+
+//------------------------------------------------------------------------------
+// Creates the select and button elements to configure the number of elements
+// shown in the popup.
+//------------------------------------------------------------------------------
+function createMaxPopupTableLengthSelect() {
+	var h3Element = $('<h3>')
+		.text('Favorite number of elements shown in the popup:')
+		.appendTo($('#maxPopupLengthSelect'));
+	var selectElementOptions = {
+			'1': '1',
+			'2': '2',
+			'5': '5',
+			'10': '10',
+			'15': '15'
+	}
+	var selectElement = $('<select>')
+		.attr({ id: 'tabsCount' })
+	    .addOption(selectElementOptions, true)
+	    .selectOptions('1', true)
+	    .appendTo($('#maxPopupLengthSelect'));
+	var saveSelectButtonElement = $('<button>')
+	    .text('Save')
+	    .click(function() {saveMaxPopupTableLength();return false;})
+	    .appendTo($('#maxPopupLengthSelect'));
 }
