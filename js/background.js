@@ -9,7 +9,10 @@ var appConfig;
 var allOpenedTabs = {};
 // Array of recently closed tabs
 var recentlyClosedTabs;
-//console.log('recentlyClosedTabs: ' + recentlyClosedTabs);
+// URL blacklist filters
+var urlFilterArray;
+// maximal table length of RCT's shown in popup
+var maxPopupTableLength;
 
 //------------------------------------------------------------------------------
 // Main method: Everything starts here!
@@ -66,41 +69,37 @@ function restoreState() {
 //------------------------------------------------------------------------------
 function fetchUrlFilterArray() {
 	var urlFilterString = localStorage['urlFilterArray'];
-	var urlFilterArray;
     if (urlFilterString === undefined) {
     	storeUrlFilterArray(['chrome://newtab/', 'about:blank']);
     } else {
         urlFilterArray = JSON.parse(urlFilterString);
     }
-	//console.log(urlFilterArray);
-    return urlFilterArray;
+	console.log(urlFilterArray);
 }
 
 //------------------------------------------------------------------------------
 // Modify/Persist the urlFilterArray to the localStorage
 //------------------------------------------------------------------------------
-function storeUrlFilterArray(newUrlFilterArrayParam) {
-  if (newUrlFilterArrayParam !== undefined) {
-	  var newUrlFilterArray = newUrlFilterArrayParam;
-	  localStorage.setItem('urlFilterArray', JSON.stringify(newUrlFilterArray));
-  }
+function storeUrlFilterArray(newUrlFilterArray) {
+  if (newUrlFilterArray !== undefined) urlFilterArray = newUrlFilterArray;
+  localStorage.setItem('urlFilterArray', JSON.stringify(urlFilterArray));
 }
 
 //------------------------------------------------------------------------------
 // Fetch/Initialise the maxPopupTableLength from the localStorage
 //------------------------------------------------------------------------------
 function fetchMaxPopupTableLength() {
-	var maxPopupTableLength = localStorage['maxPopupTableLength'];
+	maxPopupTableLength = localStorage['maxPopupTableLength'];
 	if (maxPopupTableLength === undefined) storeMaxPopupTableLength(15);
-	//console.log(maxPopupTableLength);
-	return maxPopupTableLength;
+	console.log(maxPopupTableLength);
 }
 
 //------------------------------------------------------------------------------
 // Modify/Persist the maxPopupTableLength to the localStorage
 //------------------------------------------------------------------------------
 function storeMaxPopupTableLength(newMaxLength) {
-    localStorage.setItem('maxPopupTableLength', newMaxLength);
+    maxPopupTableLength = newMaxLength;
+    localStorage.setItem('maxPopupTableLength', maxPopupTableLength);
 }
 
 //------------------------------------------------------------------------------
@@ -116,7 +115,7 @@ function fetchRecentlyClosedTabs() {
           if (recentlyClosedTabs[i] == null || recentlyClosedTabs[i].tabId === undefined)
             recentlyClosedTabs.splice(i, 1);
     }
-	//console.log(recentlyClosedTabs);
+	console.log(recentlyClosedTabs);
 }
 
 //------------------------------------------------------------------------------
@@ -144,12 +143,12 @@ function tabInfo(tabId, windowId, favIconUrl, dateOfUpdate, title, url, tabShot)
 //Listen to SelectionChanged event and update a preview image
 //------------------------------------------------------------------------------
 function selectionChangedTabsListener(tabId, selectInfo) {
-    //console.log("selectionChangedTabsListener: " + selectInfo);
+    console.log("selectionChangedTabsListener: " + selectInfo);
     setImgDataUrl(tabId);
 }
 
-var canvas = document.createElement('canvas');
 var orgImage = new Image();
+var canvas = document.createElement("canvas");
 
 //------------------------------------------------------------------------------
 // Puts the dataUrl of the tab specified by the given tabId into the object allOpenedTabs.
@@ -157,9 +156,9 @@ var orgImage = new Image();
 function setImgDataUrl(tabId) {
     if (allOpenedTabs[tabId] !== undefined)
 	chrome.tabs.captureVisibleTab(allOpenedTabs[tabId].windowId, function(snapshotData) {
-		//console.log("receiving snapshot data for tabId = " + tabId);
+		console.log("receiving snapshot data for tabId = " + tabId);
 	    orgImage.onload = function() {
-	    	//console.log("orgImage size = " + orgImage.width + "x" + orgImage.height);
+	    	console.log("orgImage size = " + orgImage.width + "x" + orgImage.height);
 	    	var newHeight = 110;
 	    	var newWidth = orgImage.width * newHeight / orgImage.height;
 	        // Create a canvas with the desired dimensions
@@ -169,15 +168,14 @@ function setImgDataUrl(tabId) {
 
 	        // Scale and draw the source image to the canvas
 	        context.drawImage(orgImage, 5, 5, newWidth, newHeight);
-	        
+
 	        // Convert the canvas to a data URL in PNG format
-			allOpenedTabs[tabId].tabShot = undefined;
 			allOpenedTabs[tabId].tabShot = canvas.toDataURL();
 
 			// Check the result
-			// var chkImage = new Image();
-			// chkImage.onload = function() { console.log("chkImage size = " + chkImage.width + "x" + chkImage.height); }
-			// chkImage.src = allOpenedTabs[tabId].tabShot;
+			var chkImage = new Image();
+			chkImage.onload = function() { console.log("chkImage size = " + chkImage.width + "x" + chkImage.height); }
+			chkImage.src = allOpenedTabs[tabId].tabShot;
 	    }
 	    orgImage.src = snapshotData;
 	})
@@ -211,7 +209,7 @@ function processOpenedTab(tab) {
 	var tabShot = null;
 	allOpenedTabs[tabId] = new tabInfo(tabId, windowId, tabFavIconUrl, new Date(), tabTitle, tabUrl, null);
 	if(tab.selected) setImgDataUrl(tabId);
-    //console.log(allOpenedTabs[tabId]);
+    console.log(allOpenedTabs[tabId]);
     removeClosedTabWithThisUrl(tabUrl);
     storeRecentlyClosedTabs();
 }
@@ -221,7 +219,6 @@ function processOpenedTab(tab) {
 //------------------------------------------------------------------------------
 function shouldBeIgnored(tabUrl) {
 	if (tabUrl === undefined) return true;
-	var urlFilterArray = fetchUrlFilterArray();
 	for (key in urlFilterArray) if (tabUrl == urlFilterArray[key]) return true;
 	return false;
 }
@@ -253,11 +250,12 @@ function processClosedTab(tabInfo) {
     tabInfo.timestamp = new Date();
     recentlyClosedTabs.unshift(tabInfo);
     storeRecentlyClosedTabs();
-    //console.log(recentlyClosedTabs);
+    console.log(recentlyClosedTabs);
 }
 
+
 //------------------------------------------------------------------------------
-// Puts the ctabInfo of the currently closed tab into the object recentlyClosedTabs.
+// Puts the tabInfo of the currently closed tab into the object recentlyClosedTabs.
 // Result: object with all recently closed tabs.
 //------------------------------------------------------------------------------
 function removedTabsListener(tabId) {
@@ -269,14 +267,14 @@ function removedTabsListener(tabId) {
 // Open selected RecentlyClosedTab
 //------------------------------------------------------------------------------
 function openRecentlyClosedTab(tabId) {
-	for (index in recentlyClosedTabs) {
-		if (recentlyClosedTabs[index].tabId == tabId) {
-			chrome.tabs.create({url: recentlyClosedTabs[index].url});
-			recentlyClosedTabs.splice(index, 1);
+  for (index in recentlyClosedTabs) {
+    if (recentlyClosedTabs[index].tabId == tabId) {
+      chrome.tabs.create({url: recentlyClosedTabs[index].url});
+      recentlyClosedTabs.splice(index, 1);
 
-			//should remove this table row
-			// TODO: how to find the parent node without assuming that its id is 'table'
-			//document.getElementById('table').removeChild(document.getElementById(tabId));
-		}
-	}
+      //should remove this table row
+      // TODO: how to find the parent node without assuming that its id is 'table'
+      //document.getElementById('table').removeChild(document.getElementById(tabId));
+    }
+  }
 }
