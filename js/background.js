@@ -10,7 +10,7 @@ var allOpenedTabs = {};
 // Array of recently closed tabs
 var recentlyClosedTabs;
 // URL blacklist filters
-var urlFilterArray;
+var filterArray;
 // maximal table length of RCT's shown in popup
 var maxPopupTableLength;
 
@@ -57,7 +57,7 @@ function restoreState() {
         localStorage.setItem('version', appConfig.version);
     }
     //
-    fetchUrlFilterArray();
+    fetchFilterArray();
     //
     fetchMaxPopupTableLength();
     //
@@ -65,28 +65,28 @@ function restoreState() {
 }
 
 //------------------------------------------------------------------------------
-// Fetch/Initialise the urlFilterArray from the localStorage
+// Gets/Initialises the filterArray from the localStorage
 //------------------------------------------------------------------------------
-function fetchUrlFilterArray() {
-	var urlFilterString = localStorage['urlFilterArray'];
-    if (urlFilterString === undefined) {
-    	storeUrlFilterArray(['chrome://newtab/', 'about:blank']);
+function fetchFilterArray() {
+	var filterString = localStorage['urlFilterArray'];
+    if (filterString === undefined) {
+    	storeFilterArray(['chrome://newtab/', 'about:blank']);
     } else {
-        urlFilterArray = JSON.parse(urlFilterString);
+        filterArray = JSON.parse(filterString);
     }
-	console.log(urlFilterArray);
+	console.log(filterArray);
 }
 
 //------------------------------------------------------------------------------
-// Modify/Persist the urlFilterArray to the localStorage
+// Modifys/Persists the filterArray to the localStorage
 //------------------------------------------------------------------------------
-function storeUrlFilterArray(newUrlFilterArray) {
-  if (newUrlFilterArray !== undefined) urlFilterArray = newUrlFilterArray;
-  localStorage.setItem('urlFilterArray', JSON.stringify(urlFilterArray));
+function storeFilterArray(newFilterArray) {
+  if (newFilterArray !== undefined) filterArray = newFilterArray;
+  localStorage.setItem('urlFilterArray', JSON.stringify(filterArray));
 }
 
 //------------------------------------------------------------------------------
-// Fetch/Initialise the maxPopupTableLength from the localStorage
+// Fetches/Initialises the maxPopupTableLength from the localStorage
 //------------------------------------------------------------------------------
 function fetchMaxPopupTableLength() {
 	maxPopupTableLength = localStorage['maxPopupTableLength'];
@@ -95,7 +95,7 @@ function fetchMaxPopupTableLength() {
 }
 
 //------------------------------------------------------------------------------
-// Modify/Persist the maxPopupTableLength to the localStorage
+// Modifys/Persists the maxPopupTableLength to the localStorage
 //------------------------------------------------------------------------------
 function storeMaxPopupTableLength(newMaxLength) {
     maxPopupTableLength = newMaxLength;
@@ -103,7 +103,7 @@ function storeMaxPopupTableLength(newMaxLength) {
 }
 
 //------------------------------------------------------------------------------
-// Fetch/Initialise the recentlyClosedTabs from the localStorage
+// Fetches/Initialises the recentlyClosedTabs from the localStorage
 //------------------------------------------------------------------------------
 function fetchRecentlyClosedTabs() {
 	var recentlyClosedTabsString = localStorage['recentlyClosedTabs'];
@@ -119,7 +119,7 @@ function fetchRecentlyClosedTabs() {
 }
 
 //------------------------------------------------------------------------------
-// Modify/Persist the recentlyClosedTabs to the localStorage
+// Modifys/Persists the recentlyClosedTabs to the localStorage
 //------------------------------------------------------------------------------
 function storeRecentlyClosedTabs(newRecentlyClosedTabs) {
 	if (newRecentlyClosedTabs !== undefined) recentlyClosedTabs = newRecentlyClosedTabs;
@@ -140,7 +140,7 @@ function tabInfo(tabId, windowId, favIconUrl, dateOfUpdate, title, url, tabShot)
 }
 
 //------------------------------------------------------------------------------
-//Listen to SelectionChanged event and update a preview image
+// Listens to SelectionChanged event and update a preview image
 //------------------------------------------------------------------------------
 function selectionChangedTabsListener(tabId, selectInfo) {
     console.log("selectionChangedTabsListener: " + selectInfo);
@@ -156,9 +156,9 @@ var canvas = document.createElement("canvas");
 function setImgDataUrl(tabId) {
     if (allOpenedTabs[tabId] !== undefined)
 	chrome.tabs.captureVisibleTab(allOpenedTabs[tabId].windowId, function(snapshotData) {
-		console.log("receiving snapshot data for tabId = " + tabId);
+		//console.log("receiving snapshot data for tabId = " + tabId);
 	    orgImage.onload = function() {
-	    	console.log("orgImage size = " + orgImage.width + "x" + orgImage.height);
+	    	//console.log("orgImage size = " + orgImage.width + "x" + orgImage.height);
 	    	var newHeight = 110;
 	    	var newWidth = orgImage.width * newHeight / orgImage.height;
 	        // Create a canvas with the desired dimensions
@@ -170,6 +170,7 @@ function setImgDataUrl(tabId) {
 	        context.drawImage(orgImage, 5, 5, newWidth, newHeight);
 
 	        // Convert the canvas to a data URL in PNG format
+			// allOpenedTabs[tabId].tabShot = undefined;
 			allOpenedTabs[tabId].tabShot = canvas.toDataURL();
 
 			// Check the result
@@ -182,7 +183,7 @@ function setImgDataUrl(tabId) {
 }
 
 //------------------------------------------------------------------------------
-// Send all tabs to be processed
+// Sends all tabs to be processed
 //------------------------------------------------------------------------------
 function getAllTabsInWindow(tabs) {
 	for (var key in tabs) processOpenedTab(tabs[key]);
@@ -196,7 +197,7 @@ function updatedTabsListener(tabId, changeInfo, tab) {
 }
 
 //------------------------------------------------------------------------------
-// Process opened tab by inserting a corresponding tabInfo into allOpenedTabs
+// Processes opened tab by inserting a corresponding tabInfo into allOpenedTabs
 //------------------------------------------------------------------------------
 function processOpenedTab(tab) {
 	if (tab === undefined) return;
@@ -219,12 +220,12 @@ function processOpenedTab(tab) {
 //------------------------------------------------------------------------------
 function shouldBeIgnored(tabUrl) {
 	if (tabUrl === undefined) return true;
-	for (key in urlFilterArray) if (tabUrl == urlFilterArray[key]) return true;
+	for (key in filterArray) if (tabUrl == filterArray[key]) return true;
 	return false;
 }
 
 //------------------------------------------------------------------------------
-// Remove previous occurance of the same URL
+// Removes previous occurance of the same URL
 //------------------------------------------------------------------------------
 function getClosedTabById(tabId) {
     for (i in recentlyClosedTabs)
@@ -232,7 +233,7 @@ function getClosedTabById(tabId) {
 }
 
 //------------------------------------------------------------------------------
-// Remove previous occurance of the same URL
+// Removes previous occurance of the same URL
 //------------------------------------------------------------------------------
 function removeClosedTabWithThisUrl(tabUrl) {
     for (i in recentlyClosedTabs)
@@ -256,7 +257,6 @@ function processClosedTab(tabInfo) {
 
 //------------------------------------------------------------------------------
 // Puts the tabInfo of the currently closed tab into the object recentlyClosedTabs.
-// Result: object with all recently closed tabs.
 //------------------------------------------------------------------------------
 function removedTabsListener(tabId) {
 	var closedTabInfo = allOpenedTabs[tabId];
@@ -264,7 +264,7 @@ function removedTabsListener(tabId) {
 }
 
 //------------------------------------------------------------------------------
-// Open selected RecentlyClosedTab
+// Opens selected RecentlyClosedTab
 //------------------------------------------------------------------------------
 function openRecentlyClosedTab(tabId) {
   for (index in recentlyClosedTabs) {

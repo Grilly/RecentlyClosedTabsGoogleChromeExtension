@@ -11,64 +11,80 @@ var bgPage = chrome.extension.getBackgroundPage();
 function main() {
   this.createHeader('Options');
   this.createFooter();
-  showMaxPopupTableLength();
   createListOfFilters();
   createListOfRecentlyClosedTabs();
+  createMaxPopupTableLengthSelect();
+  showMaxPopupTableLength();
 }
 
 //------------------------------------------------------------------------------
 // Saves options to localStorage.
 //------------------------------------------------------------------------------
 function saveMaxPopupTableLength() {
-  var select_tabsCount = document.getElementById("tabsCount");
-  bgPage.storeMaxPopupTableLength(select_tabsCount.children[select_tabsCount.selectedIndex].value);
-  // Update status to let user know options were saved.
-  var status = document.getElementById("status");
-  status.innerHTML = "Options Saved.";
-  setTimeout(function() { status.innerHTML = ""; }, 750);
+	var bgPage = chrome.extension.getBackgroundPage();
+	var select_tabsCount = document.getElementById("tabsCount");
+	bgPage.storeMaxPopupTableLength(select_tabsCount.children[select_tabsCount.selectedIndex].value);
+	// Update status to let user know options were saved.
+	$('#status').text('Options Saved.');
+	setTimeout(function() { $('#status').text(''); }, 750);
 }
 
 //------------------------------------------------------------------------------
 // Restores select box state to saved value from localStorage.
 //------------------------------------------------------------------------------
 function showMaxPopupTableLength() {
-  var select = document.getElementById("tabsCount");
-  for (var i = 0; i < select.children.length; i++) {
-    var child = select.children[i];
-    if (child.value == bgPage.maxPopupTableLength) {
-      child.selected = "true";
-      break;
-    }
-  }
+	var bgPage = chrome.extension.getBackgroundPage();
+	$('#tabsCount').selectOptions(bgPage.maxPopupTableLength, true);
 }
 
 
 //------------------------------------------------------------------------------
-//Creates list of filters.
+// Creates list of filters.
 //------------------------------------------------------------------------------
 function createListOfFilters() {
-    var size = bgPage.urlFilterArray.length;
+    var size = bgPage.filterArray.length;
     
-    var filterDivElement = $('#filterDiv').addClass('filterDiv');
-    var h3Element = $('<h3>').text('Active URL filters:').appendTo(filterDivElement);
-    var tableElement = $('<table>').attr({ id: 'filterTable' }).appendTo(filterDivElement);
-    for (var i = 0; i < size; i++) {
-    	addFilterRowToListTable(bgPage.urlFilterArray[i]);
+    var filterListDivElement = $('#filterListDivElement').addClass('filterListDivElement');
+    var h3Element = $('<h3>')
+    	.text('Active URL filters:')
+    	.appendTo($('#filterListDivElement'));
+    for (var i = 0; i < bgPage.filterArray.length; i++) {
+    	addFilterToFilterList(bgPage.filterArray[i], i);
     }
 }
 
 
 //------------------------------------------------------------------------------
-// Adds a new row to the filter list.
+// Adds a filter to the filter list.
 //------------------------------------------------------------------------------
-function addFilterRowToListTable(urlString) {
-	var trElement = $('<tr>').appendTo($('#filterTable'));
-    var tdElement = $('<td>').text(urlString).appendTo(trElement);
+function addFilterToFilterList(urlPattern, i) {
+	
+	var filterListElementDivElement = $('<div>')
+		.addClass('filterListElementDivElement')
+		.attr({ id: 'filterListElementDivElement' + i })
+		.appendTo($('#filterListDivElement'));
+	
+	var filterDivElement = $('<div>')
+		.addClass('filterDivElement')
+		.attr({ id: 'filterElementDiv' + i })
+		.text(urlPattern)
+		.appendTo($('#filterListElementDivElement' + i));
+	
+	// filterDeleteButton building
+	var filterDeleteButtonDivElement = $('<div>')
+		.addClass('filterDeleteButtonDivElement')
+		.attr({ id: 'filterDeleteButtonDivElement' + i })
+		.appendTo($('#filterListElementDivElement' + i));
+	var filterDeleteButtonElement = $('<button>')
+		.attr({ id: 'filterDeleteButtonElement' + i })
+		.text('Delete Filter')
+		.click(function() {alert('Please implement me! :-(');return false;})
+		.appendTo(filterDeleteButtonDivElement);
 }
 
 
 //------------------------------------------------------------------------------
-//Creates list of recently closed tabs.
+// Creates list of recently closed tabs.
 //------------------------------------------------------------------------------
 function createListOfRecentlyClosedTabs() {
   var recentlyClosedTabsArray = bgPage.recentlyClosedTabs;
@@ -77,7 +93,7 @@ function createListOfRecentlyClosedTabs() {
   if (recentlyClosedTabsArray.length == 0) {
 	  showNoRCTs();
   } else {
-    var rctTable = $('<table>').attr({ id: 'rctTable' }).appendTo($('#rootDiv'));
+    //var rctTable = $('<table>').attr({ id: 'rctTable' }).appendTo($('#rootDiv'));
     for (var i = 0; i < recentlyClosedTabsArray.length; i++) {
       this.createRctDivForOptions(recentlyClosedTabsArray[i], i);
     }
@@ -98,25 +114,34 @@ function removeRecentlyClosedTab(tabInfo, i) {
 //------------------------------------------------------------------------------
 function deleteRecentlyClosedTab(tabInfo, i) {
   //should remove this table row
-  removeRecentlyClosedTab(tabInfo, i);
+	var tabId = bgPage.recentlyClosedTabs[i].tabId;
+	$('#rctDivElement' + tabInfo.tabId).remove();
   //show 'no rcts'-String
   if (bgPage.recentlyClosedTabs.length == 0) {
 	showNoRCTs();
   }
-
+	
   //bgPage.removeClosedTabWithThisUrl(bgPage.getClosedTabById(tabId).url);
   bgPage.removeClosedTabWithThisUrl(tabInfo.url);
 }
 
-function addRecentlyClosedTabToFiltersAndDelete(tabId) {
+//------------------------------------------------------------------------------
+// Adds tab url to the filters.
+//------------------------------------------------------------------------------
+function addRecentlyClosedTabToFilters(tabId) {
 	var url = bgPage.getClosedTabById(tabId).url;
 	var urlPattern = prompt("Ignore this URL in future?", url);
-	console.log(urlPattern);
 	if (urlPattern != null) {
-		bgPage.urlFilterArray[bgPage.urlFilterArray.length] = urlPattern;
-		addFilterRowToListTable(urlPattern);
-		deleteRecentlyClosedTab(tabId);
+		addUrlToFilters(urlPattern);
 	}
+}
+
+//------------------------------------------------------------------------------
+// Adds pattern to the filters.
+//------------------------------------------------------------------------------
+function addUrlToFilters(pattern) {
+  bgPage.filterArray[bgPage.filterArray.length] = pattern;
+  addFilterRowToListTable(pattern);
 }
 
 //------------------------------------------------------------------------------
