@@ -27,6 +27,28 @@
 	padding: 1px;
 }
 
-.filterDiv {
-	width: 200px;
+.filterListDivElement {
+	float: left;
+	width: 250px;
+}
+
+.filterListElementDivElement {
+	float: left;
+	width: 250px;
+	border: 1px solid #FFFFFF;
+}
+
+.filterDivElement {
+	float: left;
+  width: 150px;
+  height: 25px;
+  vertical-align: middle;
+  border-radius: 5px;
+  border: 1px solid #B7C5E3;
+  background-color: #F1F6FD;
+}
+
+.filterDeleteButtonDivElement {
+	float: left;
+	with: 50px;
 }
