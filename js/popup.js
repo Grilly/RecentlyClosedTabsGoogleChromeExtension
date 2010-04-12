@@ -9,14 +9,11 @@ var bgPage = chrome.extension.getBackgroundPage();
 // Main method: Everything starts here!
 // ------------------------------------------------------------------------------
 function main() {
-  var recentlyClosedTabsArray = bgPage.recentlyClosedTabs;
-  console.log(recentlyClosedTabsArray);
-
-  if (recentlyClosedTabsArray.length == 0) {
+  if (bgPage.recentlyClosedTabs.length == 0) {
     var rootDiv = $('#rootDiv').text('No recently closed tabs.');
   } else {
-    for (var i = 0; i < recentlyClosedTabsArray.length && i < bgPage.maxPopupTableLength; i++) {
-      this.createRctDivForPopup(recentlyClosedTabsArray[i], i);
+    for (var i = 0; i < bgPage.recentlyClosedTabs.length && i < bgPage.maxPopupTableLength; i++) {
+      this.createRctDivForPopup(i);
     }
   }
 }
@@ -24,7 +21,7 @@ function main() {
 //------------------------------------------------------------------------------
 // Removes selected RecentlyClosedTab row
 //------------------------------------------------------------------------------
-function removeRecentlyClosedTab(tabId) {
+function removeRecentlyClosedTab(i) {
   //should remove this table row
-  $('#' + tabId).remove();
+  $('#rctDivElement' + i).remove();
 }

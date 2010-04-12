@@ -3,13 +3,12 @@
 //------------------------------------------------------------------------------
 // Global variables.
 //------------------------------------------------------------------------------
-
+var bgPage = chrome.extension.getBackgroundPage();
 
 //------------------------------------------------------------------------------
 // Creates the header border for the options and infonews defined by the title.
 //------------------------------------------------------------------------------
 function createHeader(title) {
-	var bgPage = chrome.extension.getBackgroundPage();
 	var topTable = $('<table>').addClass('header_table').appendTo($('#headerTableDiv'));
 	var trElement = $('<tr>').appendTo(topTable);
 	
@@ -32,31 +31,29 @@ function createFooter() {
 //------------------------------------------------------------------------------
 // Creates the rct list for the options page with the buttons to edit the list.
 //------------------------------------------------------------------------------
-function createRctDivForOptions(tabInfo, i) {
-	createRctDivElement(tabInfo, i);
-	createRctDiv(tabInfo, i);
-	createRCTListEditButtons(tabInfo, i);
+function createRctDivForOptions(i) {
+	createRctDivElement(i);
+	createRctDiv(i);
+	createRCTListEditButtons(i);
 }
 
 //------------------------------------------------------------------------------
 // Creates the rct list for the popup page.
 //------------------------------------------------------------------------------
-function createRctDivForPopup(tabInfo, i) {
-	createRctDivElement(tabInfo, i);
-	createRctDiv(tabInfo, i);
+function createRctDivForPopup(i) {
+	createRctDivElement(i);
+	createRctDiv(i);
 }
 
 //------------------------------------------------------------------------------
 // Creates the rct div element that later contains all rcts.
 //------------------------------------------------------------------------------
-function createRctDivElement(tabInfo, i) {
-	var bgPage = chrome.extension.getBackgroundPage();
-	if (tabInfo != null) {
-		var tabId = tabInfo.tabId;
+function createRctDivElement(i) {
+	if (bgPage.recentlyClosedTabs[i] != null) {
 		var rctDivElement = $('<div>')
 		.addClass('rctDivElement')
-		.attr({ id: 'rctDivElement' + tabId })
-		.click(function() {bgPage.openRecentlyClosedTab(tabId); removeRecentlyClosedTab(tabInfo, i); return false;})
+		.attr({ id: 'rctDivElement' + i })
+		.click(function() {bgPage.reopenRecentlyClosedTab(i); removeRecentlyClosedTab(i); return false;})
 		.appendTo($('#rootDiv'));
 	}
 }
@@ -64,38 +61,38 @@ function createRctDivElement(tabInfo, i) {
 //------------------------------------------------------------------------------
 // Creates the edit buttons for the options page.
 //------------------------------------------------------------------------------
-function createRCTListEditButtons(tabInfo, i) {
-	var bgPage = chrome.extension.getBackgroundPage();
-	if (tabInfo != null) {
-		var tabId = tabInfo.tabId;
+function createRCTListEditButtons(i) {
+	if (bgPage.recentlyClosedTabs[i] != null) {
 		
 		var rctButtonsDivElement = $('<div>')
 		.addClass('rctButtonsDivElement')
-		.attr({ id: 'rctButtonsDivElement' + tabId })
-		.appendTo($('#rctDivElement' + tabId));
+		.attr({ id: 'rctButtonsDivElement' + i })
+		.appendTo($('#rctDivElement' + i));
 		
 		//deleteButtonDivElement building
 		var deleteButtonDivElement = $('<div>')
 			.addClass('deleteButtonDivElement')
-			.attr({ id: 'deleteButtonDivElement' + tabId })
-			.appendTo($('#rctDivElement' + tabId));
+			.attr({ id: 'deleteButtonDivElement' + i })
+			.appendTo($('#rctDivElement' + i));
 		var deleteButtonInputElement = $('<input>')
 			.attr({
+			  id: 'deleteButtonInputElement' + i,
 				type: 'button',
 				value: 'Delete Entry' })
-			.click(function() {deleteRecentlyClosedTab(tabId);return false;})
+			.click(function() {deleteRecentlyClosedTab(i);return false;})
 			.appendTo(deleteButtonDivElement);
 		
 		//addToFiltersButtonDivElement building
 		var addToFiltersButtonDivElement = $('<div>')
 			.addClass('addToFiltersButtonDivElement')
-			.attr({id: 'addToFiltersButtonDivElement' + tabId})
-			.appendTo($('#rctDivElement' + tabId));
+			.attr({id: 'addToFiltersButtonDivElement' + i})
+			.appendTo($('#rctDivElement' + i));
 		var addToFiltersInputElement = $('<input>')
 			.attr({
+			  id: 'addToFiltersInputElement' + i,
 				type: 'button',
 				value: 'Add To Filters And Delete' })
-			.click(function() {addRecentlyClosedTabToFilters(tabId);deleteRecentlyClosedTab(tabId);return false;})
+			.click(function() {addRecentlyClosedTabToFilters(i);deleteRecentlyClosedTab(i);return false;})
 			.appendTo(addToFiltersButtonDivElement);
 	}
 }
@@ -103,62 +100,59 @@ function createRCTListEditButtons(tabInfo, i) {
 //------------------------------------------------------------------------------
 // Creates the div element of one rct.
 //------------------------------------------------------------------------------
-function createRctDiv(tabInfo, i) {
-	if (tabInfo != null) {
-		var bgPage = chrome.extension.getBackgroundPage();
-		var tabId = tabInfo.tabId;
-		
+function createRctDiv(i) {
+	if (bgPage.recentlyClosedTabs[i] != null) {
 		var rctListDivElement = $('<div>')
 		.addClass('rctListDivElement')
-		.attr({ id: 'rctListDivElement' + tabId })
-		.click(function() {bgPage.openRecentlyClosedTab(tabId); removeRecentlyClosedTab(tabInfo, i); return false;})
-		.appendTo($('#rctDivElement' + tabId));
+		.attr({ id: 'rctListDivElement' + i })
+		.click(function() {bgPage.openRecentlyClosedTab(i); deleteRecentlyClosedTab(i); return false;})
+		.appendTo($('#rctDivElement' + i));
 		
 		// tabShotElement building
 		var tabShotDivElement = $('<div>')
 			.addClass('tabShotDivElement')
-			.attr({ id: 'tabShotDivElement' + tabId })
+			.attr({ id: 'tabShotDivElement' + i })
 			.appendTo(rctListDivElement);
 		var tabShotIMG = $('<img>')
 			.addClass('tabShotIMG')
-			.attr({ id: 'tabShotIMG' + tabId })
+			.attr({ id: 'tabShotIMG' + i })
 			.appendTo(tabShotDivElement);
 		
 		// contentElement building
 		var contentDivElement = $('<div>')
 			.addClass('contentDivElement')
-			.attr({ id: 'contentDivElement' + tabId })
+			.attr({ id: 'contentDivElement' + i })
 			.appendTo(rctListDivElement);
 		var titleDivElement = $('<div>')
 			.addClass('titleDivElement')
-			.attr({ id: 'titleDivElement' + tabId })
-			.text(tabInfo.title)
+			.attr({ id: 'titleDivElement' + i })
+			.text(bgPage.recentlyClosedTabs[i].title)
 			.appendTo(contentDivElement);
 		var urlDivElement = $('<div>')
 			.addClass('linkDivElement')
-			.attr({ id: 'linkDivElement' + tabId })
-			.text(tabInfo.url)
+			.attr({ id: 'linkDivElement' + i })
+			.text(bgPage.recentlyClosedTabs[i].url)
 			.appendTo(contentDivElement);
 
 		// favIconElement building
 		var favIconDivElement = $('<div>')
 			.addClass('favIconDivElement')
-			.attr({ id: 'favIconDivElement' + tabId })
+			.attr({ id: 'favIconDivElement' + i })
 			.appendTo(rctListDivElement);
 		var favIconIMG = $('<img>')
 			.addClass('faviconIMG')
-			.attr({ id: 'faviconIMG' + tabId })
+			.attr({ id: 'faviconIMG' + i })
 			.appendTo(favIconDivElement);
 		
-		with (tabInfo) {
-//			console.log(tabInfo);
-			var tabShot = tabInfo.tabShot;
+		with (bgPage.recentlyClosedTabs[i]) {
+//			console.log(bgPage.recentlyClosedTabs[i]);
+			var tabShot = bgPage.recentlyClosedTabs[i].tabShot;
 			if (tabShot !== undefined && tabShot != null) {
 				tabShotIMG.attr({ src: tabShot });
 			} else {
 				tabShotIMG.attr({ src: '../images/default_tabShot.png' });
 			}
-			var favIconUrl = tabInfo.favIconUrl;
+			var favIconUrl = bgPage.recentlyClosedTabs[i].favIconUrl;
 			if (favIconUrl !== undefined && favIconUrl != null) {
 				favIconIMG.attr({ src: favIconUrl });
 			} else {
