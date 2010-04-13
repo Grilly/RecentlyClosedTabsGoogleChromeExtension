@@ -135,10 +135,10 @@ function storeRecentlyClosedTabs(newRecentlyClosedTabs) {
 // ------------------------------------------------------------------------------
 // Function defining the tabInfo-object.
 // ------------------------------------------------------------------------------
-function tabInfo(tabId, windowId, favIconUrl, dateOfUpdate, title, url, tabShot) {
+function tabInfo(tabId, windowId, faviconUrl, dateOfUpdate, title, url, tabShot) {
   this.tabId = tabId;
   this.windowId = windowId;
-  this.favIconUrl = favIconUrl;
+  this.favIconUrl = faviconUrl;
   this.dateOfUpdate = dateOfUpdate;
   this.title = title;
   this.url = url;
@@ -202,6 +202,7 @@ function getAllTabsInWindow(tabs) {
 // ------------------------------------------------------------------------------
 function updatedTabsListener(tabId, changeInfo, tab) {
   if (changeInfo.status == "complete")
+    delete allOpenedTabs[tabId];
     processOpenedTab(tab);
   // TODO: for performance reasons maybe delete openedTabWithTabId and save
   // new openedTab
@@ -218,11 +219,8 @@ function processOpenedTab(tab) {
   if (shouldBeIgnored(tabUrl))
     return;
   var tabId = tab.id;
-  var windowId = tab.windowId;
-  var tabFavIconUrl = tab.favIconUrl;
-  var tabTitle = tab.title;
-  allOpenedTabs[tabId] = new tabInfo(tabId, windowId, tabFavIconUrl,
-      new Date(), tabTitle, tabUrl, null);
+  allOpenedTabs[tabId] = new tabInfo(tabId, tab.windowId, tab.favIconUrl,
+      new Date(), tab.title, tabUrl, null);
   if (tab.selected)
     setImgDataUrl(tabId);
   // removes rct if already opened
