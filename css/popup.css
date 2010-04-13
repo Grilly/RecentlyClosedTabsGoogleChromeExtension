@@ -14,3 +14,13 @@ body {
 .contentDivElement {
   width: 245px;
 }
+
+.popupFooter {
+	height: 14px;
+	width: 250px;
+}
+
+.popupFooter:hover {
+	font-weight: bold;
+	cursor: hand;
+}
