@@ -135,10 +135,10 @@ function storeRecentlyClosedTabs(newRecentlyClosedTabs) {
 // ------------------------------------------------------------------------------
 // Function defining the tabInfo-object.
 // ------------------------------------------------------------------------------
-function tabInfo(tabId, windowId, faviconUrl, dateOfUpdate, title, url, tabShot) {
+function tabInfo(tabId, windowId, favIconUrl, dateOfUpdate, title, url, tabShot) {
   this.tabId = tabId;
   this.windowId = windowId;
-  this.favIconUrl = faviconUrl;
+  this.favIconUrl = favIconUrl;
   this.dateOfUpdate = dateOfUpdate;
   this.title = title;
   this.url = url;
