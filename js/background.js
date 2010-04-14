@@ -5,7 +5,6 @@
 //------------------------------------------------------------------------------
 // Contains all AppConfig
 var appConfig;
-console.log(appConfig);
 // Map of all opened tabs keyed by tabId
 var allOpenedTabs = {};
 // Array of recently closed tabs

@@ -4,9 +4,6 @@
 // Global variables.
 //------------------------------------------------------------------------------
 var bgPage = chrome.extension.getBackgroundPage();
-//console.log(bgPage.recentlyClosedTabs);
-//console.log(bgPage.allOpenedTabs);
-console.log(bgPage.filters);
 
 //------------------------------------------------------------------------------
 // Main method: Everything starts here
