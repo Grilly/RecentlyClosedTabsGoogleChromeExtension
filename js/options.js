@@ -6,105 +6,78 @@
 var bgPage = chrome.extension.getBackgroundPage();
 //console.log(bgPage.recentlyClosedTabs);
 //console.log(bgPage.allOpenedTabs);
-console.log(bgPage.filterArray);
+console.log(bgPage.filters);
 
 //------------------------------------------------------------------------------
-// Everything starts here
+// Main method: Everything starts here
 //------------------------------------------------------------------------------
 function main() {
   this.createHeader('Options');
   this.createFooter();
-  createListOfFiltersHeader();
+  createFiltersListHeader();
   var filterListDivElement = $('#filterListDivElement').addClass('filterListDivElement');
-  createListOfFilters();
-  createListOfRecentlyClosedTabs();
-  createMaxPopupTableLengthSelect();
-  showMaxPopupTableLength();
+  createFiltersList();
+  createRecentlyClosedTabsListHeader();
+  createRecentlyClosedTabsList();
+  createMaxPopupLengthSelect();
+  setMaxPopupLength();
 }
 
-//------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------
+// MAX POPUP LENGTH
+// ------------------------------------------------------------------------------
 // Saves options to localStorage.
-//------------------------------------------------------------------------------
 // TODO: Transform with jquery
-function saveMaxPopupTableLength() {
+function saveMaxPopupLength() {
 	var bgPage = chrome.extension.getBackgroundPage();
-	var select_tabsCount = document.getElementById("tabsCount");
-	bgPage.storeMaxPopupTableLength(select_tabsCount.children[select_tabsCount.selectedIndex].value);
+	var select_tabsCount = $('#tabsCount');
+	bgPage.storeMaxPopupLength(select_tabsCount.children[select_tabsCount.selectedIndex].value);
 	// Update status to let user know options were saved.
 	$('#status').text('Options Saved.');
 	setTimeout(function() { $('#status').text(''); }, 750);
 }
 
-//------------------------------------------------------------------------------
 // Restores select box state to saved value from localStorage.
-//------------------------------------------------------------------------------
-function showMaxPopupTableLength() {
-	$('#tabsCount').selectOptions(bgPage.maxPopupTableLength, true);
+function setMaxPopupLength() {
+	$('#tabsCount').selectOptions(bgPage.maxPopupLength, true);
 }
 
-//------------------------------------------------------------------------------
-// Creates the header of the list of filters.
-//------------------------------------------------------------------------------
-function createListOfFiltersHeader() {
-  var filterListDivElement = $('#filterListDivElement').addClass('filterListDivElement');
-  var h3Element = $('<h3>')
-    .text('Active URL filters:')
-    .appendTo($('#filterListDivElement'));
-}
-
-//------------------------------------------------------------------------------
-// Creates list of filters.
-//------------------------------------------------------------------------------
-function createListOfFilters() {
-    if (bgPage.filterArray.length == 0) {
-      var noFiltersDivElement = $('<span>')
-        .text('No filters.')
-        .appendTo($('#filterListDivElement'));
-    } else {
-      for (var m = 0; m < bgPage.filterArray.length; m++) {
-        var filterListElementDivElement = $('<div>')
-          .addClass('filterListElementDivElement')
-          .attr({ id: 'filterListElementDivElement' + m })
-          .appendTo($('#filterListDivElement'));
-        
-        var filterDivElement = $('<div>')
-          .addClass('filterDivElement')
-          .attr({ id: 'filterElementDiv' + m})
-          .text(bgPage.filterArray[m])
-          .appendTo(filterListElementDivElement);
-        
-        // filterDeleteButton building
-        var filterDeleteButtonDivElement = $('<div>')
-          .addClass('filterDeleteButtonDivElement')
-          .attr({ id: 'filterDeleteButtonDivElement' + m})
-          .appendTo(filterListElementDivElement);
-        var filterDeleteButtonElement = $('<input>')
-          .attr({ 
-            id: 'filterDeleteButtonElement' + m,
-            type: 'button',
-            value: 'Delete Filter'})
-          .click(function() {deleteUrlFromFilters(m);return false;})
-          .appendTo(filterDeleteButtonDivElement);
-    }
-  }
-}
-
-//------------------------------------------------------------------------------
-// Rebuilds the list of filters.
-//------------------------------------------------------------------------------
-function rebuildListOfFilters() {
-  for (var i = 0; i <= bgPage.filterArray.length; i++) {
+// ------------------------------------------------------------------------------
+// FILTERS
+// ------------------------------------------------------------------------------
+// Rebuilds the filters list.
+function rebuildFiltersList() {
+  for (var i = 0; i <= bgPage.filters.length; i++) {
     $('#filterListElementDivElement' + i).remove();
   }
-  createListOfFilters();
+  createFiltersList();
+}
+
+//Adds a url to the filters.
+//@param i index of recentlyClosedTabs element
+function addRecentlyClosedTabToFiltersList(i) {
+  var url = bgPage.recentlyClosedTabs[i].url;
+  var urlPattern = prompt("Ignore this URL in future?", url);
+  if (urlPattern != null) {
+    bgPage.addUrlToFilters(urlPattern);
+    rebuildFiltersList();
+  }
+}
+
+//Deletes a filter from the filters list.
+//@param i index of filters element
+function deleteFilterFromList(i) {
+  bgPage.removeFilterByIndex(i);
+  rebuildFiltersList();
 }
 
 //------------------------------------------------------------------------------
-// Creates list of recently closed tabs.
+// RECENTLY CLOSED TABS
 //------------------------------------------------------------------------------
-function createListOfRecentlyClosedTabs() {
+// Creates recently closed tabs list.
+function createRecentlyClosedTabsList() {
   if (bgPage.recentlyClosedTabs.length == 0) {
-	  showNoRCTs();
+    showRecentlyClosedTabsIsEmpty();
   } else {
     for (var i = 0; i < bgPage.recentlyClosedTabs.length; i++) {
       this.createRctDivForOptions(i);
@@ -112,63 +85,24 @@ function createListOfRecentlyClosedTabs() {
   }
 }
 
-//------------------------------------------------------------------------------
-// Rebuilds the rct list.
-//------------------------------------------------------------------------------
-function rebuildListOfRecentlyClosedTabs() {
+// Rebuilds the recently closed tabs list.
+function rebuildRecentlyClosedTabsList() {
   for (var j = 0; j <= bgPage.recentlyClosedTabs.length; j++) {
     $('#rctDivElement' + j).remove();
   }
-  createListOfRecentlyClosedTabs();
+  createRecentlyClosedTabsList();
 }
 
-//------------------------------------------------------------------------------
-// Deletes element from the list of recently closed tabs.
-//------------------------------------------------------------------------------
-function deleteRecentlyClosedTab(i) {
-  bgPage.removeClosedTabByIndex(i);
-  rebuildListOfRecentlyClosedTabs()
+// Deletes element from the recently closed tabs list.
+// @param i index of recentlyClosedTabs element
+function deleteRecentlyClosedTabFromList(i) {
+  bgPage.removeRecentlyClosedTabByIndex(i);
+  rebuildRecentlyClosedTabsList();
 }
 
-//------------------------------------------------------------------------------
-// Adds tab url to the filters.
-//------------------------------------------------------------------------------
-function addRecentlyClosedTabToFilters(i) {
-	var url = bgPage.recentlyClosedTabs[i].url;
-	var urlPattern = prompt("Ignore this URL in future?", url);
-	if (urlPattern != null) {
-		addUrlToFilters(urlPattern);
-		rebuildListOfFilters();
-	}
-}
-
-//------------------------------------------------------------------------------
-// Adds pattern to the filters.
-//------------------------------------------------------------------------------
-function addUrlToFilters(pattern) {
-  bgPage.filterArray.unshift(pattern)
-  bgPage.storeFilterArray();
-}
-
-//------------------------------------------------------------------------------
-// Deletes a filter from the list of filters.
-//------------------------------------------------------------------------------
-function deleteUrlFromFilters(i) {
-  bgPage.removeFilterByIndex(i);
-	rebuildListOfFilters();
-}
-
-//------------------------------------------------------------------------------
-// Appends a 'no rcts'-String to the rootDivElement.
-//------------------------------------------------------------------------------
-function showNoRCTs() {
-  var rootDiv = $('#rootDiv').text('No recently closed tabs.');
-}
-
-//------------------------------------------------------------------------------
-//Creates recently closed tab.
-//------------------------------------------------------------------------------
-function createRecentlyClosedTab(i) {
-	chrome.tabs.create({url: bgPage.recentlyClosedTabs[i].url});
-	deleteRecentlyClosedTab(i);
+// Opens a recently closed tab by index.
+// @param i index of recentlyClosedTabs element
+function openRecentlyClosedTabByIndex(i) {
+  chrome.tabs.create({ url: bgPage.recentlyClosedTabs[i].url });
+  deleteRecentlyClosedTabFromList(i);
 }

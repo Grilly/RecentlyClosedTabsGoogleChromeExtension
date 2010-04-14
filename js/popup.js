@@ -4,8 +4,6 @@
 // Global variables.
 //------------------------------------------------------------------------------
 var bgPage = chrome.extension.getBackgroundPage();
-console.log(bgPage.recentlyClosedTabs);
-console.log(bgPage.allOpenedTabs);
 
 // ------------------------------------------------------------------------------
 // Main method: Everything starts here!
@@ -14,16 +12,14 @@ function main() {
   if (bgPage.recentlyClosedTabs.length == 0) {
     var rootDiv = $('#rootDiv').text('No recently closed tabs.');
   } else {
-    for (var i = 0; i < bgPage.recentlyClosedTabs.length && i < bgPage.maxPopupTableLength; i++) {
+    for (var i = 0; i < bgPage.recentlyClosedTabs.length && i < bgPage.maxPopupLength; i++) {
       this.createRctDivForPopup(i);
     }
   }
   createPopupFooter();
 }
 
-// ------------------------------------------------------------------------------
 // Creates footer for popup.
-// ------------------------------------------------------------------------------
 function createPopupFooter() {
   var popupFooter = $('#popupFooter')
     .addClass('popupFooter')
@@ -38,10 +34,8 @@ function createPopupFooter() {
       return false;});
 }
 
-//------------------------------------------------------------------------------
 // Removes selected RecentlyClosedTab row
-//------------------------------------------------------------------------------
-function removeRecentlyClosedTab(i) {
-  //should remove this table row
+// @param i index of recentlyClosedTabs element
+function removeRecentlyClosedTabFromList(i) {
   $('#rctDivElement' + i).remove();
 }

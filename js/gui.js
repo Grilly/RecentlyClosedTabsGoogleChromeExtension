@@ -5,9 +5,7 @@
 //------------------------------------------------------------------------------
 var bgPage = chrome.extension.getBackgroundPage();
 
-//------------------------------------------------------------------------------
-// Creates the header border for the options and infonews defined by the title.
-//------------------------------------------------------------------------------
+// Creates the header for the options and infonews defined by the title.
 function createHeader(title) {
 	var topTable = $('<table>').addClass('header_table').appendTo($('#headerTableDiv'));
 	var trElement = $('<tr>').appendTo(topTable);
@@ -21,53 +19,53 @@ function createHeader(title) {
 	var h1Element = $('<h1>').text('Extension ' + title).appendTo($('#headerBorderDiv'));
 }
 
-//------------------------------------------------------------------------------
 // Creates the footer.
-//------------------------------------------------------------------------------
 function createFooter() {
 	var footerDiv = $('#footerDiv').addClass('footerDiv').text('©2010 Michael & Draško');
 }
 
-//------------------------------------------------------------------------------
-// Creates the rct list for the options page with the buttons to edit the list.
-//------------------------------------------------------------------------------
+// Creates the rct list element for the options page with the buttons to edit the list.
 function createRctDivForOptions(i) {
 	createRctDivElement(i);
 	createRctDiv(i);
-	createRCTListEditButtons(i);
+	createRecentlyClosedTabsListEditButtons(i);
 }
 
-//------------------------------------------------------------------------------
-// Creates the rct list for the popup page.
-//------------------------------------------------------------------------------
+// Creates the rct list element for the popup page.
 function createRctDivForPopup(i) {
 	createRctDivElement(i);
 	createRctDiv(i);
 }
 
-//------------------------------------------------------------------------------
-// Creates the rct div element that later contains all rcts.
-//------------------------------------------------------------------------------
+// Creates the header of the rct list.
+function createRecentlyClosedTabsListHeader() {
+var h3Element = $('<h3>')
+ .text('Recently closed tabs:')
+ .appendTo($('#rootDiv'));
+}
+
+// Creates the recentlyClosedTabs div element that later contains all recently closed tabs.
 function createRctDivElement(i) {
 	if (bgPage.recentlyClosedTabs[i] != null) {
 		var rctDivElement = $('<div>')
-		.addClass('rctDivElement')
-		.attr({ id: 'rctDivElement' + i })
-		.click(function() {bgPage.reopenRecentlyClosedTab(i); removeRecentlyClosedTab(i); return false;})
-		.appendTo($('#rootDiv'));
+  		.addClass('rctDivElement')
+  		.attr({ id: 'rctDivElement' + i })
+  		.click(function() {
+  		  bgPage.openRecentlyClosedTab(i);
+  		  removeRecentlyClosedTabFromList(i);
+  		  return false; })
+  		.appendTo($('#rootDiv'));
 	}
 }
 
-//------------------------------------------------------------------------------
 // Creates the edit buttons for the options page.
-//------------------------------------------------------------------------------
-function createRCTListEditButtons(i) {
+function createRecentlyClosedTabsListEditButtons(i) {
 	if (bgPage.recentlyClosedTabs[i] != null) {
 		
 		var rctButtonsDivElement = $('<div>')
-		.addClass('rctButtonsDivElement')
-		.attr({ id: 'rctButtonsDivElement' + i })
-		.appendTo($('#rctDivElement' + i));
+  		.addClass('rctButtonsDivElement')
+  		.attr({ id: 'rctButtonsDivElement' + i })
+  		.appendTo($('#rctDivElement' + i));
 		
 		//deleteButtonDivElement building
 		var deleteButtonDivElement = $('<div>')
@@ -78,8 +76,10 @@ function createRCTListEditButtons(i) {
 			.attr({
 			  id: 'deleteButtonInputElement' + i,
 				type: 'button',
-				value: 'Delete Entry' })
-			.click(function() {deleteRecentlyClosedTab(i);return false;})
+				value: 'Delete' })
+			.click(function() {
+			  deleteRecentlyClosedTabFromList(i);
+			  return false; })
 			.appendTo(deleteButtonDivElement);
 		
 		//addToFiltersButtonDivElement building
@@ -91,22 +91,26 @@ function createRCTListEditButtons(i) {
 			.attr({
 			  id: 'addToFiltersInputElement' + i,
 				type: 'button',
-				value: 'Add To Filters And Delete' })
-			.click(function() {addRecentlyClosedTabToFilters(i);deleteRecentlyClosedTab(i);return false;})
+				value: 'Add Filter And Delete' })
+			.click(function() {
+			  deleteRecentlyClosedTabFromList(i);
+			  addRecentlyClosedTabToFiltersList(i);
+			  return false; })
 			.appendTo(addToFiltersButtonDivElement);
 	}
 }
 
-//------------------------------------------------------------------------------
-// Creates the div element of one rct.
-//------------------------------------------------------------------------------
+// Creates the div element of one recently closed tab.
 function createRctDiv(i) {
 	if (bgPage.recentlyClosedTabs[i] != null) {
 		var rctListDivElement = $('<div>')
-		.addClass('rctListDivElement')
-		.attr({ id: 'rctListDivElement' + i })
-		.click(function() {bgPage.openRecentlyClosedTab(i); deleteRecentlyClosedTab(i); return false;})
-		.appendTo($('#rctDivElement' + i));
+  		.addClass('rctListDivElement')
+  		.attr({ id: 'rctListDivElement' + i })
+  		.click(function(i) {
+  		  bgPage.openRecentlyClosedTab(i);
+  		  deleteRecentlyClosedTabFromList(i);
+  		  return false; })
+  		.appendTo($('#rctDivElement' + i));
 		
 		// tabShotElement building
 		var tabShotDivElement = $('<div>')
@@ -145,7 +149,6 @@ function createRctDiv(i) {
 			.appendTo(favIconDivElement);
 		
 		with (bgPage.recentlyClosedTabs[i]) {
-//			console.log(bgPage.recentlyClosedTabs[i]);
 			var tabShot = bgPage.recentlyClosedTabs[i].tabShot;
 			if (tabShot !== undefined && tabShot != null) {
 				tabShotIMG.attr({ src: tabShot });
@@ -162,28 +165,77 @@ function createRctDiv(i) {
 	}
 }
 
-//------------------------------------------------------------------------------
-// Creates the select and button elements to configure the number of elements
-// shown in the popup.
-//------------------------------------------------------------------------------
-function createMaxPopupTableLengthSelect() {
+// Creates the select and button elements to configure the maxPopupLength.
+function createMaxPopupLengthSelect() {
 	var h3Element = $('<h3>')
 		.text('Favorite number of elements shown in the popup:')
 		.appendTo($('#maxPopupLengthSelect'));
 	var selectElementOptions = {
-			'1': '1',
-			'2': '2',
-			'5': '5',
-			'10': '10',
-			'15': '15'
+		'1': '1',
+		'2': '2',
+		'5': '5',
+		'10': '10',
+		'15': '15'
 	}
 	var selectElement = $('<select>')
 		.attr({ id: 'tabsCount' })
-	    .addOption(selectElementOptions, true)
-	    .selectOptions('1', true)
-	    .appendTo($('#maxPopupLengthSelect'));
+    .addOption(selectElementOptions, true)
+    .selectOptions('1', true)
+    .appendTo($('#maxPopupLengthSelect'));
 	var saveSelectButtonElement = $('<button>')
-	    .text('Save')
-	    .click(function() {saveMaxPopupTableLength();return false;})
-	    .appendTo($('#maxPopupLengthSelect'));
+    .text('Save')
+    .click(function() {saveMaxPopupLength();return false;})
+    .appendTo($('#maxPopupLengthSelect'));
+}
+
+// Appends a 'no rcts'-String to the rootDivElement.
+function showRecentlyClosedTabsIsEmpty() {
+  var rootDiv = $('#rootDiv').text('No recently closed tabs.');
+}
+
+//Creates the header of the filters list.
+function createFiltersListHeader() {
+  var filterListDivElement = $('#filterListDivElement').addClass('filterListDivElement');
+  var h3Element = $('<h3>')
+    .text('Active URL filters:')
+    .appendTo($('#filterListDivElement'));
+}
+
+// Creates the filters list.
+function createFiltersList() {
+    if (bgPage.filters.length == 0) {
+      var noFiltersDivElement = $('<span>')
+        .text('No filters.')
+        .attr({ id: 'noFiltersDivElement' })
+        .appendTo($('#filterListDivElement'));
+    } else {
+      if ($('#noFiltersDivElement') != null) $('#noFiltersDivElement').remove();
+      for (var m = 0; m < bgPage.filters.length; m++) {
+        var filterListElementDivElement = $('<div>')
+          .addClass('filterListElementDivElement')
+          .attr({ id: 'filterListElementDivElement' + m })
+          .appendTo($('#filterListDivElement'));
+        
+        var filterDivElement = $('<div>')
+          .addClass('filterDivElement')
+          .attr({ id: 'filterElementDiv' + m})
+          .text(bgPage.filters[m].url)
+          .appendTo(filterListElementDivElement);
+        
+        // filterDeleteButton building
+        var filterDeleteButtonDivElement = $('<div>')
+          .addClass('filterDeleteButtonDivElement')
+          .attr({ id: 'filterDeleteButtonDivElement' + m})
+          .appendTo(filterListElementDivElement);
+        var filterDeleteButtonElement = $('<input>')
+          .attr({ 
+            id: 'filterDeleteButtonElement' + m,
+            type: 'button',
+            value: 'Delete'})
+          .click(function(m) {
+            deleteFilterFromList(m);
+            return false; })
+          .appendTo(filterDeleteButtonDivElement);
+    }
+  }
 }
