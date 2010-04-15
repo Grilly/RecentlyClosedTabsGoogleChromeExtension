@@ -25,10 +25,10 @@ function createFooter() {
 }
 
 // Creates the rct list element for the options page with the buttons to edit the list.
-function createRctDivForOptions(i) {
-	createRctDivElement(i);
-	createRctDiv(i);
-	createRecentlyClosedTabsListEditButtons(i);
+function createRctDivForOptions(timestamp) {
+	createRctDivElement(timestamp);
+	createRctDiv(timestamp);
+	createRecentlyClosedTabsListEditButtons(timestamp);
 }
 
 // Creates the rct list element for the popup page.
@@ -46,7 +46,7 @@ var h3Element = $('<h3>')
 
 // Creates the recentlyClosedTabs div element that later contains all recently closed tabs.
 function createRctDivElement(i) {
-	if (bgPage.recentlyClosedTabs[i] != null) {
+	if (bgPage.recentlyClosedTabs[i] !== undefined) {
 		var rctDivElement = $('<div>')
   		.addClass('rctDivElement')
   		.attr({ id: 'rctDivElement' + i })
@@ -78,7 +78,7 @@ function createRecentlyClosedTabsListEditButtons(i) {
 				type: 'button',
 				value: 'Delete' })
 			.click(function() {
-			  deleteRecentlyClosedTabFromList(i);
+			  removeRecentlyClosedTabFromList(i);
 			  return false; })
 			.appendTo(deleteButtonDivElement);
 		
@@ -93,7 +93,7 @@ function createRecentlyClosedTabsListEditButtons(i) {
 				type: 'button',
 				value: 'Add Filter And Delete' })
 			.click(function() {
-			  deleteRecentlyClosedTabFromList(i);
+			  removeRecentlyClosedTabFromList(i);
 			  addRecentlyClosedTabToFiltersList(i);
 			  return false; })
 			.appendTo(addToFiltersButtonDivElement);
@@ -108,7 +108,7 @@ function createRctDiv(i) {
   		.attr({ id: 'rctListDivElement' + i })
   		.click(function(i) {
   		  bgPage.openRecentlyClosedTab(i);
-  		  deleteRecentlyClosedTabFromList(i);
+  		  removeRecentlyClosedTabFromList(i);
   		  return false; })
   		.appendTo($('#rctDivElement' + i));
 		

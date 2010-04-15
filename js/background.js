@@ -8,7 +8,7 @@ var appConfig;
 // Map of all opened tabs keyed by tabId
 var allOpenedTabs = {};
 // Array of recently closed tabs
-var recentlyClosedTabs;
+var recentlyClosedTabs = {};
 // Array of URL blacklist filters
 var filters;
 // maximal number of elements (rcts) shown on popup page
@@ -67,14 +67,13 @@ function restoreState() {
 //------------------------------------------------------------------------------
 // Function defining the tabInfo object.
 //------------------------------------------------------------------------------
-function tabInfo(tabId, windowId, favIconUrl, dateOfUpdate, title, url, tabShot) {
+function tabInfo(tabId, windowId, favIconUrl, title, url) {
   this.tabId = tabId;
   this.windowId = windowId;
   this.favIconUrl = favIconUrl;
-  this.dateOfUpdate = dateOfUpdate;
   this.title = title;
   this.url = url;
-  this.tabShot = tabShot;
+  this.tabShot;
 }
 
 //------------------------------------------------------------------------------
@@ -194,7 +193,7 @@ function processOpenedTab(tab) {
    return;
   var tabId = tab.id;
   allOpenedTabs[tabId] = new tabInfo(tabId, tab.windowId, tab.favIconUrl,
-     new Date(), tab.title, tabUrl, null);
+           tab.title, tabUrl);
   if (tab.selected)
    setImgDataUrl(tabId);
   // removes rct if already opened
@@ -208,13 +207,12 @@ function removeOpenedTabByTabId(tabId) {
 }
 
 var orgImage = new Image();
-var canvas = document.createElement("canvas");
+var canvas = document.createElement('canvas');
 //Puts the dataUrl of the tab specified by the given tabId into the object allOpenedTabs.
 //@param tabId id of the tab to set the image for
 function setImgDataUrl(tabId) {
 if (allOpenedTabs[tabId] !== undefined)
- chrome.tabs.captureVisibleTab(allOpenedTabs[tabId].windowId, function(
-     snapshotData) {
+ chrome.tabs.captureVisibleTab(allOpenedTabs[tabId].windowId, function(snapshotData) {
      // console.log("receiving snapshot data for tabId = " + tabId);
      orgImage.onload = function() {
        // console.log("orgImage size = " + orgImage.width + "x" + orgImage.height);
@@ -265,8 +263,8 @@ function processClosedTab(tabInfo) {
 // Adds new closedTab to recentlyClosedTabs and saves it.
 // @param tabInfo
 function addClosedTab(tabInfo) {
-  tabInfo.timestamp = new Date();
-  recentlyClosedTabs.unshift(tabInfo);
+  var timestamp = (new Date()).getTime;
+  recentlyClosedTabs[timestamp] = tabInfo;
   storeRecentlyClosedTabs();
 }
 
@@ -287,21 +285,20 @@ for (i in recentlyClosedTabs)
 // Removes a rct by index.
 // @param i index of the element to be removed from the recentlyClosedTabs
 function removeRecentlyClosedTabByIndex(i) {
-  recentlyClosedTabs.splice(i, 1)
+  delete recentlyClosedTabs[i];
   storeRecentlyClosedTabs();
 }
 
 //Fetches/Initialises the recentlyClosedTabs from the localStorage.
 function fetchRecentlyClosedTabs() {
   var recentlyClosedTabsString = localStorage['recentlyClosedTabs'];
+  console.log(recentlyClosedTabsString);
   if (recentlyClosedTabsString === undefined) {
-   storeRecentlyClosedTabs([]);
+    storeRecentlyClosedTabs({});
   } else {
-   recentlyClosedTabs = JSON.parse(recentlyClosedTabsString);
-   for ( var i in recentlyClosedTabs)
-     if (recentlyClosedTabs[i] == null)
-       recentlyClosedTabs.splice(i, 1);
+    recentlyClosedTabs = JSON.parse(recentlyClosedTabsString);
   }
+  console.log(recentlyClosedTabs);
 }
 
 // Modifys/Persists the recentlyClosedTabs to the localStorage.

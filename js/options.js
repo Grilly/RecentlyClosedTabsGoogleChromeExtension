@@ -73,33 +73,18 @@ function deleteFilterFromList(i) {
 //------------------------------------------------------------------------------
 // Creates recently closed tabs list.
 function createRecentlyClosedTabsList() {
-  if (bgPage.recentlyClosedTabs.length == 0) {
+  if (bgPage.recentlyClosedTabs == {}) {
     showRecentlyClosedTabsIsEmpty();
   } else {
-    for (var i = 0; i < bgPage.recentlyClosedTabs.length; i++) {
-      this.createRctDivForOptions(i);
+    for (var timestamp in bgPage.recentlyClosedTabs) {
+      createRctDivForOptions(timestamp);
     }
   }
 }
 
-// Rebuilds the recently closed tabs list.
-function rebuildRecentlyClosedTabsList() {
-  for (var j = 0; j <= bgPage.recentlyClosedTabs.length; j++) {
-    $('#rctDivElement' + j).remove();
-  }
-  createRecentlyClosedTabsList();
+//Removes selected RecentlyClosedTab row
+//@param i index of recentlyClosedTabs element
+function removeRecentlyClosedTabFromList(i) {
+  $('#rctDivElement' + i).remove();
 }
 
-// Deletes element from the recently closed tabs list.
-// @param i index of recentlyClosedTabs element
-function deleteRecentlyClosedTabFromList(i) {
-  bgPage.removeRecentlyClosedTabByIndex(i);
-  rebuildRecentlyClosedTabsList();
-}
-
-// Opens a recently closed tab by index.
-// @param i index of recentlyClosedTabs element
-function openRecentlyClosedTabByIndex(i) {
-  chrome.tabs.create({ url: bgPage.recentlyClosedTabs[i].url });
-  deleteRecentlyClosedTabFromList(i);
-}
