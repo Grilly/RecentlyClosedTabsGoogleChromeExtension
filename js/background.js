@@ -198,8 +198,7 @@ function removedTabsListener(tabId) {
 // array and adds the tabInfo object to the recentlyClosedTabs.
 // @param tabInfo tabInfo to process
 function processClosedTab(tabInfo) {
-	if (tabInfo === undefined)
-		return;
+	if (tabInfo === undefined) return;
 	removeOpenedTabByTabId(tabInfo.tabId);
 	removeRecentlyClosedTabByUrl(tabInfo.url)
 	addClosedTab(tabInfo);
@@ -208,7 +207,7 @@ function processClosedTab(tabInfo) {
 // Adds new closedTab to recentlyClosedTabs and saves it.
 // @param tabInfo
 function addClosedTab(tabInfo) {
-	var timestamp = (new Date()).getTime;
+	var timestamp = (new Date()).getTime();
 	recentlyClosedTabs[timestamp] = tabInfo;
 	storeRecentlyClosedTabs();
 }
