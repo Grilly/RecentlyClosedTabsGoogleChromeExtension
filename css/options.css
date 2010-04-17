@@ -1,11 +1,18 @@
 @import "background.css";
 
+.body {
+  margin-bottom: 0px;
+  margin-left: 11px;
+  margin-right: 11px;
+  margin-top: 0px;
+}
+
 .rctDivElement {
-  width: 800px;
+  width: 820px;
 }
 
 .contentDivElement {
-  width: 463px;
+  width: 483px;
 }
 
 .deleteButtonDivElement {
@@ -28,7 +35,7 @@
 }
 .dateDivElement {
   float: left;
-  width: 32px;
+  width: 20px;
   padding: 1px;
 }
 

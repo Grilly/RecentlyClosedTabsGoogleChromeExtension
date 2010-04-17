@@ -28,7 +28,7 @@ function main() {
 function saveMaxPopupLength() {
 	var bgPage = chrome.extension.getBackgroundPage();
 	var select_tabsCount = $('#tabsCount');
-	bgPage.storeMaxPopupLength(select_tabsCount.children[select_tabsCount.selectedIndex].value);
+	bgPage.storeMaxPopupLength($("#tabsCount").val());
 	// Update status to let user know options were saved.
 	$('#status').text('Options Saved.');
 	setTimeout(function() { $('#status').text(''); }, 750);
@@ -86,5 +86,6 @@ function createRecentlyClosedTabsList() {
 //@param i index of recentlyClosedTabs element
 function removeRecentlyClosedTabFromList(i) {
   $('#rctDivElement' + i).remove();
+  delete bgPage.recentlyClosedTabs[i];
 }
 
