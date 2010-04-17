@@ -1,4 +1,4 @@
-@import "gui.css";
+@import "background.css";
 
 .rctDivElement {
   width: 800px;
@@ -25,6 +25,11 @@
 	border: 0;
 	vertical-align: middle;
 	padding: 1px;
+}
+.dateDivElement {
+  float: left;
+  width: 32px;
+  padding: 1px;
 }
 
 .filterListDivElement {
