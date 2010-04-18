@@ -11,18 +11,22 @@
   width: 820px;
 }
 
+.rctListdescription {
+	
+}
+
 .contentDivElement {
   width: 483px;
 }
 
 .deleteButtonDivElement {
 	float: left;
-	width: 100px;
+	width: 60px;
 	padding: 6px 1px 1px 1px;
 }
 .addToFiltersButtonDivElement {
 	float: left;
-  width: 100px;
+  width: 65px;
   padding: 6px 1px 1px 1px;
 }
 
@@ -35,7 +39,8 @@
 }
 .dateDivElement {
   float: left;
-  width: 20px;
+  text-align: right;
+  width: 75px;
   padding: 1px;
 }
 

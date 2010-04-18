@@ -5,6 +5,20 @@
 //------------------------------------------------------------------------------
 var bgPage = chrome.extension.getBackgroundPage();
 
+var month = new Array(12);
+month[0] = "January";
+month[1] = "February";
+month[2] = "March";
+month[3] = "April";
+month[4] = "May";
+month[5] = "June";
+month[6] = "July";
+month[7] = "August";
+month[8] = "September";
+month[9] = "October";
+month[10] = "November";
+month[11] = "December";
+
 // Creates the header for the options and infonews defined by the title.
 function createHeader(title) {
 	var topTable = $('<table>').addClass('header_table').appendTo($('#headerTableDiv'));
@@ -37,11 +51,23 @@ function createRctDivForPopup(timestamp) {
 	createRctDiv(timestamp);
 }
 
+// Creates the filtsers list.
+function createFiltersList(timestamp) {
+  showFiltersIsEmpty();
+  for (var timestamp in bgPage.filters) {
+    createFiltersDiv(timestamp);
+  }
+}
+
 // Creates the header of the rct list.
 function createRecentlyClosedTabsListHeader() {
-var h3Element = $('<h3>')
- .text('Recently closed tabs:')
- .appendTo($('#rootDiv'));
+  var h3Element = $('<h3>')
+    .text('Recently closed tabs:')
+    .appendTo($('#rootDiv'));
+  var rctListdescription = $('<div>')
+    .addClass('rctListdescription')
+    .text('*If you add a recently closed tab to the filters it will be deleted from the recently closed tabs list.')
+    .appendTo($('#rootDiv'));
 }
 
 // Creates the recentlyClosedTabs div element that later contains all recently closed tabs.
@@ -79,6 +105,7 @@ function createRecentlyClosedTabsListEditButtons(timestamp) {
 				value: 'Delete' })
 			.click(function() {
 			  removeRecentlyClosedTabFromList(timestamp);
+			  showRecentlyClosedTabsIsEmpty();
 			  return false; })
 			.appendTo(deleteButtonDivElement);
 		
@@ -91,13 +118,18 @@ function createRecentlyClosedTabsListEditButtons(timestamp) {
 			.attr({
 			  id: 'addToFiltersInputElement' + timestamp,
 				type: 'button',
-				value: 'Add Filter And Delete' })
+				value: 'To Filters*' })
 			.click(function() {
+        addRecentlyClosedTabToFiltersList(timestamp);
+        rebuildFiltersList();
 			  removeRecentlyClosedTabFromList(timestamp);
-			  addRecentlyClosedTabToFiltersList(timestamp);
 			  return false; })
 			.appendTo(addToFiltersButtonDivElement);
 	}
+}
+
+function pad2(number) {
+  return (number < 10 ? '0' : '') + number
 }
 
 // Creates the div element of one recently closed tab.
@@ -115,10 +147,14 @@ function createRctDiv(timestamp, isOptions) {
   		.appendTo($('#rctDivElement' + timestamp));
 		
 		if (isOptions) {
+		  var date = new Date();
+		  date.setTime(timestamp);
+		  var dateString = date.getDate() + ". " + month[date.getMonth()] + " " + date.getFullYear();
+		  var timeString = date.getHours() + ":" + pad2(date.getMinutes());
   		var dateDivElement = $('<div>')
         .addClass('dateDivElement')
         .attr({ id: 'dateDivElement' + timestamp })
-        .text(timestamp)
+        .text(dateString  + " " + timeString)
         .appendTo(rctListDivElement);
     }
 		
@@ -200,7 +236,14 @@ function createMaxPopupLengthSelect() {
 
 // Appends a 'no rcts'-String to the rootDivElement.
 function showRecentlyClosedTabsIsEmpty() {
-  var rootDiv = $('#rootDiv').text('No recently closed tabs.');
+  if (bgPage.isEmpty(bgPage.recentlyClosedTabs)) {
+    var noRecentlyClosedTabsDivElement = $('<div>')
+      .text('No recently closed tabs.')
+      .attr({ id: 'noRecentlyClosedTabsDivElement' })
+      .appendTo($('#rootDiv'));
+  } else {
+    if ($('#noRecentlyClosedTabsDivElement') != null) $('#noRecentlyClosedTabsDivElement').remove();
+  }
 }
 
 //Creates the header of the filters list.
@@ -212,40 +255,31 @@ function createFiltersListHeader() {
 }
 
 // Creates the filters list.
-function createFiltersList() {
-    if (bgPage.filters.length == 0) {
-      var noFiltersDivElement = $('<span>')
-        .text('No filters.')
-        .attr({ id: 'noFiltersDivElement' })
-        .appendTo($('#filterListDivElement'));
-    } else {
-      if ($('#noFiltersDivElement') != null) $('#noFiltersDivElement').remove();
-      for (var timestamp = 0; timestamp < bgPage.filters.length; timestamp++) {
-        var filterListElementDivElement = $('<div>')
-          .addClass('filterListElementDivElement')
-          .attr({ id: 'filterListElementDivElement' + timestamp })
-          .appendTo($('#filterListDivElement'));
-        
-        var filterDivElement = $('<div>')
-          .addClass('filterDivElement')
-          .attr({ id: 'filterElementDiv' + timestamp })
-          .text(bgPage.filters[timestamp].url)
-          .appendTo(filterListElementDivElement);
-        
-        // filterDeleteButton building
-        var filterDeleteButtonDivElement = $('<div>')
-          .addClass('filterDeleteButtonDivElement')
-          .attr({ id: 'filterDeleteButtonDivElement' + timestamp })
-          .appendTo(filterListElementDivElement);
-        var filterDeleteButtonElement = $('<input>')
-          .attr({ 
-            id: 'filterDeleteButtonElement' + timestamp,
-            type: 'button',
-            value: 'Delete'})
-          .click(function(m) {
-            deleteFilterFromList(timestamp);
-            return false; })
-          .appendTo(filterDeleteButtonDivElement);
-    }
-  }
+function createFiltersDiv(timestamp) {
+  var filterListElementDivElement = $('<div>')
+    .addClass('filterListElementDivElement')
+    .attr({ id: 'filterListElementDivElement' + timestamp })
+    .appendTo($('#filterListDivElement'));
+  
+  var filterDivElement = $('<div>')
+    .addClass('filterDivElement')
+    .attr({ id: 'filterElementDiv' + timestamp })
+    .text(bgPage.filters[timestamp].url)
+    .appendTo(filterListElementDivElement);
+  
+  // filterDeleteButton building
+  var filterDeleteButtonDivElement = $('<div>')
+    .addClass('filterDeleteButtonDivElement')
+    .attr({ id: 'filterDeleteButtonDivElement' + timestamp })
+    .appendTo(filterListElementDivElement);
+  var filterDeleteButtonElement = $('<input>')
+    .attr({ 
+      id: 'filterDeleteButtonElement' + timestamp,
+      type: 'button',
+      value: 'Delete'})
+    .click(function() {
+      deleteFilterFromList(timestamp);
+      showFiltersIsEmpty();
+      return false; })
+    .appendTo(filterDeleteButtonDivElement);
 }

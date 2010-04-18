@@ -42,30 +42,42 @@ function setMaxPopupLength() {
 // ------------------------------------------------------------------------------
 // FILTERS
 // ------------------------------------------------------------------------------
-// Rebuilds the filters list.
+//Rebuilds the filters list.
 function rebuildFiltersList() {
-  for (var i = 0; i <= bgPage.filters.length; i++) {
-    $('#filterListElementDivElement' + i).remove();
+  for (var timestamp in bgPage.filters) {
+    $('#filterListElementDivElement' + timestamp).remove();
   }
   createFiltersList();
 }
 
+// Checks if filters is empty and adds notification if true.
+function showFiltersIsEmpty() {
+  if (bgPage.isEmpty(bgPage.filters)) {
+    var noFiltersDivElement = $('<div>')
+      .text('No filters.')
+      .attr({ id: 'noFiltersDivElement' })
+      .appendTo($('#filterListDivElement'));
+  } else {
+    if ($('#noFiltersDivElement') != null) $('#noFiltersDivElement').remove();
+  }
+}
+
 //Adds a url to the filters.
 //@param i index of recentlyClosedTabs element
-function addRecentlyClosedTabToFiltersList(i) {
-  var url = bgPage.recentlyClosedTabs[i].url;
+function addRecentlyClosedTabToFiltersList(timestamp) {
+  var url = bgPage.recentlyClosedTabs[timestamp].url;
   var urlPattern = prompt("Ignore this URL in future?", url);
+  console.log(urlPattern);
   if (urlPattern != null) {
     bgPage.addUrlToFilters(urlPattern);
-    rebuildFiltersList();
   }
 }
 
 //Deletes a filter from the filters list.
 //@param i index of filters element
-function deleteFilterFromList(i) {
-  bgPage.removeFilterByIndex(i);
-  rebuildFiltersList();
+function deleteFilterFromList(timestamp) {
+  $('#filterListElementDivElement' + timestamp).remove();
+  bgPage.removeFilterByTimestamp(timestamp);
 }
 
 //------------------------------------------------------------------------------
@@ -73,19 +85,16 @@ function deleteFilterFromList(i) {
 //------------------------------------------------------------------------------
 // Creates recently closed tabs list.
 function createRecentlyClosedTabsList() {
-  if (bgPage.recentlyClosedTabs == {}) {
-    showRecentlyClosedTabsIsEmpty();
-  } else {
-    for (var timestamp in bgPage.recentlyClosedTabs) {
-      createRctDivForOptions(timestamp);
-    }
+  showRecentlyClosedTabsIsEmpty();
+  for (var timestamp in bgPage.recentlyClosedTabs) {
+    createRctDivForOptions(timestamp);
   }
 }
 
 //Removes selected RecentlyClosedTab row
 //@param i index of recentlyClosedTabs element
-function removeRecentlyClosedTabFromList(i) {
-  $('#rctDivElement' + i).remove();
-  delete bgPage.recentlyClosedTabs[i];
+function removeRecentlyClosedTabFromList(timestamp) {
+  bgPage.removeRecentlyClosedTabByTimestamp(timestamp);
+  $('#rctDivElement' + timestamp).remove();
 }
 

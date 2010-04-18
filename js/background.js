@@ -64,23 +64,24 @@ function filter(url) {
 // Adds url to the filters.
 // @param url url to be added
 function addUrlToFilters(url) {
-	filters.unshift(new filter(url));
+	var timestamp = (new Date()).getTime();
+	filters[timestamp] = new filter(url);
 	storeFilters();
 }
 
 // Removes a filter by index.
 // @param i index of element to be removed from the filters
-function removeFilterByIndex(i) {
-	filters.splice(i, 1)
+function removeFilterByTimestamp(timestamp) {
+	delete filters[timestamp];
 	storeFilters();
 }
 
 // Removes a filter by url.
 // @param url url of element to be removed from the filters
 function removeFilterByUrl(url) {
-	for (i in filters)
-		if (filters[i].url == url)
-			removeFilterByIndex(i);
+	for (var timestamp in filters)
+		if (filters[timestamp].url == url)
+			removeFilterByTimestamp(timestamp);
 }
 
 // Returns true if the filters contain the given url else false.
@@ -221,15 +222,15 @@ function openRecentlyClosedTab(i) {
 // Removes a rct by url.
 // @param url url of the element to be removed from the recentlyClosedTabs
 function removeRecentlyClosedTabByUrl(url) {
-	for (t in recentlyClosedTabs)
-		if (recentlyClosedTabs[t].url == url)
-			removeRecentlyClosedTabByTimestamp(t);
+	for (var timestamp in recentlyClosedTabs)
+		if (recentlyClosedTabs[timestamp].url == url)
+			removeRecentlyClosedTabByTimestamp(timestamp);
 }
 
 // Removes a rct by index.
 // @param i index of the element to be removed from the recentlyClosedTabs
-function removeRecentlyClosedTabByTimestamp(t) {
-	delete recentlyClosedTabs[t];
+function removeRecentlyClosedTabByTimestamp(timestamp) {
+	delete recentlyClosedTabs[timestamp];
 	storeRecentlyClosedTabs();
 }
 
@@ -237,7 +238,10 @@ function removeRecentlyClosedTabByTimestamp(t) {
 function fetchFilters() {
 	var filterString = localStorage['filters'];
 	if (filterString === undefined) {
-		storeFilters([new filter('chrome://newtab/'), new filter('about:blank')]);
+    filters = {};
+	  filters[0] = new filter('chrome://newtab/');
+	  filters[1] = new filter('about:blank');
+		storeFilters();
 	} else {
 		filters = JSON.parse(filterString);
 		for (var i in filters)
@@ -274,9 +278,8 @@ function storeMaxPopupLength(newMaxPopupLength) {
 // Fetches/Initialises the recentlyClosedTabs from the localStorage.
 function fetchRecentlyClosedTabs() {
 	var recentlyClosedTabsString = localStorage['recentlyClosedTabs'];
-	console.log(recentlyClosedTabsString);
 	if (recentlyClosedTabsString === undefined) {
-		storeRecentlyClosedTabs( {});
+		storeRecentlyClosedTabs({});
 	} else {
 		recentlyClosedTabs = JSON.parse(recentlyClosedTabsString);
 	}
@@ -291,4 +294,13 @@ function storeRecentlyClosedTabs(newRecentlyClosedTabs) {
 		recentlyClosedTabs = newRecentlyClosedTabs;
 	localStorage.setItem('recentlyClosedTabs', JSON
 			.stringify(recentlyClosedTabs));
+}
+
+// Checks if the given object is empty.
+// @param obj object to be checked
+function isEmpty(obj){
+  for(var i in obj){ 
+    if(obj.hasOwnProperty(i)){return false;}
+  }
+  return true;
 }
