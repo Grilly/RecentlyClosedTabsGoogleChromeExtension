@@ -81,6 +81,10 @@ function deleteFilterFromList(timestamp) {
 }
 
 // Gives the possibility to edit a filter from the filters list.
+// Shows a prompt to edit a filter. The return value of the prompt is the edited filter.
+// If the return value is already in the filters there will be a promt.
+// If the return value is "" the user will be asked to delete the filter.
+// If the return value is null nothing will be done to any filter.
 // @param timestamp id of the filters element
 function editFilter(timestamp) {
   var newUrl = showEditFilterPrompt(timestamp);
