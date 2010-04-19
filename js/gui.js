@@ -61,13 +61,43 @@ function createFiltersList(timestamp) {
 
 // Creates the header of the rct list.
 function createRecentlyClosedTabsListHeader() {
+  var rctHeaderDivElement = $('<div>')
+    .attr({ id: 'rctHeaderDivElement' })
+    .appendTo($('#rootDiv'));
+  
+  var rctHeaderLeftDivElement = $('<div>')
+    .addClass('rctHeaderLeftDivElement')
+    .attr({ id: 'rctHeaderLeftDivElement' })
+    .appendTo(rctHeaderDivElement);
   var h3Element = $('<h3>')
     .text('Recently closed tabs:')
-    .appendTo($('#rootDiv'));
-  var rctListdescription = $('<div>')
-    .addClass('rctListdescription')
+    .appendTo(rctHeaderLeftDivElement);
+  
+  var rctHeaderRightDivElement = $('<div>')
+    .addClass('rctHeaderRightDivElement')
+    .attr({ id: 'rctHeaderRightDivElement' })
+    .appendTo(rctHeaderDivElement);
+  var deleteAllRecentlyClosedTabsButton = $('<input>')
+    .attr({ 
+      id: 'deleteAllRecentlyClosedTabsButton',
+      type: 'button',
+      value: 'Delete All Recently Closed Tabs'})
+    .click(function() {
+      if (bgPage.isEmpty(bgPage.recentlyClosedTabs)) {
+        alert("No recently closed tabs.");
+      } else {
+        if (bgPage.showConfirm("Do you really want to delete all recently closed tabs.")) {
+          for (var timestamp in bgPage.recentlyClosedTabs) $('#rctDivElement' + timestamp).remove();
+          bgPage.storeRecentlyClosedTabs({});
+          showRecentlyClosedTabsIsEmpty();
+        }
+      }
+      return false; })
+    .appendTo(rctHeaderRightDivElement);
+  var rctListDescription = $('<div>')
+    .addClass('rctListDescription')
     .text('*If you add a recently closed tab to the filters it will be deleted from the recently closed tabs list.')
-    .appendTo($('#rootDiv'));
+    .appendTo(rctHeaderDivElement);
 }
 
 // Creates the recentlyClosedTabs div element that later contains all recently closed tabs.
@@ -238,8 +268,9 @@ function createMaxPopupLengthSelect() {
 function showRecentlyClosedTabsIsEmpty() {
   if (bgPage.isEmpty(bgPage.recentlyClosedTabs)) {
     var noRecentlyClosedTabsDivElement = $('<div>')
-      .text('No recently closed tabs.')
+      .addClass('noRecentlyClosedTabsDivElement')
       .attr({ id: 'noRecentlyClosedTabsDivElement' })
+      .text('No recently closed tabs.')
       .appendTo($('#rootDiv'));
   } else {
     if ($('#noRecentlyClosedTabsDivElement') != null) $('#noRecentlyClosedTabsDivElement').remove();

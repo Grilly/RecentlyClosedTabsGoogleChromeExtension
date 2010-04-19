@@ -331,3 +331,9 @@ function isEmpty(obj){
 function showPrompt(title, url) {
   return prompt(title, url);
 }
+
+// Shows confirmation with text.
+// @return true if ok is pressed, else false
+function showConfirm(text) {
+  return confirm(text);
+}

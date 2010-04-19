@@ -71,3 +71,19 @@
 	float: left;
 	with: 70px;
 }
+
+.rctHeaderLeftDivElement {
+  float: left;
+}
+
+.rctHeaderRightDivElement {
+	float: right;
+}
+
+.noRecentlyClosedTabsDivElement {
+	clear: both;
+}
+
+.rctListDescription {
+	clear: both;
+}
