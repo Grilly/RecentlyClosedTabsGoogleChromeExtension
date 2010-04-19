@@ -69,6 +69,25 @@ function addUrlToFilters(url) {
 	storeFilters();
 }
 
+// Checks if given url is already in the filters.
+// @param url url to be checked if already in the filters then false, if not true.
+function isFilterUnique(url) {
+  for (var timestamp in filters) {
+    if (filters[timestamp].url == url) return false;
+  }
+  return true;
+}
+
+// Adds url to the filters if url is unique.
+// @ param url url to be added
+function addUrlToFiltersAndCheck(url) {
+  if (isFilterUnique(url)) {
+    addUrlToFilters(url);
+  } else {
+    alert('"' + url + '" not added to the filters. The url is already in the filters.');
+  }
+}
+
 // Removes a filter by index.
 // @param i index of element to be removed from the filters
 function removeFilterByTimestamp(timestamp) {
@@ -303,4 +322,12 @@ function isEmpty(obj){
     if(obj.hasOwnProperty(i)){return false;}
   }
   return true;
+}
+
+// Shows prompt with title and url to edit.
+// @param title title of prompt
+// @param url   url to be shown for edit purposes
+// @return edited url
+function showPrompt(title, url) {
+  return prompt(title, url);
 }

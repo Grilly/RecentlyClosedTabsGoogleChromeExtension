@@ -12,8 +12,11 @@ function main() {
   if (bgPage.recentlyClosedTabs == {}) {
     var rootDiv = $('#rootDiv').text('No recently closed tabs.');
   } else {
+    var counter = 0;
     for (var timestamp in bgPage.recentlyClosedTabs) {
+      counter++;
       createRctDivForPopup(timestamp);
+      if (counter == bgPage.maxPopupLength) break;
     }
   }
   createPopupFooter();
