@@ -62,8 +62,8 @@ function showFiltersIsEmpty() {
   }
 }
 
-//Adds a url to the filters.
-//@param i index of recentlyClosedTabs element
+// Adds a url to the filters.
+// @param i index of recentlyClosedTabs element
 function addRecentlyClosedTabToFiltersList(timestamp) {
   var url = bgPage.recentlyClosedTabs[timestamp].url;
   var urlPattern = bgPage.showPrompt("Ignore this URL in future?", url);
@@ -73,11 +73,37 @@ function addRecentlyClosedTabToFiltersList(timestamp) {
   }
 }
 
-//Deletes a filter from the filters list.
-//@param i index of filters element
+// Deletes a filter from the filters list.
+// @param timestamp id of the filters element
 function deleteFilterFromList(timestamp) {
   $('#filterListElementDivElement' + timestamp).remove();
   bgPage.removeFilterByTimestamp(timestamp);
+}
+
+// Gives the possibility to edit a filter from the filters list.
+// @param timestamp id of the filters element
+function editFilter(timestamp) {
+  var newUrl = showEditFilterPrompt(timestamp);
+  while (!bgPage.isFilterUnique(newUrl)) {
+    alert('Filter ' + newUrl + '" exists already! Please provide a different filter.');
+    newUrl = showEditFilterPrompt(timestamp);
+  }
+  if (newUrl == '') {
+    if (bgPage.showConfirm('Do you really want to delete this filter: "' + bgPage.filters[timestamp].url + '"')) {
+      deleteFilterFromList(timestamp);
+      return;
+    }
+  }
+  if (newUrl == null) return;
+  bgPage.filters[timestamp].url = newUrl;
+  bgPage.storeFilters();
+}
+  
+// Shows the prompt for editing a filter.
+// @param timestamp id of the filter element
+// @return the edited filter
+function showEditFilterPrompt(timestamp) {
+  return bgPage.showPrompt('Edit Filter', bgPage.filters[timestamp].url);
 }
 
 //------------------------------------------------------------------------------

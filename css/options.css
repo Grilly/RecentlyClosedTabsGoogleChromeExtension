@@ -56,7 +56,7 @@
 
 .filterDivElement {
 	float: left;
-  width: 250px;
+  width: 200px;
   height: 25px;
   vertical-align: middle;
   border-radius: 5px;
@@ -69,7 +69,11 @@
 
 .filterDeleteButtonDivElement {
 	float: left;
-	with: 70px;
+	with: 50px;
+}
+.filterEditButtonDivElement {
+	float: left;
+  with: 30px;
 }
 
 .rctHeaderLeftDivElement {

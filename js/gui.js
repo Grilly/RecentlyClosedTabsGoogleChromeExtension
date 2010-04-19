@@ -158,6 +158,9 @@ function createRecentlyClosedTabsListEditButtons(timestamp) {
 	}
 }
 
+// Adds a zero to the beginning of a number if it is a single letter number.
+// @param number number to pad
+// @return padded number with leading 0 if it is a single letter number
 function pad2(number) {
   return (number < 10 ? '0' : '') + number
 }
@@ -311,6 +314,20 @@ function createFiltersDiv(timestamp) {
     .click(function() {
       deleteFilterFromList(timestamp);
       showFiltersIsEmpty();
+      return false; })
+    .appendTo(filterDeleteButtonDivElement);
+//filterDeleteButton building
+  var filterEditButtonDivElement = $('<div>')
+    .addClass('filterEditButtonDivElement')
+    .attr({ id: 'filterEditButtonDivElement' + timestamp })
+    .appendTo(filterListElementDivElement);
+  var filterEditButtonElement = $('<input>')
+    .attr({ 
+      id: 'filterEditButtonElement' + timestamp,
+      type: 'button',
+      value: 'Edit'})
+    .click(function() {
+      editFilter(timestamp);
       return false; })
     .appendTo(filterDeleteButtonDivElement);
 }
