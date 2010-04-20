@@ -15,10 +15,14 @@ function main() {
   if (bgPage.isEmpty(bgPage.recentlyClosedTabs)) {
     var rootDiv = $('#rootDiv').text('No recently closed tabs.');
   } else {
-    var counter = 0;
+    var rctSortedIndexes = [];
     for (var timestamp in bgPage.recentlyClosedTabs) {
+      rctSortedIndexes.unshift(timestamp);
+    }
+    var counter = 0;
+    for (var index in rctSortedIndexes) {
       counter++;
-      createRctDivForPopup(timestamp);
+      createRctDivForPopup(rctSortedIndexes[index]);
       if (counter == bgPage.maxPopupLength) break;
     }
   }
