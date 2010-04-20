@@ -58,6 +58,14 @@ function showFiltersIsEmpty() {
   }
 }
 
+//Rebuilds the filters list.
+function rebuildFiltersList() {
+  for (var timestamp in bgPage.filters) {
+    $('#filterListElementDivElement' + timestamp).remove();
+  }
+  createFiltersList();
+}
+
 // Adds a url to the filters.
 // @param i index of recentlyClosedTabs element
 function addRecentlyClosedTabToFiltersList(timestamp) {
