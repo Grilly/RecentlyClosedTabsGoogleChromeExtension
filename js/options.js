@@ -13,6 +13,7 @@ function main() {
   this.createFooter();
   createFiltersListHeader();
   var rootDiv = $('#rootDiv').addClass('rootDiv');
+  var optionsFilters = $('#optionsFilters').addClass('optionsFilters');
   var optionsSelect = $('#optionsSelect').addClass('optionsSelect');
   var filterListDivElement = $('#filterListDivElement').addClass('filterListDivElement');
   createFiltersList();
