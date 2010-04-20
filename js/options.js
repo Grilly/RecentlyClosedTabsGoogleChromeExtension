@@ -63,7 +63,7 @@ function showFiltersIsEmpty() {
 function addRecentlyClosedTabToFiltersList(timestamp) {
   var url = bgPage.recentlyClosedTabs[timestamp].url;
   var urlPattern = bgPage.showPrompt("Ignore this URL in future?", url);
-  console.log(urlPattern);
+  //console.log(urlPattern);
   if (urlPattern != null) {
     bgPage.addUrlToFiltersAndCheck(urlPattern);
   }

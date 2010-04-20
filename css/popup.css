@@ -1,18 +1,12 @@
 @import "background.css";
 
 body {
-	min-width: 150px;
-	max-width: 600px;
-	overflow-x: hidden;
-	overflow-y: scroll;
+	min-width: 280px;
 }
 
 .rctDivElement {
-  width: 320px;
-}
-
-.contentDivElement {
-  width: 245px;
+  width: 280px;
+  height: 22px;
 }
 
 .popupFooter {
@@ -23,4 +17,21 @@ body {
 .popupFooter:hover {
 	font-weight: bold;
 	cursor: hand;
+}
+
+.favIconDivElement {
+  padding: 2px 2px 2px 2px;
+}
+
+.titleDivElement {
+  font-weight: normal;
+}
+
+.contentDivElement {
+  width: 245px;
+  height: 16px;
+}
+
+.rctListDivElement {
+  height: 20px;
 }

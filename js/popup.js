@@ -9,6 +9,9 @@ var bgPage = chrome.extension.getBackgroundPage();
 // Main method: Everything starts here!
 // ------------------------------------------------------------------------------
 function main() {
+  var rootDiv = $('#rootDiv').addClass('rootDiv');
+  var popupFooter = $('#popupFooter').addClass('rootDiv');
+  
   if (bgPage.isEmpty(bgPage.recentlyClosedTabs)) {
     var rootDiv = $('#rootDiv').text('No recently closed tabs.');
   } else {

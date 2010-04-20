@@ -165,6 +165,22 @@ function pad2(number) {
   return (number < 10 ? '0' : '') + number
 }
 
+// Gets the date and time as string.
+// @param timestamp id of the recently closed tabs element
+// @return timeString if date == today, else dateString and timeString
+function getDateString(timestamp) {
+  var date = new Date();
+  date.setTime(timestamp);
+  var today = new Date();
+  var dateString = date.getDate() + ". " + month[date.getMonth()] + " " + date.getFullYear();
+  var timeString = pad2(date.getHours()) + ":" + pad2(date.getMinutes());
+  if (date.getDate() == today.getDate() && date.getMonth() == today.getMonth() && date.getFullYear() == today.getFullYear()) {
+    return timeString;
+  } else {
+    return dateString  + " " + timeString;
+  }
+}
+
 // Creates the div element of one recently closed tab.
 // @param timestamp id of the recentlyClosedTabs
 // @param isOptions boolean value: true if thr rctDiv is for the options page, false if for popup page
@@ -180,44 +196,42 @@ function createRctDiv(timestamp, isOptions) {
   		.appendTo($('#rctDivElement' + timestamp));
 		
 		if (isOptions) {
-		  var date = new Date();
-		  date.setTime(timestamp);
-		  var dateString = date.getDate() + ". " + month[date.getMonth()] + " " + date.getFullYear();
-		  var timeString = date.getHours() + ":" + pad2(date.getMinutes());
   		var dateDivElement = $('<div>')
         .addClass('dateDivElement')
         .attr({ id: 'dateDivElement' + timestamp })
-        .text(dateString  + " " + timeString)
+        .text(getDateString(timestamp))
         .appendTo(rctListDivElement);
-    }
-		
-		if (bgPage.showTabShot == 'true') {
-  		// tabShotElement building
-  		var tabShotDivElement = $('<div>')
-  			.addClass('tabShotDivElement')
-  			.attr({ id: 'tabShotDivElement' + timestamp })
-  			.appendTo(rctListDivElement);
-  		var tabShotIMG = $('<img>')
-  			.addClass('tabShotIMG')
-  			.attr({ id: 'tabShotIMG' + timestamp })
-  			.appendTo(tabShotDivElement);
+
+  		if (bgPage.showTabShot == 'true') {
+    		// tabShotElement building
+    		var tabShotDivElement = $('<div>')
+    			.addClass('tabShotDivElement')
+    			.attr({ id: 'tabShotDivElement' + timestamp })
+    			.appendTo(rctListDivElement);
+    		var tabShotIMG = $('<img>')
+    			.addClass('tabShotIMG')
+    			.attr({ id: 'tabShotIMG' + timestamp })
+    			.appendTo(tabShotDivElement);
+  		}
 		}
 		
 		// contentElement building
 		var contentDivElement = $('<div>')
-			.addClass('contentDivElement')
+		  .addClass('contentDivElement')
 			.attr({ id: 'contentDivElement' + timestamp })
 			.appendTo(rctListDivElement);
 		var titleDivElement = $('<div>')
-			.addClass('titleDivElement')
-			.attr({ id: 'titleDivElement' + timestamp })
-			.text(bgPage.recentlyClosedTabs[timestamp].title)
-			.appendTo(contentDivElement);
-		var urlDivElement = $('<div>')
-			.addClass('linkDivElement')
-			.attr({ id: 'linkDivElement' + timestamp })
-			.text(bgPage.recentlyClosedTabs[timestamp].url)
-			.appendTo(contentDivElement);
+		  .addClass('titleDivElement')
+      .attr({ id: 'titleDivElement' + timestamp })
+      .text(bgPage.recentlyClosedTabs[timestamp].title)
+      .appendTo(contentDivElement);
+		if (isOptions) {
+  		var urlDivElement = $('<div>')
+  			.addClass('linkDivElement')
+  			.attr({ id: 'linkDivElement' + timestamp })
+  			.text(bgPage.recentlyClosedTabs[timestamp].url)
+  			.appendTo(contentDivElement);
+		}
 
 		// favIconElement building
 		var favIconDivElement = $('<div>')
@@ -230,13 +244,15 @@ function createRctDiv(timestamp, isOptions) {
 			.appendTo(favIconDivElement);
 		
 		with (bgPage.recentlyClosedTabs[timestamp]) {
-		  if (bgPage.showTabShot == 'true') {
-  			var tabShot = bgPage.recentlyClosedTabs[timestamp].tabShot;
-  			if (tabShot !== undefined && tabShot != null) {
-  				tabShotIMG.attr({ src: tabShot });
-  			} else {
-  				tabShotIMG.attr({ src: '../images/default_tabShot.png' });
-  			}
+		  if (isOptions) {
+  		  if (bgPage.showTabShot == 'true') {
+    			var tabShot = bgPage.recentlyClosedTabs[timestamp].tabShot;
+    			if (tabShot !== undefined && tabShot != null) {
+    				tabShotIMG.attr({ src: tabShot });
+    			} else {
+    				tabShotIMG.attr({ src: '../images/default_tabShot.png' });
+    			}
+  		  }
 		  }
 			var favIconUrl = bgPage.recentlyClosedTabs[timestamp].favIconUrl;
 			if (favIconUrl !== undefined && favIconUrl != null) {

@@ -51,10 +51,6 @@
   clear: both;
 }
 
-.contentDivElement {
-  width: 483px;
-}
-
 .deleteButtonDivElement {
 	float: left;
 	width: 60px;
@@ -76,7 +72,7 @@
 .dateDivElement {
   float: left;
   text-align: right;
-  width: 80px;
+  width: 98px;
   padding: 1px;
   padding-top: 5px;
   padding-right: 3px;
@@ -124,4 +120,21 @@
 
 .noRecentlyClosedTabsDivElement {
 	clear: both;
+}
+
+.favIconDivElement {
+  padding: 10px 2px 2px 2px;
+}
+
+.titleDivElement {
+  font-weight: bold;
+}
+
+.contentDivElement {
+  width: 483px;
+  height: 34px;
+}
+
+.rctListDivElement {
+  height: 38px;
 }

@@ -325,7 +325,7 @@ function fetchRecentlyClosedTabs() {
 	} else {
 		recentlyClosedTabs = JSON.parse(recentlyClosedTabsString);
 	}
-	console.log(recentlyClosedTabs);
+	//console.log(recentlyClosedTabs);
 }
 
 // Modifys/Persists the recentlyClosedTabs to the localStorage.
