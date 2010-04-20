@@ -120,11 +120,11 @@ function showEditFilterPrompt(timestamp) {
 function createRecentlyClosedTabsList() {
   showRecentlyClosedTabsIsEmpty();
   var rctSortedIndexes = [];
-  for (var index in bgPage.recentlyClosedTabs) {
-	  rctSortedIndexes.unshift(rctSortedIndexes[index]);
+  for (var timestamp in bgPage.recentlyClosedTabs) {
+	  rctSortedIndexes.unshift(timestamp);
   }
-  for (var timestamp in rctSortedIndexes) {
-    createRctDivForOptions(timestamp);
+  for (var index in rctSortedIndexes) {
+    createRctDivForOptions(rctSortedIndexes[index]);
   }
 }
 
