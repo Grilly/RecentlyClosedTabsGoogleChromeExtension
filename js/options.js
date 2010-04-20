@@ -119,7 +119,11 @@ function showEditFilterPrompt(timestamp) {
 // Creates recently closed tabs list.
 function createRecentlyClosedTabsList() {
   showRecentlyClosedTabsIsEmpty();
-  for (var timestamp in bgPage.recentlyClosedTabs) {
+  var rctSortedIndexes = [];
+  for (var index in bgPage.recentlyClosedTabs) {
+	  rctSortedIndexes.unshift(rctSortedIndexes[index]);
+  }
+  for (var timestamp in rctSortedIndexes) {
     createRctDivForOptions(timestamp);
   }
 }
