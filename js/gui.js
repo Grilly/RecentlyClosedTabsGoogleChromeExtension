@@ -191,15 +191,17 @@ function createRctDiv(timestamp, isOptions) {
         .appendTo(rctListDivElement);
     }
 		
-		// tabShotElement building
-		var tabShotDivElement = $('<div>')
-			.addClass('tabShotDivElement')
-			.attr({ id: 'tabShotDivElement' + timestamp })
-			.appendTo(rctListDivElement);
-		var tabShotIMG = $('<img>')
-			.addClass('tabShotIMG')
-			.attr({ id: 'tabShotIMG' + timestamp })
-			.appendTo(tabShotDivElement);
+		if (bgPage.showTabShot == 'true') {
+  		// tabShotElement building
+  		var tabShotDivElement = $('<div>')
+  			.addClass('tabShotDivElement')
+  			.attr({ id: 'tabShotDivElement' + timestamp })
+  			.appendTo(rctListDivElement);
+  		var tabShotIMG = $('<img>')
+  			.addClass('tabShotIMG')
+  			.attr({ id: 'tabShotIMG' + timestamp })
+  			.appendTo(tabShotDivElement);
+		}
 		
 		// contentElement building
 		var contentDivElement = $('<div>')
@@ -228,12 +230,14 @@ function createRctDiv(timestamp, isOptions) {
 			.appendTo(favIconDivElement);
 		
 		with (bgPage.recentlyClosedTabs[timestamp]) {
-			var tabShot = bgPage.recentlyClosedTabs[timestamp].tabShot;
-			if (tabShot !== undefined && tabShot != null) {
-				tabShotIMG.attr({ src: tabShot });
-			} else {
-				tabShotIMG.attr({ src: '../images/default_tabShot.png' });
-			}
+		  if (bgPage.showTabShot == 'true') {
+  			var tabShot = bgPage.recentlyClosedTabs[timestamp].tabShot;
+  			if (tabShot !== undefined && tabShot != null) {
+  				tabShotIMG.attr({ src: tabShot });
+  			} else {
+  				tabShotIMG.attr({ src: '../images/default_tabShot.png' });
+  			}
+		  }
 			var favIconUrl = bgPage.recentlyClosedTabs[timestamp].favIconUrl;
 			if (favIconUrl !== undefined && favIconUrl != null) {
 				favIconIMG.attr({ src: favIconUrl });
@@ -245,26 +249,55 @@ function createRctDiv(timestamp, isOptions) {
 }
 
 // Creates the select and button elements to configure the maxPopupLength.
-function createMaxPopupLengthSelect() {
-	var h3Element = $('<h3>')
+function createOptionsSelect() {
+  // maxPopupLengthOptions
+  var maxPopupLengthOptionsDivElement = $('<div>')
+    .addClass('maxPopupLengthOptionsDivElement')
+    .attr({ id: 'maxPopupLengthOptionsDivElement' })
+    .appendTo($('#optionsSelect'));
+	var maxPopupLengthH3Element = $('<h3>')
 		.text('Favorite number of elements shown in the popup:')
-		.appendTo($('#maxPopupLengthSelect'));
-	var selectElementOptions = {
+		.appendTo(maxPopupLengthOptionsDivElement);
+	var maxPopUpLengthSelectElementOptions = {
 		'1': '1',
 		'2': '2',
 		'5': '5',
 		'10': '10',
 		'15': '15'
 	}
-	var selectElement = $('<select>')
-		.attr({ id: 'tabsCount' })
-    .addOption(selectElementOptions, true)
-    .selectOptions('1', true)
-    .appendTo($('#maxPopupLengthSelect'));
-	var saveSelectButtonElement = $('<button>')
-    .text('Save')
-    .click(function() {saveMaxPopupLength();return false;})
-    .appendTo($('#maxPopupLengthSelect'));
+	var maxPopUpLengthSelectElement = $('<select>')
+		.attr({ id: 'maxPopupLengthSelectElement' })
+    .addOption(maxPopUpLengthSelectElementOptions, true)
+    .selectOptions(bgPage.maxPopupLength, true)
+    .appendTo(maxPopupLengthOptionsDivElement);
+	
+	// showTabShotOptions
+	var showTabShotOptionsDivElement = $('<div>')
+    .addClass('showTabShotOptionsDivElement')
+    .attr({ id: 'showTabShotOptionsDivElement' })
+    .appendTo($('#optionsSelect'));
+	var showTabShotH3Element = $('<h3>')
+    .text('Show the screenshot for a recently closed tab:')
+    .appendTo(showTabShotOptionsDivElement);
+	var showTabShotSelectElementOptions = {
+	    'true': 'On',
+	    'false': 'Off',
+	  }
+	var showTabShotSelectElement = $('<select>')
+	    .attr({ id: 'showTabShotSelectElement' })
+	    .addOption(showTabShotSelectElementOptions, true)
+	    .selectOptions(bgPage.showTabShot, true)
+	    .appendTo(showTabShotOptionsDivElement);
+	
+	// saveOptions
+	var saveOptionsDivElement = $('<div>')
+    .addClass('saveOptionsDivElement')
+    .attr({ id: 'saveOptionsDivElement' })
+    .appendTo($('#optionsSelect'));
+	var saveOptionsButtonElement = $('<button>')
+    .text('Save Options')
+    .click(function() { saveOptions(); return false; })
+    .appendTo(saveOptionsDivElement);
 }
 
 // Appends a 'no rcts'-String to the rootDivElement.

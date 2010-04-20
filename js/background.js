@@ -11,6 +11,8 @@ var recentlyClosedTabs;
 var filters;
 // maximal number of elements (rcts) shown on popup page
 var maxPopupLength;
+// true if tabShots should be shown/saved
+var showTabShot;
 
 // ------------------------------------------------------------------------------
 // Main method: Everything starts here!
@@ -36,6 +38,8 @@ function restoreState() {
 	fetchFilters();
 	// Fetches the maxPopupLength.
 	fetchMaxPopupLength();
+	// Fetches the showTabShot.
+	fetchShowTabShot();
 	// Fetches the recentlyClosedTabs.
 	fetchRecentlyClosedTabs();
 }
@@ -137,7 +141,9 @@ function updatedTabsListener(tabId, changeInfo, tab) {
 // tab.
 // @param tabId id of the tab to update the image for
 function selectionChangedTabsListener(tabId) {
-	setImgDataUrl(tabId);
+  if (showTabShot == 'true') {
+    setImgDataUrl(tabId);
+  }
 }
 
 // Processes tab by inserting a corresponding tabInfo into allOpenedTabs
@@ -292,6 +298,23 @@ function fetchMaxPopupLength() {
 function storeMaxPopupLength(newMaxPopupLength) {
 	maxPopupLength = newMaxPopupLength;
 	localStorage.setItem('maxPopupLength', maxPopupLength);
+}
+
+// ------------------------------------------------------------------------------
+// SHOW TAB SHOT
+// ------------------------------------------------------------------------------
+// Fetches/Initialises the showTabShot from the localStorage.
+function fetchShowTabShot() {
+  showTabShot = localStorage['showTabShot'];
+  if (showTabShot === undefined)
+    storeShowTabShot('false');
+}
+
+// Modifys/Persists the showTabShot to the localStorage.
+// @param newShowTabShot showTabShot to store in the localStorage
+function storeShowTabShot(newShowTabShot) {
+  showTabShot = newShowTabShot;
+  localStorage.setItem('showTabShot', showTabShot);
 }
 
 // Fetches/Initialises the recentlyClosedTabs from the localStorage.

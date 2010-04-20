@@ -7,12 +7,48 @@
   margin-top: 0px;
 }
 
-.rctDivElement {
-  width: 820px;
+.contentDiv {
+	float: left;
+	width: 1200px;
+	margin-top: 7px;
+	margin-left: 7px;
 }
 
-.rctListdescription {
-	
+.rootDiv {
+  float: left;
+  min-width: 820px;
+  margin-left: 7px;
+  margin-bottom: 7px;
+  padding: 3px;
+  border-radius: 5px;
+  border: 1px solid #B7C5E3;
+}
+
+.optionsFilters {
+  float: right;
+}
+
+.filterListDivElement {
+  float: left;
+  width: 350px;
+  margin-top: 7px;
+  margin-left: 7px;
+  padding: 3px;
+  border-radius: 5px;
+  border: 1px solid #B7C5E3;
+}
+
+.optionsSelect {
+  float: left;
+  width: 350px;
+  margin-left: 7px;
+  padding: 3px;
+  border-radius: 5px;
+  border: 1px solid #B7C5E3;
+}
+
+.rctListDescription {
+  clear: both;
 }
 
 .contentDivElement {
@@ -40,12 +76,10 @@
 .dateDivElement {
   float: left;
   text-align: right;
-  width: 75px;
+  width: 80px;
   padding: 1px;
-}
-
-.filterListDivElement {
-	float: left;
+  padding-top: 5px;
+  padding-right: 3px;
 }
 
 .filterListElementDivElement {
@@ -57,7 +91,11 @@
 .filterDivElement {
 	float: left;
   width: 200px;
-  height: 25px;
+  /*height: 21px;*/
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-left: 1px;
+  padding-right: 1px;
   vertical-align: middle;
   border-radius: 5px;
   border: 1px solid #B7C5E3;
@@ -85,9 +123,5 @@
 }
 
 .noRecentlyClosedTabsDivElement {
-	clear: both;
-}
-
-.rctListDescription {
 	clear: both;
 }

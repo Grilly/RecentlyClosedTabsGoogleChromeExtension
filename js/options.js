@@ -12,42 +12,38 @@ function main() {
   this.createHeader('Options');
   this.createFooter();
   createFiltersListHeader();
+  var rootDiv = $('#rootDiv').addClass('rootDiv');
+  var optionsSelect = $('#optionsSelect').addClass('optionsSelect');
   var filterListDivElement = $('#filterListDivElement').addClass('filterListDivElement');
   createFiltersList();
   createRecentlyClosedTabsListHeader();
   createRecentlyClosedTabsList();
-  createMaxPopupLengthSelect();
+  createOptionsSelect();
   setMaxPopupLength();
+  setShowTabShot();
 }
 
-// ------------------------------------------------------------------------------
-// MAX POPUP LENGTH
-// ------------------------------------------------------------------------------
 // Saves options to localStorage.
-// TODO: Transform with jquery
-function saveMaxPopupLength() {
-	var bgPage = chrome.extension.getBackgroundPage();
-	var select_tabsCount = $('#tabsCount');
-	bgPage.storeMaxPopupLength($("#tabsCount").val());
+function saveOptions() {
+	bgPage.storeMaxPopupLength($('#maxPopupLengthSelectElement').val());
+	bgPage.storeShowTabShot($('#showTabShotSelectElement').val());
 	// Update status to let user know options were saved.
-	$('#status').text('Options Saved.');
-	setTimeout(function() { $('#status').text(''); }, 750);
+	var optionsSaveStatus = $('<div>')
+	  .addClass('optionsSaveStatus')
+	  .attr({ id: 'optionsSaveStatus' })
+	  .text('Options Saved.')
+	  .appendTo($('#optionsSelect'));
+	setTimeout(function() { $('#optionsSaveStatus').remove(); }, 750);
 }
 
 // Restores select box state to saved value from localStorage.
 function setMaxPopupLength() {
-	$('#tabsCount').selectOptions(bgPage.maxPopupLength, true);
+	$('#maxPopupLengthSelectElement').selectOptions(bgPage.maxPopupLength, true);
 }
 
-// ------------------------------------------------------------------------------
-// FILTERS
-// ------------------------------------------------------------------------------
-//Rebuilds the filters list.
-function rebuildFiltersList() {
-  for (var timestamp in bgPage.filters) {
-    $('#filterListElementDivElement' + timestamp).remove();
-  }
-  createFiltersList();
+//Restores select box state to saved value from localStorage.
+function setShowTabShot() {
+  $('#showTabShotSelectElement').selectOptions(bgPage.showTabShot, true);
 }
 
 // Checks if filters is empty and adds notification if true.
@@ -100,6 +96,7 @@ function editFilter(timestamp) {
   }
   if (newUrl == null) return;
   bgPage.filters[timestamp].url = newUrl;
+  $('#filterElementDiv' + timestamp).text(newUrl);
   bgPage.storeFilters();
 }
   
@@ -110,9 +107,6 @@ function showEditFilterPrompt(timestamp) {
   return bgPage.showPrompt('Edit Filter', bgPage.filters[timestamp].url);
 }
 
-//------------------------------------------------------------------------------
-// RECENTLY CLOSED TABS
-//------------------------------------------------------------------------------
 // Creates recently closed tabs list.
 function createRecentlyClosedTabsList() {
   showRecentlyClosedTabsIsEmpty();
@@ -127,4 +121,3 @@ function removeRecentlyClosedTabFromList(timestamp) {
   bgPage.removeRecentlyClosedTabByTimestamp(timestamp);
   $('#rctDivElement' + timestamp).remove();
 }
-

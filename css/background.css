@@ -50,6 +50,7 @@ table {
 }
 
 .footerDiv {
+	clear: both;
   border-top-color: #DEE7F7;
   border-top-style: solid;
   border-top-width: 1px;
@@ -71,7 +72,6 @@ table {
 }
 
 .rctDivElement {
-  float: relative;
   height: 38px;
   /* width defined in options.css/popup.css */
   font-size: 10px;
@@ -105,7 +105,8 @@ table {
 .tabShotDivElement {
   float: left;
   width: 40px;
-  padding: 3px 1px 1px 1px;
+  text-align: center;
+  padding: 1px 1px 1px 1px;
 }
 .tabShotIMG {
   height: 30px;
@@ -148,7 +149,8 @@ table {
 .favIconDivElement {
   float: left;
   width: 20px;
-  padding: 10px 1px 1px 1px;
+  text-align: center;
+  padding: 10px 2px 2px 2px;
 }
 .favIconIMG {
   height: 16px;
