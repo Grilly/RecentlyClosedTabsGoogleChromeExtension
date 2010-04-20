@@ -150,9 +150,7 @@ function createRecentlyClosedTabsListEditButtons(timestamp) {
 				type: 'button',
 				value: 'To Filters*' })
 			.click(function() {
-        addRecentlyClosedTabToFiltersList(timestamp);
-        rebuildFiltersList();
-			  removeRecentlyClosedTabFromList(timestamp);
+        addToFilters(timestamp);
 			  return false; })
 			.appendTo(addToFiltersButtonDivElement);
 	}

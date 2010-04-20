@@ -67,14 +67,16 @@ function rebuildFiltersList() {
   createFiltersList();
 }
 
-// Adds a url to the filters.
-// @param i index of recentlyClosedTabs element
-function addRecentlyClosedTabToFiltersList(timestamp) {
+// Function for the button to add a rct element to the filters.
+// @param timestamp id of recentlyClosedTabs element
+function addToFilters(timestamp) {
   var url = bgPage.recentlyClosedTabs[timestamp].url;
   var urlPattern = bgPage.showPrompt("Ignore this URL in future?", url);
   //console.log(urlPattern);
   if (urlPattern != null) {
     bgPage.addUrlToFiltersAndCheck(urlPattern);
+    rebuildFiltersList();
+    removeRecentlyClosedTabFromList(timestamp);
   }
 }
 
