@@ -19,6 +19,7 @@ function loadAppConfig() {
       if (appConfig.version != storedVersion) {
         chrome.tabs.create( {'url' : chrome.extension.getURL('infonews.html'), 'selected' : true}, function(tab) {
           // Tab opened: possible migration procedures
+          storeRecentlyClosedTabs({});
           });
         localStorage.setItem('version', appConfig.version);
       }
