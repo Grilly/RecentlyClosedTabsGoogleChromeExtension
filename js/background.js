@@ -240,7 +240,7 @@ function addClosedTab(tabInfo) {
 	rctTimestamps.unshift(timestamp);
 	while (rctTimestamps.length > 30) {
 		console.log("deleting " + rctTimestamps[rctTimestamps.length-1]);
-		removeRecentlyClosedTabByUrl(recentlyClosedTabs[rctTimestamps[rctTimestamps.length-1]])
+		removeRecentlyClosedTabByTimestamp(rctTimestamps[rctTimestamps.length-1]);
 	}
 	storeRecentlyClosedTabs();
 }
@@ -254,21 +254,19 @@ function openRecentlyClosedTab(timestamp) {
 // Removes a rct by url.
 // @param url url of the element to be removed from the recentlyClosedTabs
 function removeRecentlyClosedTabByUrl(url) {
-	for (var index in rctTimestamps)
-		if (recentlyClosedTabs[rctTimestamps[index]].url == url) {
-//			removeRecentlyClosedTabByTimestamp(timestamp);
-			delete recentlyClosedTabs[timestamp];
-			rctTimestamps.slice(index, 1);
-			storeRecentlyClosedTabs();
+	for (var timestamp in recentlyClosedTabs)
+		if (recentlyClosedTabs[timestamp].url == url) {
+			removeRecentlyClosedTabByTimestamp(timestamp);
 		}
 }
 
 // Removes a rct by index.
 // @param i index of the element to be removed from the recentlyClosedTabs
-//function removeRecentlyClosedTabByTimestamp(timestamp) {
-//	delete recentlyClosedTabs[timestamp];
-//	storeRecentlyClosedTabs();
-//}
+function removeRecentlyClosedTabByTimestamp(timestamp) {
+	delete recentlyClosedTabs[timestamp];
+	for (var index in rctTimestamps) if (rctTimestamps[index] == timestamp) rctTimestamps.slice(index, 1);
+	storeRecentlyClosedTabs();
+}
 
 // Fetches/Initialises the filters from the localStorage.
 function fetchFilters() {
