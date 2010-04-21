@@ -179,6 +179,21 @@ function getDateString(timestamp) {
   }
 }
 
+// Toggles urlDiv.
+// @param timestamp timestamp to get id of urlDiv element
+// @param flagit 1 for showing the div and 0 for not showing the div
+function toggleUrlDiv(timestamp, showFlag) {
+  if (showFlag == "1") {
+    var urlDiv = $('<div>')
+      .addClass('urlDiv')
+      .attr({ id: 'urlDiv' })
+      .text(bgPage.recentlyClosedTabs[timestamp].url)
+      .appendTo($('#rctListDivElement' + timestamp));
+  } else if (showFlag == "0") {
+    $('#urlDiv').remove();
+  }
+}
+
 // Creates the div element of one recently closed tab.
 // @param timestamp id of the recentlyClosedTabs
 // @param isOptions boolean value: true if thr rctDiv is for the options page, false if for popup page
@@ -192,6 +207,11 @@ function createRctDiv(timestamp, isOptions) {
   		  removeRecentlyClosedTabFromList(timestamp);
   		  return false; })
   		.appendTo($('#rctDivElement' + timestamp));
+		
+		if (isOptions != true) {
+		  $('#rctListDivElement' + timestamp).mouseover(function() { toggleUrlDiv(timestamp, '1'); return false; });
+		  $('#rctListDivElement' + timestamp).mouseout(function() { toggleUrlDiv(timestamp, '0'); return false; });
+    }
 		
 		if (isOptions) {
   		var dateDivElement = $('<div>')
