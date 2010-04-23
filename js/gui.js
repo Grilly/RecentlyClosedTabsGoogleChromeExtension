@@ -335,18 +335,49 @@ function createOptionsSelect() {
 	var maxPopupLengthH3Element = $('<h3>')
 		.text('Favorite number of elements shown in the popup:')
 		.appendTo(maxPopupLengthOptionsDivElement);
-	var maxPopUpLengthSelectElementOptions = {
-		'1': '1',
-		'2': '2',
-		'5': '5',
-		'10': '10',
-		'15': '15'
-	}
-	var maxPopUpLengthSelectElement = $('<select>')
-		.attr({ id: 'maxPopupLengthSelectElement' })
-    .addOption(maxPopUpLengthSelectElementOptions, true)
-    .selectOptions(bgPage.maxPopupLength, true)
-    .appendTo(maxPopupLengthOptionsDivElement);
+	var maxPopUpLengthRangeMin = 1;
+	var maxPopUpLengthRangeMax = 15;
+	var maxPopUpLengthRangeMinDiv = $('<div>')
+	  .addClass('maxPopUpLengthRangeMinDiv')
+	  .attr({ id: 'maxPopUpLengthRangeMinDiv' })
+	  .text(maxPopUpLengthRangeMin)
+	  .appendTo(maxPopupLengthOptionsDivElement);
+	var maxPopUpLengthRangeDivElement = $('<div>')
+	  .addClass('maxPopUpLengthRangeDivElement')
+	  .attr({ 
+		id: 'maxPopUpLengthRangeDivElement',
+		name: bgPage.maxPopupLength })
+	  .appendTo(maxPopupLengthOptionsDivElement);
+	var maxPopUpLengthRangeElement = $('<input>')
+	.attr({
+	  id: 'maxPopupLengthRangeElement',
+	  type: 'range',
+	  min: maxPopUpLengthRangeMin,
+	  max: maxPopUpLengthRangeMax,
+	  value: bgPage.maxPopupLength,
+	  input: bgPage.maxPopupLength})
+	.change(function() {
+	  $('#maxPopUpLengthRangeOutputElement').text($('#maxPopupLengthRangeElement').val());
+	  return false;
+	})
+    .appendTo(maxPopUpLengthRangeDivElement);
+	var maxPopUpLengthRangeMaxDiv = $('<div>')
+	  .addClass('maxPopUpLengthRangeMaxDiv')
+	  .attr({ id: 'maxPopUpLengthRangeMaxDiv' })
+	  .text(maxPopUpLengthRangeMax)
+	  .appendTo(maxPopupLengthOptionsDivElement);
+	var maxPopUpLengthRangeOutputTextElement = $('<div>')
+	  .addClass('maxPopUpLengthRangeOutputTextElement')
+	  .attr({ id: 'maxPopUpLengthRangeOutputTextElement' })
+	  .text('Current choice:')
+	  .appendTo(maxPopupLengthOptionsDivElement);
+	var maxPopUpLengthRangeOutputElement = $('<div>')
+	  .addClass('maxPopUpLengthRangeOutputElement')
+	  .attr({ 
+		id: 'maxPopUpLengthRangeOutputElement',
+		name: bgPage.maxPopupLength })
+	  .text($('#maxPopupLengthRangeElement').val())
+	  .appendTo(maxPopupLengthOptionsDivElement);
 	
 	// showTabShotOptions
 	var showTabShotOptionsDivElement = $('<div>')
@@ -354,6 +385,7 @@ function createOptionsSelect() {
     .attr({ id: 'showTabShotOptionsDivElement' })
     .appendTo($('#optionsSelect'));
 	var showTabShotH3Element = $('<h3>')
+	.addClass('showTabShotH3Element')
     .text('Show the screenshot for a recently closed tab:')
     .appendTo(showTabShotOptionsDivElement);
 	var showTabShotSelectElementOptions = {

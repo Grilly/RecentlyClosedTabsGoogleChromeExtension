@@ -16,7 +16,7 @@
 
 .rootDiv {
   float: left;
-  min-width: 820px;
+  min-width: 703px;
   margin-left: 7px;
   margin-bottom: 7px;
   padding: 3px;
@@ -151,4 +151,31 @@
   margin: 0px;
   border: 1px solid #000000;
   text-align: center;
+}
+
+.maxPopUpLengthRangeDivElement {
+  float: left;
+  width: 200xp;
+}
+
+.maxPopUpLengthRangeMinDiv {
+  float: left;
+}
+
+.maxPopUpLengthRangeMaxDiv {
+  float: left;
+}
+
+.maxPopUpLengthRangeOutputElement {
+  float: left;
+  margin-left: 5px;
+}
+
+.maxPopUpLengthRangeOutputTextElement {
+  float: left;
+  margin-left: 20px;
+}
+
+.showTabShotH3Element {
+  clear: both;
 }

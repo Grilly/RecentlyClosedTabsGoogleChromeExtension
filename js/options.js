@@ -26,8 +26,8 @@ function main() {
 
 // Saves options to localStorage.
 function saveOptions() {
-	bgPage.storeMaxPopupLength($('#maxPopupLengthSelectElement').val());
-	bgPage.storeShowTabShot($('#showTabShotSelectElement').val());
+	bgPage.storeMaxPopupLength($('#maxPopupLengthRangeElement').val());
+	bgPage.storeShowTabShot($('#showTabShotRangeElement').val());
 	// Update status to let user know options were saved.
 	var optionsSaveStatus = $('<div>')
 	  .addClass('optionsSaveStatus')
@@ -39,7 +39,7 @@ function saveOptions() {
 
 // Restores select box state to saved value from localStorage.
 function setMaxPopupLength() {
-	$('#maxPopupLengthSelectElement').selectOptions(bgPage.maxPopupLength, true);
+	$('#maxPopupLengthRangeElement').selectOptions(bgPage.maxPopupLength, true);
 }
 
 //Restores select box state to saved value from localStorage.

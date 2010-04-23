@@ -315,6 +315,7 @@ function storeMaxPopupLength(newMaxPopupLength) {
 // Fetches/Initialises the showTabShot from the localStorage.
 function fetchShowTabShot() {
   showTabShot = localStorage['showTabShot'];
+  //console.log(showTabShot);
   if (showTabShot === undefined)
     storeShowTabShot('false');
 }
