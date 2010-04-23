@@ -264,7 +264,7 @@ function removeRecentlyClosedTabByUrl(url) {
 // @param i index of the element to be removed from the recentlyClosedTabs
 function removeRecentlyClosedTabByTimestamp(timestamp) {
 	delete recentlyClosedTabs[timestamp];
-	for (var index in rctTimestamps) if (rctTimestamps[index] == timestamp) rctTimestamps.slice(index, 1);
+	for (var index in rctTimestamps) if (rctTimestamps[index] == timestamp) rctTimestamps.splice(index, 1);
 	storeRecentlyClosedTabs();
 }
 
