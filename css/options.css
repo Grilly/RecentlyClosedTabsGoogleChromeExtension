@@ -73,7 +73,8 @@
 .dateDivElement {
   float: left;
   text-align: right;
-  width: 98px;
+  width: 35px;
+  height: 38px;
   padding: 1px;
   padding-top: 5px;
   padding-right: 3px;
@@ -138,4 +139,16 @@
 
 .rctListDivElement {
   height: 38px;
+}
+
+.dateDiv {
+  position: relative;
+  top: 15px;
+  left: 0px;
+  background-color: #FFFFFF;
+  width: 85px;
+  padding: 1px;
+  margin: 0px;
+  border: 1px solid #000000;
+  text-align: center;
 }

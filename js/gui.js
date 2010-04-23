@@ -19,6 +19,20 @@ month[9] = "October";
 month[10] = "November";
 month[11] = "December";
 
+var monthShort = new Array(12);
+monthShort[0] = "Jan";
+monthShort[1] = "Febr";
+monthShort[2] = "Mar";
+monthShort[3] = "Apr";
+monthShort[4] = "May";
+monthShort[5] = "Jun";
+monthShort[6] = "Jul";
+monthShort[7] = "Aug";
+monthShort[8] = "Sep";
+monthShort[9] = "Oct";
+monthShort[10] = "Nov";
+monthShort[11] = "Dec";
+
 // Creates the header for the options and infonews defined by the title.
 function createHeader(title) {
 	var topTable = $('<table>').addClass('header_table').appendTo($('#headerTableDiv'));
@@ -170,13 +184,24 @@ function getDateString(timestamp) {
   var date = new Date();
   date.setTime(timestamp);
   var today = new Date();
-  var dateString = date.getDate() + ". " + month[date.getMonth()] + " " + date.getFullYear();
+  var dateString = date.getDate() + ". " + monthShort[date.getMonth()];
   var timeString = pad2(date.getHours()) + ":" + pad2(date.getMinutes());
   if (date.getDate() == today.getDate() && date.getMonth() == today.getMonth() && date.getFullYear() == today.getFullYear()) {
     return timeString;
   } else {
-    return dateString  + " " + timeString;
+    return dateString;
   }
+}
+
+// Gets the date and time as string.
+// @param timestamp id of the recently closed tabs element
+// @return timeString for the detailed date popup
+function getDateStringDetail(timestamp) {
+  var date = new Date();
+  date.setTime(timestamp);
+  var dateString =  date.getMonth() + "/" + date.getDate() + "/" + date.getFullYear();
+  var timeString = pad2(date.getHours()) + ":" + pad2(date.getMinutes());
+  return dateString  + " " + timeString;
 }
 
 // Toggles urlDiv.
@@ -191,6 +216,21 @@ function toggleUrlDiv(timestamp, showFlag) {
       .appendTo($('#rctListDivElement' + timestamp));
   } else if (showFlag == "0") {
     $('#urlDiv').remove();
+  }
+}
+
+// Toggles dateDiv.
+// @param timestamp timestamp to get id of dateDiv element
+// @param flagit 1 for showing the div and 0 for not showing the div
+function toggleDateDiv(timestamp, showFlag) {
+  if (showFlag == "1") {
+    var dateDiv = $('<div>')
+      .addClass('dateDiv')
+      .attr({ id: 'dateDiv' })
+      .text(getDateStringDetail(timestamp))
+      .appendTo($('#dateDivElement' + timestamp));
+  } else if (showFlag == "0") {
+    $('#dateDiv').remove();
   }
 }
 
@@ -211,7 +251,7 @@ function createRctDiv(timestamp, isOptions) {
 		if (isOptions != true) {
 		  $('#rctListDivElement' + timestamp).mouseover(function() { toggleUrlDiv(timestamp, '1'); return false; });
 		  $('#rctListDivElement' + timestamp).mouseout(function() { toggleUrlDiv(timestamp, '0'); return false; });
-    }
+		}
 		
 		if (isOptions) {
   		var dateDivElement = $('<div>')
@@ -220,6 +260,9 @@ function createRctDiv(timestamp, isOptions) {
         .text(getDateString(timestamp))
         .appendTo(rctListDivElement);
 
+		$('#dateDivElement' + timestamp).mouseover(function() { toggleDateDiv(timestamp, '1'); return false; });
+		$('#dateDivElement' + timestamp).mouseout(function() { toggleDateDiv(timestamp, '0'); return false; });
+		
   		if (bgPage.showTabShot == 'true') {
     		// tabShotElement building
     		var tabShotDivElement = $('<div>')
