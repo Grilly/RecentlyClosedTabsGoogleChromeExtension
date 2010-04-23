@@ -238,7 +238,7 @@ function addClosedTab(tabInfo) {
 	var timestamp = (new Date()).getTime();
 	recentlyClosedTabs[timestamp] = tabInfo;
 	rctTimestamps.unshift(timestamp);
-	while (rctTimestamps.length > 30) {
+	while (rctTimestamps.length > 100) {
 		console.log("deleting " + rctTimestamps[rctTimestamps.length-1]);
 		removeRecentlyClosedTabByTimestamp(rctTimestamps[rctTimestamps.length-1]);
 	}
