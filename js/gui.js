@@ -184,7 +184,10 @@ function getDateString(timestamp) {
   var date = new Date();
   date.setTime(timestamp);
   var today = new Date();
-  var dateString = date.getDate() + ". " + monthShort[date.getMonth()];
+  // German style
+  // var dateString = date.getDate() + ". " + monthShort[date.getMonth()];
+  // English style
+  var dateString = monthShort[date.getMonth()] + " " + date.getDate();
   var timeString = pad2(date.getHours()) + ":" + pad2(date.getMinutes());
   if (date.getDate() == today.getDate() && date.getMonth() == today.getMonth() && date.getFullYear() == today.getFullYear()) {
     return timeString;
@@ -199,7 +202,7 @@ function getDateString(timestamp) {
 function getDateStringDetail(timestamp) {
   var date = new Date();
   date.setTime(timestamp);
-  var dateString =  date.getMonth() + "/" + date.getDate() + "/" + date.getFullYear();
+  var dateString =  (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear();
   var timeString = pad2(date.getHours()) + ":" + pad2(date.getMinutes());
   return dateString  + " " + timeString;
 }
