@@ -174,7 +174,7 @@ function createRecentlyClosedTabsListEditButtons(timestamp) {
 // @param number number to pad
 // @return padded number with leading 0 if it is a single letter number
 function pad2(number) {
-  return (number < 10 ? '0' : '') + number
+  return (number < 10 ? '0' : '') + number;
 }
 
 // Gets the date and time as string.
