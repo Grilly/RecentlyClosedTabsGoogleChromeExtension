@@ -208,7 +208,7 @@ function setImgDataUrl(tabId) {
 						// chkImage.src = allOpenedTabs[tabId].tabShot;
 					}
 					orgImage.src = snapshotData;
-				})
+				});
 }
 
 // ------------------------------------------------------------------------------
