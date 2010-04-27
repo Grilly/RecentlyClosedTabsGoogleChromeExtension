@@ -393,8 +393,8 @@ function createOptionsSelect() {
     .appendTo(showTabShotOptionsDivElement);
 	var showTabShotSelectElementOptions = {
 	    'true': 'On',
-	    'false': 'Off',
-	  }
+	    'false': 'Off'
+	  };
 	var showTabShotSelectElement = $('<select>')
 	    .attr({ id: 'showTabShotSelectElement' })
 	    .addOption(showTabShotSelectElementOptions, true)
