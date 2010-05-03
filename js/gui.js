@@ -61,8 +61,8 @@ function createRctDivForOptions(timestamp) {
 
 // Creates the rct list element for the popup page.
 function createRctDivForPopup(timestamp) {
-	createRctDivElement(timestamp, false);
-	createRctDiv(timestamp);
+	createRctDivElement(timestamp);
+	createRctDiv(timestamp, false);
 }
 
 // Creates the filtsers list.
@@ -118,7 +118,7 @@ function createRecentlyClosedTabsListHeader() {
 function createRctDivElement(timestamp) {
 	if (bgPage.recentlyClosedTabs[timestamp] !== undefined) {
 		var rctDivElement = $('<div>')
-  		.addClass('rctDivElement')
+		  .addClass('rctDivElement')
   		.attr({ id: 'rctDivElement' + timestamp })
   		.click(function() {
   		  bgPage.openRecentlyClosedTab(timestamp);
@@ -207,21 +207,6 @@ function getDateStringDetail(timestamp) {
   return dateString  + " " + timeString;
 }
 
-// Toggles urlDiv.
-// @param timestamp timestamp to get id of urlDiv element
-// @param flagit 1 for showing the div and 0 for not showing the div
-function toggleUrlDiv(timestamp, showFlag) {
-  if (showFlag == "1") {
-    var urlDiv = $('<div>')
-      .addClass('urlDiv')
-      .attr({ id: 'urlDiv' })
-      .text(bgPage.recentlyClosedTabs[timestamp].url)
-      .appendTo($('#rctListDivElement' + timestamp));
-  } else if (showFlag == "0") {
-    $('#urlDiv').remove();
-  }
-}
-
 // Toggles dateDiv.
 // @param timestamp timestamp to get id of dateDiv element
 // @param flagit 1 for showing the div and 0 for not showing the div
@@ -250,11 +235,6 @@ function createRctDiv(timestamp, isOptions) {
   		  removeRecentlyClosedTabFromList(timestamp);
   		  return false; })
   		.appendTo($('#rctDivElement' + timestamp));
-		
-		if (isOptions != true) {
-		  $('#rctListDivElement' + timestamp).mouseover(function() { toggleUrlDiv(timestamp, '1'); return false; });
-		  $('#rctListDivElement' + timestamp).mouseout(function() { toggleUrlDiv(timestamp, '0'); return false; });
-		}
 		
 		if (isOptions) {
   		var dateDivElement = $('<div>')
@@ -287,9 +267,22 @@ function createRctDiv(timestamp, isOptions) {
 		var titleDivElement = $('<div>')
 		  .addClass('titleDivElement')
       .attr({ id: 'titleDivElement' + timestamp })
-      .text(bgPage.recentlyClosedTabs[timestamp].title)
       .appendTo(contentDivElement);
+		if (isOptions == false) {
+  		var linkElement = $('<a>')
+  		  .addClass('linkElement')
+  		  .attr({
+  		    id: 'linkElement' + timestamp,
+  		    href: '#',
+  		    title: '' + bgPage.recentlyClosedTabs[timestamp].url + '' })
+  		  .appendTo(titleDivElement);
+  		var titleTextDivElement = $('<div>')
+  		  .addClass('titleTextDivElement')
+  		  .text(bgPage.recentlyClosedTabs[timestamp].title)
+        .appendTo(linkElement);
+		}
 		if (isOptions) {
+		  titleDivElement.text(bgPage.recentlyClosedTabs[timestamp].title);
   		var urlDivElement = $('<div>')
   			.addClass('linkDivElement')
   			.attr({ id: 'linkDivElement' + timestamp })
@@ -388,7 +381,7 @@ function createOptionsSelect() {
     .attr({ id: 'showTabShotOptionsDivElement' })
     .appendTo($('#optionsSelect'));
 	var showTabShotH3Element = $('<h3>')
-	.addClass('showTabShotH3Element')
+	  .addClass('showTabShotH3Element')
     .text('Show the screenshot for a recently closed tab:')
     .appendTo(showTabShotOptionsDivElement);
 	var showTabShotSelectElementOptions = {

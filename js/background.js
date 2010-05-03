@@ -135,7 +135,7 @@ function getAllTabsInWindow(tabs) {
 // @param changeInfo changeInfo of the tab to be updated
 // @param tab tab to be updated
 function updatedTabsListener(tabId, changeInfo, tab) {
-	if (changeInfo.status == "complete")
+	if (changeInfo.status == 'complete')
 		processOpenedTab(tab);
 }
 
@@ -315,8 +315,7 @@ function storeMaxPopupLength(newMaxPopupLength) {
 // Fetches/Initialises the showTabShot from the localStorage.
 function fetchShowTabShot() {
   showTabShot = localStorage['showTabShot'];
-  //console.log(showTabShot);
-  if (showTabShot === undefined)
+  if (showTabShot === 'undefined')
     storeShowTabShot('false');
 }
 

@@ -13,6 +13,11 @@ function main() {
   this.createFooter();
   createFiltersListHeader();
   var rootDiv = $('#rootDiv').addClass('rootDiv');
+  if (bgPage.showTabShot == 'true') {
+    rootDiv.css('width', '743px');
+  } else {
+    rootDiv.css('width', '703px');
+  }
   var optionsFilters = $('#optionsFilters').addClass('optionsFilters');
   var optionsSelect = $('#optionsSelect').addClass('optionsSelect');
   var filterListDivElement = $('#filterListDivElement').addClass('filterListDivElement');
@@ -27,7 +32,7 @@ function main() {
 // Saves options to localStorage.
 function saveOptions() {
 	bgPage.storeMaxPopupLength($('#maxPopupLengthRangeElement').val());
-	bgPage.storeShowTabShot($('#showTabShotRangeElement').val());
+	bgPage.storeShowTabShot($('#showTabShotSelectElement').val());
 	// Update status to let user know options were saved.
 	var optionsSaveStatus = $('<div>')
 	  .addClass('optionsSaveStatus')

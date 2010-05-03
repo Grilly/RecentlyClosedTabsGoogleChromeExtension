@@ -49,3 +49,14 @@ body {
   overflow: hidden;
   white-space: nowrap;
 }
+
+.titleTextDivElement {
+	text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.linkElement {
+	color: #000000;
+  text-decoration: none;
+}
