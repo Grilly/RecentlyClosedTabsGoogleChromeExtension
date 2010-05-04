@@ -9,80 +9,81 @@
     <script language="JavaScript" src="js/gui.js"></script>
   </head>
   <body onload="main();">
-	<div id="headerTableDiv"></div>
-    <div id="headerBorderDiv"></div>
-    <table style="margin-top: 7px; margin-left: 7px; width: 99%;">
-      <tr>
-        <td>
-          <h1>Thanks for using Recently Closed Tabs</h1>
-          <br><br>
-          <h2>Changelog</h2>
-          <h3>version 1.2.6</h3>
-            <ul>
-              <li>Replaced the divs showing the urls for the popup rct elements with real tooltips.</li>
-              <li>Fixed showTabShot bug.</li>
-            </ul>
-              
-          <hr>
-          
-          <h3>version 1.2.5</h3>
-            <ul>
-              <li>Introduced the Google Analytics.</li>
-            </ul>
-              
-          <hr>
-          
-          <h3>version 1.2.4</h3>
-            <ul>
-              <li>Fixed date on options page.</li>
-            </ul>
-              
-          <hr>
-          
-          <h3>version 1.2.3</h3>
-          <ul>
-            <li>Added limit for recently closed tabs to 100. In a future release that you can define this number in the options.</li>
-            <li>Added popup to show a detailed date on the options date.</li>
-            <li>Removed select box and added range selector for defining the number of shown recently closed tabs element on the popup page.</li>
-            <li>Added popup to show the url on the popup page.</li>
-          </ul>
-          
-          <hr>
-          
-          <h3>version 1.2</h3>
-          <ul>
-            <li>Reimplemented DOM manipulation with JQuery library</li>
-            <li>Infos page adjusted for layout purposes.</li>
-            <li>Options page adjusted for layout purposes. A lot of infos about the recently closed tabs are placed here.</li>
-            <li>Popup page adjusted for layout purposes.</li>
-            <li>Added filters to the options page. Now you can add urls to the filters to exclude them from adding to the recently closed tabs list. You also have the possibility to edit the filters.</li>
-            <li>Added option to show or not to show the screenshots for the recently closed tabs. Think of that if you switch the screenshots on the extension will consume more memory.</li>
-            <li>Added &lt;meta http-equiv="Content-type" content="text/html; charset=utf-8" /&gt; so that my name is written properly ;-)</li>
-          </ul>
-          
-          <hr>
-          
-          <h3>version 1.1.1.1</h3>
-          <ul>
-            <li>some annoying bugs fixed ;-)</li>
-            <li>basic info news page on every version change, should be optimised to get triggered on major and minor version change (ignore the 3rd and 4th part)</li>
-            <li>localStorage use and optimised snapshot images (resized via canvas)</li>
-            <li>introduced maxTabs parameter to control the length of the popup list</li>
-          </ul>
-        </td>
-      </tr>
-    </table>
-    <div id="footerDiv"></div>
-   <script>
-     var _gaq = _gaq || [];
-     _gaq.push(['_setAccount', 'UA-3928511-2']);
-     _gaq.push(['_trackPageview']);
+	  <div id="pageDiv" style="position:relative; margin: 5px;">
+	    <div id="headerDiv"></div>
+	    <table style="margin-top: 7px; margin-left: 7px; width: 99%;">
+	      <tr>
+	        <td>
+	          <h1>Thanks for using Recently Closed Tabs</h1>
+	          <br><br>
+	          <h2>Changelog</h2>
+	          <h3>version 1.2.6</h3>
+	            <ul>
+	              <li>Replaced the divs showing the urls for the popup rct elements with real tooltips.</li>
+	              <li>Fixed showTabShot bug.</li>
+	            </ul>
+	              
+	          <hr>
+	          
+	          <h3>version 1.2.5</h3>
+	            <ul>
+	              <li>Introduced the Google Analytics.</li>
+	            </ul>
+	              
+	          <hr>
+	          
+	          <h3>version 1.2.4</h3>
+	            <ul>
+	              <li>Fixed date on options page.</li>
+	            </ul>
+	              
+	          <hr>
+	          
+	          <h3>version 1.2.3</h3>
+	          <ul>
+	            <li>Added limit for recently closed tabs to 100. In a future release that you can define this number in the options.</li>
+	            <li>Added popup to show a detailed date on the options date.</li>
+	            <li>Removed select box and added range selector for defining the number of shown recently closed tabs element on the popup page.</li>
+	            <li>Added popup to show the url on the popup page.</li>
+	          </ul>
+	          
+	          <hr>
+	          
+	          <h3>version 1.2</h3>
+	          <ul>
+	            <li>Reimplemented DOM manipulation with JQuery library</li>
+	            <li>Infos page adjusted for layout purposes.</li>
+	            <li>Options page adjusted for layout purposes. A lot of infos about the recently closed tabs are placed here.</li>
+	            <li>Popup page adjusted for layout purposes.</li>
+	            <li>Added filters to the options page. Now you can add urls to the filters to exclude them from adding to the recently closed tabs list. You also have the possibility to edit the filters.</li>
+	            <li>Added option to show or not to show the screenshots for the recently closed tabs. Think of that if you switch the screenshots on the extension will consume more memory.</li>
+	            <li>Added &lt;meta http-equiv="Content-type" content="text/html; charset=utf-8" /&gt; so that my name is written properly ;-)</li>
+	          </ul>
+	          
+	          <hr>
+	          
+	          <h3>version 1.1.1.1</h3>
+	          <ul>
+	            <li>some annoying bugs fixed ;-)</li>
+	            <li>basic info news page on every version change, should be optimised to get triggered on major and minor version change (ignore the 3rd and 4th part)</li>
+	            <li>localStorage use and optimised snapshot images (resized via canvas)</li>
+	            <li>introduced maxTabs parameter to control the length of the popup list</li>
+	          </ul>
+	        </td>
+	      </tr>
+	    </table>
+	    <div id="footerDiv"></div>
+    </div>
+    <script>
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-3928511-2']);
+      _gaq.push(['_trackPageview']);
 
-     (function() {
-       var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-       ga.src = 'https://ssl.google-analytics.com/ga.js';
-       (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ga);
-     })();
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = 'https://ssl.google-analytics.com/ga.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ga);
+      })();
    </script>
   </body>
 </html>

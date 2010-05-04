@@ -35,16 +35,55 @@ monthShort[11] = "Dec";
 
 // Creates the header for the options and infonews defined by the title.
 function createHeader(title) {
-	var topTable = $('<table>').addClass('header_table').appendTo($('#headerTableDiv'));
-	var trElement = $('<tr>').appendTo(topTable);
+  var headerDivElement = $('#headerDiv')
+    .addClass('headerDiv');
+  
+  var headerImgDivElement = $('<div>')
+    .addClass('headerImgDivElement')
+    .appendTo(headerDivElement);
+  var headerImgElement = $('<img>')
+    .addClass('headerImgElement')
+    .attr({
+      src: 'images/rct128.png',
+      alt: 'Recently Closed Tabs'})
+    .appendTo(headerImgDivElement);
+  
+  var headerTitleDivElement = $('<div>')
+    .addClass('headerTitleDivElement')
+    .text(bgPage.appConfig.name + ' ' + bgPage.appConfig.version)
+    .appendTo(headerDivElement);
+  
+//	var topTable = $('<table>')
+//	  .addClass('header_table')
+//	  .appendTo($('#headerTableDiv'));
+//	var trElement = $('<tr>').appendTo(topTable);
+//	
+//	var tdImgElement = $('<td>')
+//	  .addClass('header_tdImg')
+//	  .appendTo(trElement);
+//	var imgElement = $('<img>')
+//	  .addClass('header_img')
+//	  .attr({
+//	    src: 'images/rct128.png',
+//	    alt: 'Recently Closed Tabs'})
+//	  .appendTo(tdImgElement);
+//	var tdExtensionNameElement = $('<td>')
+//	  .addClass('header_tdExtensionName')
+//	  .text(bgPage.appConfig.name + ' ' + bgPage.appConfig.version)
+//	  .appendTo(trElement);
+//	var rightTdElement = $('<td>')
+//	  .addClass('popupFooter')
+//	  .attr({id: 'rightTdElement' })
+//	  .appendTo(trElement);
 	
-	var tdImgElement = $('<td>').addClass('header_tdImg').appendTo(trElement);
-	var imgElement = $('<img>').addClass('header_img').attr({src: 'images/rct128.png', alt: 'Recently Closed Tabs'}).appendTo(tdImgElement);
-	var tdExtensionNameElement = $('<td>').addClass('header_tdExtensionName').text(bgPage.appConfig.name + ' ' + bgPage.appConfig.version).appendTo(trElement);
-	var emptyTdElement = $('<td>').appendTo(trElement);
-	
-	var setHeaderBorderDiv = $('#headerBorderDiv').addClass('headerBorderDiv');
-	var h1Element = $('<h1>').text('Extension ' + title).appendTo($('#headerBorderDiv'));
+//	var headerBorderDiv = $('<div>')
+//	  .addClass('headerBorderDiv')
+//	  .attr({ id: 'headerBorderDiv' })
+//	  .appendTo(headerDivElement);
+	var headerBorderTitle = $('<h1>')
+	  .addClass('headerBorderTitle')
+	  .text('Extension ' + title)
+	  .appendTo(headerDivElement);
 }
 
 // Creates the footer.

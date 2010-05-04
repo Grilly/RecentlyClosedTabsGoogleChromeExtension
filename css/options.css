@@ -11,12 +11,11 @@
 	float: left;
 	width: 1200px;
 	margin-top: 7px;
-	margin-left: 7px;
 }
 
 .rootDiv {
   float: left;
-  margin-left: 7px;
+  margin-left: 5px;
   margin-bottom: 7px;
   padding: 3px;
   border-radius: 5px;
@@ -177,4 +176,16 @@
 
 .showTabShotH3Element {
   clear: both;
+}
+
+.headerChangelogLinkDivElement {
+	clear: both;
+	position: absolute;
+	top: 80px;
+	right: 9px;
+	font-size: 13px;
+}
+
+.headerChangelogLinkDivElement:hover {
+  cursor: hand;
 }

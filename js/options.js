@@ -9,8 +9,21 @@ var bgPage = chrome.extension.getBackgroundPage();
 // Main method: Everything starts here
 //------------------------------------------------------------------------------
 function main() {
-  this.createHeader('Options');
-  this.createFooter();
+  createHeader('Options');
+  var headerChangelogLinkDivElement = $('<div>')
+    .addClass('headerChangelogLinkDivElement')
+    .text('Show Changelog')
+    .click(function() {
+      chrome.tabs.create( {
+        'url' : chrome.extension.getURL('infonews.html'),
+        'selected' : true
+      }, function(tab) {
+        // Tab opened: possible migration procedures
+      });
+    return false;})
+    .appendTo($('#headerDiv'));
+  var contentDiv = $('#contentDiv').addClass('contentDiv');
+  createFooter();
   createFiltersListHeader();
   var rootDiv = $('#rootDiv').addClass('rootDiv');
   if (bgPage.showTabShot == 'true') {
