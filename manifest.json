@@ -1,6 +1,6 @@
 {
    "name": "Recently Closed Tabs",
-   "version": "1.2.6",
+   "version": "1.2.7",
    "description": "Manage your recently closed tabs.",
    "permissions": [ "tabs" ],
    "background_page": "background.html",
