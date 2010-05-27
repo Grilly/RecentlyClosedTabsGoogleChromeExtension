@@ -16,11 +16,15 @@ function loadAppConfig() {
     if (this.readyState == 4) {
       appConfig = JSON.parse(this.responseText);
       var storedVersion = localStorage['version'];
+      var newVersion = (appConfig.version).split(/\./g);
+      var oldVersion = (storedVersion).split(/\./g);
+      for (var i = 0; i < 2; i++) {
+        if ((newVersion[i] != oldVersion[i])) {
+          chrome.tabs.create( {'url' : chrome.extension.getURL('infonews.html'), 'selected' : true}, function(tab) {});
+          break;
+        }
+      }
       if (appConfig.version != storedVersion) {
-        chrome.tabs.create( {'url' : chrome.extension.getURL('infonews.html'), 'selected' : true}, function(tab) {
-          // Tab opened: possible migration procedures
-          if (storedVersion < "1.2") storeRecentlyClosedTabs({});
-          });
         localStorage.setItem('version', appConfig.version);
       }
     }
