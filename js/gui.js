@@ -53,33 +53,6 @@ function createHeader(title) {
     .text(bgPage.appConfig.name + ' ' + bgPage.appConfig.version)
     .appendTo(headerDivElement);
   
-//	var topTable = $('<table>')
-//	  .addClass('header_table')
-//	  .appendTo($('#headerTableDiv'));
-//	var trElement = $('<tr>').appendTo(topTable);
-//	
-//	var tdImgElement = $('<td>')
-//	  .addClass('header_tdImg')
-//	  .appendTo(trElement);
-//	var imgElement = $('<img>')
-//	  .addClass('header_img')
-//	  .attr({
-//	    src: 'images/rct128.png',
-//	    alt: 'Recently Closed Tabs'})
-//	  .appendTo(tdImgElement);
-//	var tdExtensionNameElement = $('<td>')
-//	  .addClass('header_tdExtensionName')
-//	  .text(bgPage.appConfig.name + ' ' + bgPage.appConfig.version)
-//	  .appendTo(trElement);
-//	var rightTdElement = $('<td>')
-//	  .addClass('popupFooter')
-//	  .attr({id: 'rightTdElement' })
-//	  .appendTo(trElement);
-	
-//	var headerBorderDiv = $('<div>')
-//	  .addClass('headerBorderDiv')
-//	  .attr({ id: 'headerBorderDiv' })
-//	  .appendTo(headerDivElement);
 	var headerBorderTitle = $('<h1>')
 	  .addClass('headerBorderTitle')
 	  .text('Extension ' + title)
@@ -409,10 +382,24 @@ function createOptionsSelect() {
 	var maxPopUpLengthRangeOutputElement = $('<div>')
 	  .addClass('maxPopUpLengthRangeOutputElement')
 	  .attr({ 
-		id: 'maxPopUpLengthRangeOutputElement',
-		name: bgPage.maxPopupLength })
+	    id: 'maxPopUpLengthRangeOutputElement',
+	    name: bgPage.maxPopupLength })
 	  .text($('#maxPopupLengthRangeElement').val())
 	  .appendTo(maxPopupLengthOptionsDivElement);
+	
+	
+//	<label for='someCheckbox'>Check it?</label>
+//  <input type='checkbox' id='someCheckbox' />
+//  
+//  $('#someCheckbox').simpleImageCheck({
+//    image: 'unchecked.png',             // String The image source to show when the checkbox IS NOT checked (REQUIRED) 
+//    imageChecked: 'checked.png',        // String The image source to show when the checkbox IS checked (REQUIRED)
+//    afterCheck: function(isChecked) {   // Function Optional callback function for when the image/checkbox is toggled
+//      // do something if isChecked === true
+//    }
+//  });
+	
+	
 	
 	// showTabShotOptions
 	var showTabShotOptionsDivElement = $('<div>')
@@ -423,15 +410,34 @@ function createOptionsSelect() {
 	  .addClass('showTabShotH3Element')
     .text('Show the screenshot for a recently closed tab:')
     .appendTo(showTabShotOptionsDivElement);
-	var showTabShotSelectElementOptions = {
-	    'true': 'On',
-	    'false': 'Off'
-	  };
-	var showTabShotSelectElement = $('<select>')
-	    .attr({ id: 'showTabShotSelectElement' })
-	    .addOption(showTabShotSelectElementOptions, true)
-	    .selectOptions(bgPage.showTabShot, true)
-	    .appendTo(showTabShotOptionsDivElement);
+	var showTabShotCheckBoxElement = $('<input>')
+	  .attr({
+	    type: 'checkbox',
+	    id: 'showTabShotCheckBoxElement'
+	  })	  
+	  .appendTo(showTabShotOptionsDivElement);
+	
+	var showTabShotCheckBoxElement = $('<input>')
+  .attr({
+    type: 'checkbox',
+    id: 'showTabShotCheckBoxElement2'
+  })    
+  .appendTo(showTabShotOptionsDivElement);
+	
+	$('#showTabShotCheckBoxElement').simpleImageCheck({
+    image: 'images/unchecked.png',
+    imageChecked: 'images/checked.png',
+    afterCheck: function(isChecked) {}
+  });
+//	var showTabShotSelectElementOptions = {
+//	    'true': 'On',
+//	    'false': 'Off'
+//	  };
+//	var showTabShotSelectElement = $('<select>')
+//	    .attr({ id: 'showTabShotSelectElement' })
+//	    .addOption(showTabShotSelectElementOptions, true)
+//	    .selectOptions(bgPage.showTabShot, true)
+//	    .appendTo(showTabShotOptionsDivElement);
 	
 	// saveOptions
 	var saveOptionsDivElement = $('<div>')
@@ -440,7 +446,12 @@ function createOptionsSelect() {
     .appendTo($('#optionsSelect'));
 	var saveOptionsButtonElement = $('<button>')
     .text('Save Options')
-    .click(function() { saveOptions(); return false; })
+    .click(function() { 
+      saveOptions(); 
+      if( $('#showTabShotCheckBoxElement').attr('checked') == true){
+     alert('bla');
+     }
+      return false; })
     .appendTo(saveOptionsDivElement);
 }
 
