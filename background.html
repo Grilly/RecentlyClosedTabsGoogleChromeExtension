@@ -13,6 +13,7 @@ var extensionConfig;
 //Gets all open windows.
 chrome.tabs.getAllInWindow(null, function(tabs){
   for (var key in tabs) {
+	// TODO was machen, wenn key == undefined???
     allOpenTabs[tabs.id] = tabs[key];
   }
 });
@@ -173,5 +174,14 @@ date.setTime(timestamp);
 var dateString =  (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear();
 var timeString = pad2(date.getHours()) + ":" + pad2(date.getMinutes());
 return dateString  + " " + timeString;
+}
+
+// Checks if the given object is empty.
+// @param obj object to be checked
+function isEmpty(obj){
+  for(var i in obj){ 
+    if(obj.hasOwnProperty(i)){return false;}
+  }
+  return true;
 }
  </script>
