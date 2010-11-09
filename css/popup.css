@@ -1,62 +1,61 @@
-@import "background.css";
-
 body {
-	min-width: 280px;
+	margin: 0px;
+  padding: 0px;
+  min-width: 280px;
+  font-family: Arial,Helvetica,sans-serif;
+  font-size: 10px;
+  color: #000000;
+  background: #FFFFFF;
 }
 
-.rctDivElement {
-  width: 280px;
-  height: 22px;
-}
-
-.popupFooter {
-	height: 14px;
-	width: 250px;
-}
-
-.popupFooter:hover {
-	font-weight: bold;
-	cursor: hand;
-}
-
-.favIconDivElement {
-  padding: 2px 2px 2px 2px;
-}
-
-.titleDivElement {
-  font-weight: normal;
-}
-
-.contentDivElement {
-  width: 245px;
-  height: 16px;
-}
-
-.rctListDivElement {
-  height: 20px;
-}
-
-.urlDiv {
-  position: relative;
-  top: 0px;
-  left: 0px;
-  background-color: #FFFFFF;
-  width: 275px;
-  padding: 1px;
+ul {
+  padding: 0px;
   margin: 0px;
-  border: 1px solid #000000;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
 }
 
-.titleTextDivElement {
-	text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
+li {
+  list-style-type: none;
+  width: 280px;
+  height: 20px;
+  padding: 1px;
 }
 
-.linkElement {
-	color: #000000;
+li:hover {
+	border-radius: 5px;
+  background-color: #BDD6F5;
+  cursor: hand;
+  padding: 1px;
+}
+
+a {
+	max-width: 100%;
+  display: block;
   text-decoration: none;
+}
+
+a:hover {
+  color: #444444;
+}
+
+.titleTextDiv {
+	height: 12px;
+	width: 251px;
+	float: left;
+	white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-decoration: none;
+  color: #000000;
+  border-radius: 5px;
+  border: 1px solid #B7C5E3;
+  background-color: #F1F6FD;
+  padding: 3px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+.favicon {
+	width: 16px;
+	height: 16px;
+	padding: 2px 2px 2px 2px;
 }
