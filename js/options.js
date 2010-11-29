@@ -29,14 +29,13 @@ function main() {
   if (maxPopupLength === undefined)
     storeMaxPopupLength(15);
   
-  //recentlyClosedTabs list TODO
   bgPage.loadValues();
   var rctListDiv = $('<div>')
     .addClass('rctListDiv')
     .appendTo('body');
   
   var ul = $('<ul>');
-  var counter = 0;  
+  var counter = 0;
   
   for (var index in bgPage.rctTimestamps) {
     counter++;
@@ -46,9 +45,10 @@ function main() {
     }
     var timestamp = bgPage.rctTimestamps[index];
     var tab = bgPage.rcts[timestamp];
-    var li = $('<li>');
+    var li = $('<li>')
+      .attr({ id: "li_" + timestamp});
       
-    var url = $('<a>')
+    var rctList_url = $('<a>')
       .attr({ 
         href: '#',
         title: tab.url
@@ -66,39 +66,90 @@ function main() {
         for (var index in bgPage.rctTimestamps) if (bgPage.rctTimestamps[index] == this.timestamp) bgPage.rctTimestamps.splice(index, 1);
         window.close();
       });
-    url[0].timestamp = timestamp;
+    rctList_url[0].timestamp = timestamp;
     
-    var dateUrl = $('<a>')
+    var rctList_contentDiv = $('<div>')
+      .addClass('rctList_contentDiv');
+    var rctList_titleDiv = $('<div>')
+      .addClass('rctList_titleDiv')
+      .text(tab.title)
+      .appendTo(rctList_contentDiv);
+    var rctList_urlDiv = $('<div>')
+      .addClass('rctList_urlDiv')
+      .text(tab.url)
+      .appendTo(rctList_contentDiv);
+    
+    var rctList_firstColumnDiv = $('<div>')
+      .addClass('rctList_firstColumnDiv');
+    var options_favIconUrl = tab.favIconUrl;
+    if(options_favIconUrl === "" || options_favIconUrl === undefined) {
+      options_favIconUrl = "../images/default_favicon.png";
+    }
+    var rctList_favIconDiv = $('<div>')
+      .addClass('rctList_favIconDiv')
+      .appendTo(rctList_firstColumnDiv);
+    var rctList_favIcon = $('<img>')
+      .addClass('rctList_favIcon')
+      .attr({ src: options_favIconUrl })
+      .appendTo(rctList_favIconDiv);
+    var rctList_dateDiv = $('<div>')
+      .addClass('rctList_dateDiv')
+      .appendTo(rctList_firstColumnDiv);
+    var rctList_dateUrl = $('<a>')
       .attr({
         href: '#',
         title: bgPage.getDateStringDetail(timestamp)
       })
-      .appendTo(li);
-    var dateDivElement = $('<div>')
-      .addClass('dateDivElement')
+      .appendTo(rctList_dateDiv);
+    var rctList_dateDivElement = $('<div>')
+      .addClass('rctList_dateDivElement')
       .text(bgPage.getDateString(timestamp))
-      .appendTo(dateUrl);
+      .appendTo(rctList_dateUrl);
     
-    var rctTextDiv = $('<div>')
-      .addClass('rctTextDiv')
-      .appendTo(url);
+    var rctList_editButtonsDiv = $('<div>')
+      .addClass('rctList_editButtonsDiv');
+    var rctList_deleteButtonDiv = $('<div>')
+      .addClass('rctList_deleteButtonDiv')
+      .appendTo(rctList_editButtonsDiv);
+    var rctList_deleteButton = $('<a>')
+      .addClass('rctList_deleteButton')
+      .attr({ 
+        href: '#'//,
+        //title: "delete"
+      })
+      .text("DELETE")
+      .click(function() {
+        delete bgPage.rcts[this.timestamp];
+        bgPage.storeRcts(bgPage.rcts);
+        for (var index in bgPage.rctTimestamps) if (bgPage.rctTimestamps[index] == this.timestamp) bgPage.rctTimestamps.splice(index, 1);
+        $('#li_' + this.timestamp).remove();
+      });
+    rctList_deleteButton[0].timestamp = timestamp;
+    rctList_deleteButton.appendTo(rctList_deleteButtonDiv);
+    var rctList_toFiltersButtonDiv = $('<div>')
+      .addClass('rctList_toFiltersButtonDiv')
+      .appendTo(rctList_editButtonsDiv);
+    var rctList_toFilters = $('<a>')
+      .addClass('rctList_toFiltersButton')
+      .attr({ 
+        href: '#'//,
+        //title: "delete"
+      })
+      .text("TO FILTERS")
+      .click(function() {
+//        delete bgPage.rcts[this.timestamp];
+//        bgPage.storeRcts(bgPage.rcts);
+//        for (var index in bgPage.rctTimestamps) if (bgPage.rctTimestamps[index] == this.timestamp) bgPage.rctTimestamps.splice(index, 1);
+//        $('#li_' + this.timestamp).remove();
+        alert('toFilters');
+      });
+    rctList_toFilters[0].timestamp = timestamp;
+    rctList_toFilters.appendTo(rctList_toFiltersButtonDiv);
     
-    var rctTitleDiv = $('<div>')
-      .addClass('rctTitleDiv')
-      .text(tab.title)
-      .appendTo(rctTextDiv);
-    
-    var rctUrlDiv = $('<div>')
-      .addClass('rctUrlDiv')
-      .text(tab.url)
-      .appendTo(rctTextDiv);
-    
-    var img = $('<img>')
-      .addClass('favicon')
-      .attr({ src: tab.favIconUrl })
-      .appendTo(url);
-    
-    url.appendTo(li);
+    rctList_url.appendTo(li);
+    rctList_firstColumnDiv.appendTo(rctList_url);
+    rctList_contentDiv.appendTo(rctList_url);
+    rctList_editButtonsDiv.appendTo(li);
     li.appendTo(ul);
   }
   ul.appendTo(rctListDiv);
