@@ -1,8 +1,8 @@
 <script>
 //Map of all opened tabs keyed by tabId
 var allOpenTabs = {};
-// Map of recently closed tabs keyed by timestamp
-var rcts = {};
+//Map of recently closed tabs keyed by timestamp
+var rcts;
 //Array of RCT timestamps
 var rctTimestamps = [];
 //Maximum number of rcts shown on popup page
@@ -84,7 +84,7 @@ function fetchRcts() {
     storeRcts({});
   } else {
     rcts = JSON.parse(rctsString);
-    rctTimestamps = [];
+    //rctTimestamps = [];
     for (var timestamp in rcts) rctTimestamps.unshift(timestamp);
   }
 }
@@ -95,6 +95,14 @@ function storeRcts(newRcts) {
 	if (newRcts !== undefined)
 	  rcts = newRcts;
 	localStorage.setItem('recentlyClosedTabs', JSON.stringify(rcts));
+}
+
+//Removes a rct by index.
+//@param i index of the element to be removed from the recentlyClosedTabs
+function removeRctByTimestamp(timestamp) {
+	delete rcts[timestamp];
+	for (var index in rctTimestamps) if (rctTimestamps[index] == timestamp) rctTimestamps.splice(index, 1);
+	storeRcts();
 }
 
 //Fetches/Initialises the maxPopupLength from the localStorage.
