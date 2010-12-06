@@ -5,6 +5,8 @@ var allOpenTabs = {};
 var rcts;
 //Array of RCT timestamps
 var rctTimestamps = [];
+//Array of URL blacklist filters
+var filters;
 //Maximum number of rcts shown on popup page
 var maxPopupLength;
 //Configuration of the extension
@@ -44,6 +46,8 @@ fetchExtensionConfig();
 
 //Loads the values for the extension.
 function loadValues() {
+  //Fetches the filters.
+  fetchFilters();
 	// Fetches the maxPopupLength.
 	fetchMaxPopupLength();
 	// Fetches the recentlyClosedTabs.
@@ -103,6 +107,36 @@ function removeRctByTimestamp(timestamp) {
 	delete rcts[timestamp];
 	for (var index in rctTimestamps) if (rctTimestamps[index] == timestamp) rctTimestamps.splice(index, 1);
 	storeRcts();
+}
+
+//Function defining the filter-object.
+//@param url url to filter
+function filter(url) {
+  this.url = url;
+}
+
+//Fetches/Initialises the filters from the localStorage.
+function fetchFilters() {
+  var filterString = localStorage['filters'];
+  if (filterString === undefined) {
+    filters = {};
+    filters[0] = new filter('chrome://newtab/');
+    filters[1] = new filter('about:blank');
+    storeFilters();
+  } else {
+    filters = JSON.parse(filterString);
+    for (var i in filters)
+      if (filters[i] == null || filters[i] === undefined)
+        filters.splice(i, 1);
+  }
+}
+
+//Modifys/Persists the filters to the localStorage
+//@param newFilters filters object to store in the localStorage
+function storeFilters(newFilters) {
+	if (newFilters !== undefined)
+	  filters = newFilters;
+	localStorage.setItem('filters', JSON.stringify(filters));
 }
 
 //Fetches/Initialises the maxPopupLength from the localStorage.

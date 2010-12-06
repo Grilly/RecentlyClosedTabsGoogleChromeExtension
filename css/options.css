@@ -51,15 +51,6 @@ body {
   white-space: nowrap;
 }
 
-.optionsDiv {
-  float: left;
-  width: 320px;
-  margin-left: 7px;
-  padding: 3px;
-  border-radius: 5px;
-  border: 1px solid #B7C5E3;
-}
-
 .rctListDiv {
 	float: left;
   width: 703px;
@@ -69,19 +60,19 @@ body {
   border: 1px solid #B7C5E3;
 }
 
-ul {
+.rctList_Ul {
   padding: 0px;
   margin: 0px;
 }
 
-li {
+.rctList_Li {
   list-style-type: none;
   width: 703px;
   height: 38px;
   padding: 1px;
 }
 
-li:hover {
+.rctList_Li:hover {
   border-radius: 5px;
   background-color: #BDD6F5;
   cursor: hand;
@@ -99,7 +90,7 @@ a:hover {
 }
 
 .rctList_contentDiv {
-  width: 580px;
+  width: 510px;
   float: left;
   white-space: nowrap;
   overflow: hidden;
@@ -189,50 +180,29 @@ a:hover {
   padding-right: 3px;
 }
 
-.rctList_editButtonsDiv {
-  width: 63px;
-  float: left;
-  text-decoration: none;
-/*  border: 1px solid #000000;*/
-  color: #000000;
-  padding: 1px;
-  margin-top: 0px;
-  margin-bottom: 0px;
-}
 .rctList_deleteButtonDiv {
-  height: 15px;
-  width: 100%;
+  width: 60px;
   float: left;
-  padding: 1px 0px 0px 0px;
-  margin-top: 0px;
-  margin-bottom: 0px;
-}
-.rctList_deleteButton {
-	width: 43px;
-  color: #000000;
-  font-size: 10px;
-}
-.rctList_deleteButton:hover {
-  color: #FFFFFF;
-  background-color: #000000;
+  padding: 6px 1px 1px 1px;
 }
 .rctList_toFiltersButtonDiv {
-  height: 15px;
-  width: 100%;
+  width: 65px;
   float: left;
-  padding: 2px 0px 0px 0px;
-  border-top: 1px solid #000000;
-  margin-top: 0px;
-  margin-bottom: 0px;
+  padding: 6px 1px 1px 1px;
 }
-.rctList_toFiltersButton {
-	width: 63px;
-  color: #000000;
-  font-size: 10px;
+
+.rightColumnDiv {
+	float: left;
+	with: 332px;
+	margin-left: 7px;
 }
-.rctList_toFiltersButton:hover {
-  color: #FFFFFF;
-  background-color: #000000;
+
+.optionsDiv {
+  float: top;
+  width: 320px;
+  padding: 3px;
+  border-radius: 5px;
+  border: 1px solid #B7C5E3;
 }
 
 .maxPopupLengthOptionsDiv {
@@ -274,6 +244,34 @@ a:hover {
 .optionsSaveStatus {
 	float: left;
 	padding: 6px 0px 0px 4px;
+}
+
+.filtersDiv {
+  float: bottom;
+  width: 320px;
+  margin-top: 7px;
+  padding: 3px;
+  border-radius: 5px;
+  border: 1px solid #B7C5E3;
+}
+.filters_Ul {
+	padding: 0px;
+  margin: 0px;
+}
+.filters_Li {
+	border-radius: 5px;
+  border: 1px solid #B7C5E3;
+  list-style-type: none;
+  width: 316px;
+  height: 38px;
+  padding: 1px;
+}
+.filters_Li:hover {
+  border-radius: 5px;
+  background-color: #BDD6F5;
+  border: 1px solid #000000;
+  cursor: hand;
+  padding: 1px;
 }
 
 .footerDiv {

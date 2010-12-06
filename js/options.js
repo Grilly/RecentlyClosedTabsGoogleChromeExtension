@@ -1,5 +1,6 @@
+var bgPage = chrome.extension.getBackgroundPage();
+
 function main() {
-  var bgPage = chrome.extension.getBackgroundPage();
   //Header
   var headerDiv = $('<div>')
     .addClass('headerDiv')
@@ -34,7 +35,8 @@ function main() {
     .addClass('rctListDiv')
     .appendTo('body');
   
-  var ul = $('<ul>');
+  var ul = $('<ul>')
+    .addClass('rctList_Ul');
   var counter = 0;
   
   for (var index in bgPage.rctTimestamps) {
@@ -46,13 +48,13 @@ function main() {
     var timestamp = bgPage.rctTimestamps[index];
     var tab = bgPage.rcts[timestamp];
     var li = $('<li>')
+      .addClass('rctList_Li')
       .attr({ id: "li_" + timestamp});
       
     var rctList_url = $('<a>')
       .attr({ 
         href: '#',
-        title: tab.url
-      })
+        title: tab.url })
       //.text(tab.title)
       .click(function() {
         chrome.tabs.create({
@@ -64,8 +66,7 @@ function main() {
         delete bgPage.rcts[this.timestamp];
         bgPage.storeRcts(bgPage.rcts);
         for (var index in bgPage.rctTimestamps) if (bgPage.rctTimestamps[index] == this.timestamp) bgPage.rctTimestamps.splice(index, 1);
-        window.close();
-      });
+        window.close(); });
     rctList_url[0].timestamp = timestamp;
     
     var rctList_contentDiv = $('<div>')
@@ -98,66 +99,78 @@ function main() {
     var rctList_dateUrl = $('<a>')
       .attr({
         href: '#',
-        title: bgPage.getDateStringDetail(timestamp)
-      })
+        title: bgPage.getDateStringDetail(timestamp) })
       .appendTo(rctList_dateDiv);
     var rctList_dateDivElement = $('<div>')
       .addClass('rctList_dateDivElement')
       .text(bgPage.getDateString(timestamp))
       .appendTo(rctList_dateUrl);
     
-    var rctList_editButtonsDiv = $('<div>')
-      .addClass('rctList_editButtonsDiv');
     var rctList_deleteButtonDiv = $('<div>')
-      .addClass('rctList_deleteButtonDiv')
-      .appendTo(rctList_editButtonsDiv);
-    var rctList_deleteButton = $('<a>')
-      .addClass('rctList_deleteButton')
-      .attr({ 
-        href: '#'//,
-        //title: "delete"
-      })
-      .text("DELETE")
+      .addClass('rctList_deleteButtonDiv');
+    var rctList_deleteButton = $('<input>')
+      .attr({
+        type: 'button',
+        value: 'Delete' })
       .click(function() {
         delete bgPage.rcts[this.timestamp];
         bgPage.storeRcts(bgPage.rcts);
         for (var index in bgPage.rctTimestamps) if (bgPage.rctTimestamps[index] == this.timestamp) bgPage.rctTimestamps.splice(index, 1);
-        $('#li_' + this.timestamp).remove();
-      });
+        $('#li_' + this.timestamp).remove(); });
     rctList_deleteButton[0].timestamp = timestamp;
     rctList_deleteButton.appendTo(rctList_deleteButtonDiv);
+    
     var rctList_toFiltersButtonDiv = $('<div>')
-      .addClass('rctList_toFiltersButtonDiv')
-      .appendTo(rctList_editButtonsDiv);
-    var rctList_toFilters = $('<a>')
-      .addClass('rctList_toFiltersButton')
-      .attr({ 
-        href: '#'//,
-        //title: "delete"
-      })
-      .text("TO FILTERS")
+      .addClass('rctList_toFiltersButtonDiv');
+    var rctList_toFiltersButton = $('<input>')
+      .attr({
+        type: 'button',
+        value: 'To Filters' })
       .click(function() {
-//        delete bgPage.rcts[this.timestamp];
-//        bgPage.storeRcts(bgPage.rcts);
-//        for (var index in bgPage.rctTimestamps) if (bgPage.rctTimestamps[index] == this.timestamp) bgPage.rctTimestamps.splice(index, 1);
-//        $('#li_' + this.timestamp).remove();
-        alert('toFilters');
-      });
-    rctList_toFilters[0].timestamp = timestamp;
-    rctList_toFilters.appendTo(rctList_toFiltersButtonDiv);
+        var url = bgPage.rcts[timestamp].url;
+        if (url != null) {
+          var isFilterUnique = true;
+          for (var timestamp in filters) {
+            if (filters[timestamp].url == url) isFilterUnique = false;
+          }
+          
+          if (isFilterUnique == true) {
+            var timestamp = (new Date()).getTime();
+            filters[timestamp] = new filter(url);
+            bgPage.storeFilters();
+            
+            $('#filters_Ul').remove();
+            createFiltersList();
+            //delete RCT from rctList
+            delete bgPage.rcts[this.timestamp];
+            bgPage.storeRcts(bgPage.rcts);
+            for (var index in bgPage.rctTimestamps) if (bgPage.rctTimestamps[index] == this.timestamp) bgPage.rctTimestamps.splice(index, 1);
+            $('#li_' + this.timestamp).remove();
+          } else {
+            alert('"' + url + '" not added to the filters. The url is already in the filters.');
+          }
+          }
+        });
+    rctList_toFiltersButton[0].timestamp = timestamp;
+    rctList_toFiltersButton.appendTo(rctList_toFiltersButtonDiv);
     
     rctList_url.appendTo(li);
     rctList_firstColumnDiv.appendTo(rctList_url);
     rctList_contentDiv.appendTo(rctList_url);
-    rctList_editButtonsDiv.appendTo(li);
+    rctList_deleteButtonDiv.appendTo(li);
+    rctList_toFiltersButtonDiv.appendTo(li);
     li.appendTo(ul);
   }
   ul.appendTo(rctListDiv);
   
+  var rightColumnDiv = $('<div>')
+    .addClass('rightColumnDiv')
+    .appendTo('body');
+  
   //optionsDiv
   var optionsDiv = $('<div>')
     .addClass('optionsDiv')
-    .appendTo('body');
+    .appendTo(rightColumnDiv);
   
   //maxPopupLengthOptions
   var maxPopupLengthOptionsDiv = $('<div>')
@@ -186,12 +199,10 @@ function main() {
       min: maxPopupLengthRangeMin,
       max: maxPopupLengthRangeMax,
       value: maxPopupLength,
-      input: maxPopupLength
-    })
+      input: maxPopupLength })
     .change(function() {
       $('#maxPopupLengthRangeOutputDiv').text($('#maxPopupLengthRangeInput').val());
-      return false;
-    })
+      return false; })
     .appendTo(maxPopupLengthRangeDiv);
   var maxPopupLengthRangeMaxDiv = $('<div>')
     .addClass('maxPopupLengthRangeMaxDiv')
@@ -234,9 +245,32 @@ function main() {
       return false; })
     .appendTo(saveOptionsDiv);
   
+  //filtersDiv
+  var filtersDiv = $('<div>')
+    .addClass('filtersDiv')
+    .attr({ id: 'filtersDiv' })
+    .appendTo(rightColumnDiv);
+  createFiltersList();
+  
   //footer
   var footerDiv = $('<div>')
     .addClass('footerDiv')
     .text('©2010 Michael & Draško')
     .appendTo('body');
+}
+
+function createFiltersList() {
+  var filters_ul = $('<ul>')
+    .addClass('filters_Ul')
+    .attr({ id: 'filters_Ul' });
+  
+  for (var index in bgPage.filters) {
+    var filter = bgPage.filters[index];
+    var filters_li = $('<li>')
+      .addClass('filters_Li')
+      .attr({ id: 'li_' + index})
+      .text("filter")
+      .appendTo(filters_ul);
+  }
+  filters_ul.appendTo('#filtersDiv');
 }
