@@ -96,15 +96,16 @@ function main() {
     var rctList_dateDiv = $('<div>')
       .addClass('rctList_dateDiv')
       .appendTo(rctList_firstColumnDiv);
-    var rctList_dateUrl = $('<a>')
-      .attr({
-        href: '#',
-        title: bgPage.getDateStringDetail(timestamp) })
-      .appendTo(rctList_dateDiv);
+    // var rctList_dateUrl = $('<a>')
+      // .attr({
+        // href: '#',
+        // title: bgPage.getDateStringDetail(timestamp) })
+      // .appendTo(rctList_dateDiv);
     var rctList_dateDivElement = $('<div>')
+	  .attr({ title: bgPage.getDateStringDetail(timestamp) })
       .addClass('rctList_dateDivElement')
       .text(bgPage.getDateString(timestamp))
-      .appendTo(rctList_dateUrl);
+      .appendTo(rctList_dateDiv);
     
     var rctList_deleteButtonDiv = $('<div>')
       .addClass('rctList_deleteButtonDiv');
