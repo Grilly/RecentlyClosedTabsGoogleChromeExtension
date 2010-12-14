@@ -90,19 +90,20 @@ a:hover {
 }
 
 .rctList_contentDiv {
-  width: 510px;
+  width: 584px;
   float: left;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   text-decoration: none;
   color: #000000;
-  border-radius: 5px;
+  border-radius: 5px 0px 0px 5px;
   border: 1px solid #B7C5E3;
   background-color: #F1F6FD;
   padding: 1px;
   margin-top: 0px;
   margin-bottom: 0px;
+  margin-right: 0px;
 }
 .rctList_titleDiv {
   height: 15px;
@@ -180,15 +181,72 @@ a:hover {
   padding-right: 3px;
 }
 
-.rctList_deleteButtonDiv {
-  width: 60px;
+.rctList_editButtonsDiv {
+  width: 63px;
   float: left;
-  padding: 6px 1px 1px 1px;
+  text-decoration: none;
+/*  border: 1px solid #000000;*/
+  color: #000000;
+  padding: 0px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  margin-left: 0px;
+}
+.rctList_deleteButtonDiv {
+  height: 14px;
+  width: 63px;
+  float: left;
+  border-radius: 0px 5px 0px 0px;
+  border: 1px solid #757575;
+  /* #F2F2F2 */
+  /* #D6D6D6 */
+  background-color: #F2F2F2;
+  padding: 2px 1px 1px 1px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+.rctList_deleteButtonDiv:hover {
+  border: 1px solid #3C7FB1;
+	/* #E8F6FD */
+	/* #B5E2FA */
+  background-color: #B5E2FA;
+}
+.rctList_deleteButton {
+  width: 63px;
+  text-align: center;
+  color: #000000;
+  font-size: 10px;
+}
+.rctList_deleteButton:hover {
+  color: #000000;
 }
 .rctList_toFiltersButtonDiv {
-  width: 65px;
+  height: 14px;
+  width: 63px;
   float: left;
-  padding: 6px 1px 1px 1px;
+  border-radius: 0px 0px 5px 0px;
+  border: 1px solid #757575;
+  /* #F2F2F2 */
+  /* #D6D6D6 */
+  background-color: #F2F2F2;
+  padding: 2px 1px 1px 1px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+.rctList_toFiltersButtonDiv:hover {
+  border: 1px solid #3C7FB1;
+  /* #E8F6FD */
+  /* #B5E2FA */
+  background-color: #B5E2FA;
+}
+.rctList_toFiltersButton {
+  width: 63px;
+  text-align: center;
+  color: #000000;
+  font-size: 10px;
+}
+.rctList_toFiltersButton:hover {
+  color: #000000;
 }
 
 .rightColumnDiv {

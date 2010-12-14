@@ -107,59 +107,57 @@ function main() {
       .text(bgPage.getDateString(timestamp))
       .appendTo(rctList_dateDiv);
     
-    var rctList_deleteButtonDiv = $('<div>')
-      .addClass('rctList_deleteButtonDiv');
-    var rctList_deleteButton = $('<input>')
-      .attr({
-        type: 'button',
-        value: 'Delete' })
+    var rctList_editButtonsDiv = $('<div>')
+      .addClass('rctList_editButtonsDiv');
+    var rctList_deleteButton = $('<a>')
+      .addClass('rctList_deleteButton')
+      .attr({ 
+        href: '#',
+        title: 'Delete this recently closed tab from the list.' })
       .click(function() {
         delete bgPage.rcts[this.timestamp];
         bgPage.storeRcts(bgPage.rcts);
         for (var index in bgPage.rctTimestamps) if (bgPage.rctTimestamps[index] == this.timestamp) bgPage.rctTimestamps.splice(index, 1);
-        $('#li_' + this.timestamp).remove(); });
+        $('#li_' + this.timestamp).remove();
+      });
     rctList_deleteButton[0].timestamp = timestamp;
-    rctList_deleteButton.appendTo(rctList_deleteButtonDiv);
-    
-    var rctList_toFiltersButtonDiv = $('<div>')
-      .addClass('rctList_toFiltersButtonDiv');
-    var rctList_toFiltersButton = $('<input>')
-      .attr({
-        type: 'button',
-        value: 'To Filters' })
+    rctList_deleteButton.appendTo(rctList_editButtonsDiv);
+    var rctList_deleteButtonDiv = $('<div>')
+      .addClass('rctList_deleteButtonDiv')
+      .text('DELETE')
+      .appendTo(rctList_deleteButton);
+    var rctList_toFiltersButton = $('<a>')
+      .addClass('rctList_toFiltersButton')
+      .attr({ 
+        href: '#',
+        title: 'Add this recently closed tab to the list of filters and delete it from the list.' })
       .click(function() {
-        var url = bgPage.rcts[timestamp].url;
-        if (url != null) {
-          var isFilterUnique = true;
-          for (var timestamp in filters) {
-            if (filters[timestamp].url == url) isFilterUnique = false;
-          }
-          
-          if (isFilterUnique == true) {
-            var timestamp = (new Date()).getTime();
-            filters[timestamp] = new filter(url);
-            bgPage.storeFilters();
-            
-            $('#filters_Ul').remove();
-            createFiltersList();
-            //delete RCT from rctList
-            delete bgPage.rcts[this.timestamp];
-            bgPage.storeRcts(bgPage.rcts);
-            for (var index in bgPage.rctTimestamps) if (bgPage.rctTimestamps[index] == this.timestamp) bgPage.rctTimestamps.splice(index, 1);
-            $('#li_' + this.timestamp).remove();
-          } else {
-            alert('"' + url + '" not added to the filters. The url is already in the filters.');
-          }
-          }
-        });
+        // store element as filter
+        var url = bgPage.rcts[this.timestamp].url;
+        var urlPattern = bgPage.showPrompt("Ignore this URL in future?", url);
+        //console.log(urlPattern);
+        if (urlPattern != null) {
+          bgPage.addUrlToFiltersAndCheck(urlPattern);
+          $('#filters_Ul').remove();
+          createFiltersList();
+          // delete and remove rct element
+          delete bgPage.rcts[this.timestamp];
+          bgPage.storeRcts(bgPage.rcts);
+          for (var index in bgPage.rctTimestamps) if (bgPage.rctTimestamps[index] == this.timestamp) bgPage.rctTimestamps.splice(index, 1);
+          $('#li_' + this.timestamp).remove();
+        }
+      });
     rctList_toFiltersButton[0].timestamp = timestamp;
-    rctList_toFiltersButton.appendTo(rctList_toFiltersButtonDiv);
+    rctList_toFiltersButton.appendTo(rctList_editButtonsDiv);
+    var rctList_toFiltersButtonDiv = $('<div>')
+      .addClass('rctList_toFiltersButtonDiv')
+      .text('TO FILTERS')
+      .appendTo(rctList_toFiltersButton);
     
     rctList_url.appendTo(li);
     rctList_firstColumnDiv.appendTo(rctList_url);
     rctList_contentDiv.appendTo(rctList_url);
-    rctList_deleteButtonDiv.appendTo(li);
-    rctList_toFiltersButtonDiv.appendTo(li);
+    rctList_editButtonsDiv.appendTo(li);
     li.appendTo(ul);
   }
   ul.appendTo(rctListDiv);
@@ -270,7 +268,7 @@ function createFiltersList() {
     var filters_li = $('<li>')
       .addClass('filters_Li')
       .attr({ id: 'li_' + index})
-      .text("filter")
+      .text(filter.url)
       .appendTo(filters_ul);
   }
   filters_ul.appendTo('#filtersDiv');
