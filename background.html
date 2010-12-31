@@ -34,6 +34,9 @@ chrome.tabs.onRemoved.addListener(function(tabId) {
   if (tabInfo == undefined) return;
   
   delete allOpenTabs[tabId];
+  
+  if (shouldBeIgnored(tabInfo.url)) return;
+  
   var timestamp = (new Date()).getTime();
   rcts[timestamp] = tabInfo;
   rctTimestamps.unshift(timestamp);
@@ -87,6 +90,7 @@ function fetchRcts() {
   var rctsString = localStorage['recentlyClosedTabs'];
   if (rctsString === undefined) {
     storeRcts({});
+    rctTimestamps = [];
   } else {
     rcts = JSON.parse(rctsString);
     //rctTimestamps = [];
@@ -255,6 +259,17 @@ function isEmpty(obj){
   return true;
 }
 
+//Returns true if the filters contain the given url else false.
+//@param url url to check if it is in the filters object
+function shouldBeIgnored(url) {
+	if (url === undefined)
+	  return true;
+	for (key in filters)
+	  if (url == filters[key].url)
+	    return true;
+  return false;
+}
+
 //Shows prompt with title and url to edit.
 //@param title title of prompt
 //@param url   url to be shown for edit purposes
@@ -262,4 +277,10 @@ function isEmpty(obj){
 function showPrompt(title, url) {
   return prompt(title, url);
 }
- </script>
+
+//Shows confirmation with text.
+//@return true if ok is pressed, else false
+function showConfirm(text) {
+  return confirm(text);
+}
+</script>

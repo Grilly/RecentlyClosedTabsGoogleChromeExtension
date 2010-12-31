@@ -10,13 +10,21 @@ body {
   background: #FFFFFF;
 }
 
+a {
+  max-width: 100%;
+  display: block;
+  text-decoration: none;
+}
+a:hover {
+  color: #444444;
+}
+
 .headerDiv {
   margin-top: 11px;
   margin-left: 5px;
   margin-right: 5px;
   width: 100%;
 }
-
 .headerImgElement {
   width: 66px;
   height: 66px;
@@ -26,7 +34,6 @@ body {
   width: 66px;
   margin-bottom: 11px;
 }
-
 .headerTitleDiv {
   float: left;
   text-align: left; 
@@ -37,7 +44,6 @@ body {
   margin-top: 22px;
   margin-left: 7px;
 }
-
 .headerBorderTitle {
   clear: both;
   font-size: 13px;
@@ -60,33 +66,31 @@ body {
   border: 1px solid #B7C5E3;
 }
 
-.rctList_Ul {
+.rctList_headline {
+	float: left;
+}
+.rctList_deleteAllButtonDiv {
+	float: right;
+}
+.rctList_hint {
+	clear: both;
+}
+
+.rctList_ul {
   padding: 0px;
   margin: 0px;
 }
-
-.rctList_Li {
+.rctList_li {
   list-style-type: none;
   width: 703px;
   height: 38px;
   padding: 1px;
 }
-
-.rctList_Li:hover {
+.rctList_li:hover {
   border-radius: 5px;
   background-color: #BDD6F5;
   cursor: hand;
   padding: 1px;
-}
-
-a {
-  max-width: 100%;
-  display: block;
-  text-decoration: none;
-}
-
-a:hover {
-  color: #444444;
 }
 
 .rctList_contentDiv {
@@ -99,6 +103,7 @@ a:hover {
   color: #000000;
   border-radius: 5px 0px 0px 5px;
   border: 1px solid #B7C5E3;
+  border-right: 0px;
   background-color: #F1F6FD;
   padding: 1px;
   margin-top: 0px;
@@ -216,6 +221,7 @@ a:hover {
   text-align: center;
   color: #000000;
   font-size: 10px;
+  font-weight: bold;
 }
 .rctList_deleteButton:hover {
   color: #000000;
@@ -244,11 +250,32 @@ a:hover {
   text-align: center;
   color: #000000;
   font-size: 10px;
+  font-weight: bold;
 }
 .rctList_toFiltersButton:hover {
   color: #000000;
 }
 
+.filters_contentDiv {
+	float: left;
+  width: 200px;
+  /*height: 21px;*/
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-left: 1px;
+  padding-right: 1px;
+  vertical-align: middle;
+  border-radius: 5px;
+  border: 1px solid #B7C5E3;
+  background-color: #F1F6FD;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.filters_deleteButtonDiv {
+	float: left;
+  with: 50px;
+}
 .rightColumnDiv {
 	float: left;
 	with: 332px;
@@ -312,22 +339,20 @@ a:hover {
   border-radius: 5px;
   border: 1px solid #B7C5E3;
 }
-.filters_Ul {
+.filters_ul {
 	padding: 0px;
   margin: 0px;
 }
-.filters_Li {
+.filters_li {
 	border-radius: 5px;
-  border: 1px solid #B7C5E3;
   list-style-type: none;
   width: 316px;
-  height: 38px;
+  height: 25px;
   padding: 1px;
 }
-.filters_Li:hover {
+.filters_li:hover {
   border-radius: 5px;
   background-color: #BDD6F5;
-  border: 1px solid #000000;
   cursor: hand;
   padding: 1px;
 }

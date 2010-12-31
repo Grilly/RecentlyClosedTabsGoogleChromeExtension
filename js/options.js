@@ -30,13 +30,59 @@ function main() {
   if (maxPopupLength === undefined)
     storeMaxPopupLength(15);
   
-  bgPage.loadValues();
   var rctListDiv = $('<div>')
     .addClass('rctListDiv')
     .appendTo('body');
   
-  var ul = $('<ul>')
-    .addClass('rctList_Ul');
+  var rctList_headline = $('<h3>')
+    .addClass('rctList_headline')
+    .text('Recently closed tabs:')
+    .appendTo(rctListDiv);
+  
+  var rctList_deleteAllButtonDiv = $('<div>')
+    .addClass('rctList_deleteAllButtonDiv')
+    .appendTo(rctListDiv);
+  
+  var rctList_hint = $('<div>')
+    .addClass('rctList_hint')
+    .appendTo(rctListDiv);
+  
+  var rctList_noRctsPlaceholder = $('<div>')
+    .appendTo(rctListDiv);
+  if (bgPage.isEmpty(bgPage.rcts)) {
+    rctList_noRctsPlaceholder.text('No recently closed tabs.');
+    rctList_hint.text('');
+  } else {
+    rctList_noRctsPlaceholder.text('');
+    rctList_hint.text('*If you add a recently closed tab to the filters it will be deleted from the recently closed tabs list.');
+  }
+  
+  var rctList_deleteAllButtonDiv = $('<input>')
+    .attr({ 
+      type: 'button',
+      value: 'Delete All Recently Closed Tabs'})
+    .click(function() {
+      if (bgPage.isEmpty(bgPage.rcts)) {
+        alert("No recently closed tabs.");
+      } else {
+        if (bgPage.showConfirm("Do you really want to delete all recently closed tabs.")) {
+          for (var index in bgPage.rctTimestamps) $('#li_' + bgPage.rctTimestamps[index]).remove();
+          bgPage.storeRcts({});
+          bgPage.rctTimestamps = [];
+          if (bgPage.isEmpty(bgPage.rcts)) {
+            rctList_noRctsPlaceholder.text('No recently closed tabs.');
+            rctList_hint.text('');
+          } else {
+            rctList_noRctsPlaceholder.text('');
+            rctList_hint.text('*If you add a recently closed tab to the filters it will be deleted from the recently closed tabs list.');
+          }
+        }
+      }
+      return false; })
+    .appendTo(rctList_deleteAllButtonDiv);
+  
+  var rctList_ul = $('<ul>')
+    .addClass('rctList_ul');
   var counter = 0;
   
   for (var index in bgPage.rctTimestamps) {
@@ -48,7 +94,7 @@ function main() {
     var timestamp = bgPage.rctTimestamps[index];
     var tab = bgPage.rcts[timestamp];
     var li = $('<li>')
-      .addClass('rctList_Li')
+      .addClass('rctList_li')
       .attr({ id: "li_" + timestamp});
       
     var rctList_url = $('<a>')
@@ -119,12 +165,19 @@ function main() {
         bgPage.storeRcts(bgPage.rcts);
         for (var index in bgPage.rctTimestamps) if (bgPage.rctTimestamps[index] == this.timestamp) bgPage.rctTimestamps.splice(index, 1);
         $('#li_' + this.timestamp).remove();
+        if (bgPage.isEmpty(bgPage.rcts)) {
+          rctList_noRctsPlaceholder.text('No recently closed tabs.');
+          rctList_hint.text('');
+        } else {
+          rctList_noRctsPlaceholder.text('');
+          rctList_hint.text('*If you add a recently closed tab to the filters it will be deleted from the recently closed tabs list.');
+        }
       });
     rctList_deleteButton[0].timestamp = timestamp;
     rctList_deleteButton.appendTo(rctList_editButtonsDiv);
     var rctList_deleteButtonDiv = $('<div>')
       .addClass('rctList_deleteButtonDiv')
-      .text('DELETE')
+      .text('Delete')
       .appendTo(rctList_deleteButton);
     var rctList_toFiltersButton = $('<a>')
       .addClass('rctList_toFiltersButton')
@@ -138,7 +191,7 @@ function main() {
         //console.log(urlPattern);
         if (urlPattern != null) {
           bgPage.addUrlToFiltersAndCheck(urlPattern);
-          $('#filters_Ul').remove();
+          $('#filters_ul').remove();
           createFiltersList();
           // delete and remove rct element
           delete bgPage.rcts[this.timestamp];
@@ -146,21 +199,28 @@ function main() {
           for (var index in bgPage.rctTimestamps) if (bgPage.rctTimestamps[index] == this.timestamp) bgPage.rctTimestamps.splice(index, 1);
           $('#li_' + this.timestamp).remove();
         }
+        if (bgPage.isEmpty(bgPage.rcts)) {
+          rctList_noRctsPlaceholder.text('No recently closed tabs.');
+          rctList_hint.text('');
+        } else {
+          rctList_noRctsPlaceholder.text('');
+          rctList_hint.text('*If you add a recently closed tab to the filters it will be deleted from the recently closed tabs list.');
+        }
       });
     rctList_toFiltersButton[0].timestamp = timestamp;
     rctList_toFiltersButton.appendTo(rctList_editButtonsDiv);
     var rctList_toFiltersButtonDiv = $('<div>')
       .addClass('rctList_toFiltersButtonDiv')
-      .text('TO FILTERS')
+      .text('To Filters')
       .appendTo(rctList_toFiltersButton);
     
     rctList_url.appendTo(li);
     rctList_firstColumnDiv.appendTo(rctList_url);
     rctList_contentDiv.appendTo(rctList_url);
     rctList_editButtonsDiv.appendTo(li);
-    li.appendTo(ul);
+    li.appendTo(rctList_ul);
   }
-  ul.appendTo(rctListDiv);
+  rctList_ul.appendTo(rctListDiv);
   
   var rightColumnDiv = $('<div>')
     .addClass('rightColumnDiv')
@@ -260,16 +320,72 @@ function main() {
 
 function createFiltersList() {
   var filters_ul = $('<ul>')
-    .addClass('filters_Ul')
-    .attr({ id: 'filters_Ul' });
+    .addClass('filters_ul')
+    .attr({ id: 'filters_ul' });
   
   for (var index in bgPage.filters) {
     var filter = bgPage.filters[index];
     var filters_li = $('<li>')
-      .addClass('filters_Li')
-      .attr({ id: 'li_' + index})
+      .addClass('filters_li')
+      .attr({ id: 'filters_li_' + index});
+//      .text(filter.url);
+    
+    var filters_contentDiv = $('<div>')
+      .addClass('filters_contentDiv')
+      .attr({
+          id: 'filters_contentDiv_' + index,
+          title: filter.url 
+        })
       .text(filter.url)
-      .appendTo(filters_ul);
+      .appendTo(filters_li);
+    
+    var filters_deleteButtonDiv = $('<div>')
+      .addClass('filters_deleteButtonDiv');
+    var filters_deleteButton = $('<input>')
+      .attr({ 
+        type: 'button',
+        value: 'Delete'})
+      .click(function() {
+        $('#filters_li_' + this.index).remove();
+        delete bgPage.filters[this.index];
+        bgPage.storeFilters();
+        return false; })
+      .appendTo(filters_deleteButtonDiv);
+    filters_deleteButton[0].index = index;
+    
+    var filters_editButtonDiv = $('<div>')
+      .addClass('filters_editButtonDiv')
+    var filters_editButton = $('<input>')
+      .attr({ 
+        type: 'button',
+        value: 'Edit'})
+      .click(function() {
+
+        var newUrl = bgPage.showPrompt('Edit Filter', bgPage.filters[this.index].url);
+        while (!bgPage.isFilterUnique(newUrl)) {
+          alert('Filter ' + newUrl + '" exists already! Please provide a different filter.');
+          newUrl = bgPage.showPrompt('Edit Filter', bgPage.filters[this.index].url);
+        }
+        if (newUrl == '') {
+          if (bgPage.showConfirm('Do you really want to delete this filter: "' + bgPage.filters[this.index].url + '"')) {
+            $('#filters_li_' + this.index).remove();
+            delete bgPage.filters[this.index];
+            bgPage.storeFilters();
+            return;
+          }
+        }
+        if (newUrl == null) return;
+        bgPage.filters[this.index].url = newUrl;
+        $('#filters_contentDiv_' + this.index).text(newUrl);
+        bgPage.storeFilters();
+        
+        return false; })
+      .appendTo(filters_editButtonDiv);
+    filters_editButton[0].index = index;
+    
+    filters_deleteButtonDiv.appendTo(filters_li);
+    filters_editButtonDiv.appendTo(filters_li);
+    filters_li.appendTo(filters_ul);
   }
   filters_ul.appendTo('#filtersDiv');
 }
