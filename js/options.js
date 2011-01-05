@@ -1,6 +1,7 @@
 var bgPage = chrome.extension.getBackgroundPage();
 
 function main() {
+  bgPage.fetchShowTabShot();
   //Header
   var headerDiv = $('<div>')
     .addClass('headerDiv')
@@ -25,6 +26,19 @@ function main() {
     .addClass('headerBorderTitle')
     .text('Extension Options')
     .appendTo(headerDiv);
+  var headerLinkDiv = $('<div>')
+    .addClass('headerLinkDiv')
+    .text('Show Changelog')
+    .click(function() {
+      chrome.tabs.create( {
+        'url' : chrome.extension.getURL('infonews.html'),
+        'selected' : true
+      }, function(tab) {
+        // Tab opened: possible migration procedures
+      });
+      return false;
+    })
+    .appendTo(headerDiv);
   
   var maxPopupLength = localStorage['maxPopupLength'];
   if (maxPopupLength === undefined)
@@ -43,20 +57,6 @@ function main() {
     .addClass('rctList_deleteAllButtonDiv')
     .appendTo(rctListDiv);
   
-  var rctList_hint = $('<div>')
-    .addClass('rctList_hint')
-    .appendTo(rctListDiv);
-  
-  var rctList_noRctsPlaceholder = $('<div>')
-    .appendTo(rctListDiv);
-  if (bgPage.isEmpty(bgPage.rcts)) {
-    rctList_noRctsPlaceholder.text('No recently closed tabs.');
-    rctList_hint.text('');
-  } else {
-    rctList_noRctsPlaceholder.text('');
-    rctList_hint.text('*If you add a recently closed tab to the filters it will be deleted from the recently closed tabs list.');
-  }
-  
   var rctList_deleteAllButtonDiv = $('<input>')
     .attr({ 
       type: 'button',
@@ -70,16 +70,23 @@ function main() {
           bgPage.storeRcts({});
           bgPage.rctTimestamps = [];
           if (bgPage.isEmpty(bgPage.rcts)) {
-            rctList_noRctsPlaceholder.text('No recently closed tabs.');
-            rctList_hint.text('');
+            rctList_placeholder.text('No recently closed tabs.');
           } else {
-            rctList_noRctsPlaceholder.text('');
-            rctList_hint.text('*If you add a recently closed tab to the filters it will be deleted from the recently closed tabs list.');
+            rctList_placeholder.text('*If you add a recently closed tab to the filters it will be deleted from the recently closed tabs list.');
           }
         }
       }
       return false; })
     .appendTo(rctList_deleteAllButtonDiv);
+  
+  var rctList_placeholder = $('<div>')
+    .addClass('rctList_placeholder')
+    .appendTo(rctListDiv);
+  if (bgPage.isEmpty(bgPage.rcts)) {
+    rctList_placeholder.text('No recently closed tabs.');
+  } else {
+    rctList_placeholder.text('*If you add a recently closed tab to the filters it will be deleted from the recently closed tabs list.');
+  }
   
   var rctList_ul = $('<ul>')
     .addClass('rctList_ul');
@@ -142,13 +149,8 @@ function main() {
     var rctList_dateDiv = $('<div>')
       .addClass('rctList_dateDiv')
       .appendTo(rctList_firstColumnDiv);
-    // var rctList_dateUrl = $('<a>')
-      // .attr({
-        // href: '#',
-        // title: bgPage.getDateStringDetail(timestamp) })
-      // .appendTo(rctList_dateDiv);
     var rctList_dateDivElement = $('<div>')
-	  .attr({ title: bgPage.getDateStringDetail(timestamp) })
+	    .attr({ title: bgPage.getDateStringDetail(timestamp) })
       .addClass('rctList_dateDivElement')
       .text(bgPage.getDateString(timestamp))
       .appendTo(rctList_dateDiv);
@@ -166,11 +168,9 @@ function main() {
         for (var index in bgPage.rctTimestamps) if (bgPage.rctTimestamps[index] == this.timestamp) bgPage.rctTimestamps.splice(index, 1);
         $('#li_' + this.timestamp).remove();
         if (bgPage.isEmpty(bgPage.rcts)) {
-          rctList_noRctsPlaceholder.text('No recently closed tabs.');
-          rctList_hint.text('');
+          rctList_placeholder.text('No recently closed tabs.');
         } else {
-          rctList_noRctsPlaceholder.text('');
-          rctList_hint.text('*If you add a recently closed tab to the filters it will be deleted from the recently closed tabs list.');
+          rctList_placeholder.text('*If you add a recently closed tab to the filters it will be deleted from the recently closed tabs list.');
         }
       });
     rctList_deleteButton[0].timestamp = timestamp;
@@ -200,11 +200,9 @@ function main() {
           $('#li_' + this.timestamp).remove();
         }
         if (bgPage.isEmpty(bgPage.rcts)) {
-          rctList_noRctsPlaceholder.text('No recently closed tabs.');
-          rctList_hint.text('');
+          rctList_placeholder.text('No recently closed tabs.');
         } else {
-          rctList_noRctsPlaceholder.text('');
-          rctList_hint.text('*If you add a recently closed tab to the filters it will be deleted from the recently closed tabs list.');
+          rctList_placeholder.text('*If you add a recently closed tab to the filters it will be deleted from the recently closed tabs list.');
         }
       });
     rctList_toFiltersButton[0].timestamp = timestamp;
@@ -216,6 +214,24 @@ function main() {
     
     rctList_url.appendTo(li);
     rctList_firstColumnDiv.appendTo(rctList_url);
+    
+    if (bgPage.showTabShot == 'true') {
+      rctList_contentDiv.css({ width: '544px' });
+      var rctList_tabShotDiv = $('<div>')
+        .addClass('rctList_tabShotDiv')
+        .appendTo(rctList_url);
+      var rctList_tabShotImg = $('<img>')
+        .addClass('rctList_tabShotImg')
+        .appendTo(rctList_tabShotDiv);
+      var tabShot = bgPage.rcts[timestamp].tabShot;
+      if (tabShot !== undefined && tabShot != null) {
+        rctList_tabShotImg.attr({ src: tabShot });
+      } else {
+        rctList_tabShotImg.attr({ src: '../images/default_tabShot.png' });
+      }
+    } else {
+      rctList_contentDiv.css({ width: '580px' });
+    }
     rctList_contentDiv.appendTo(rctList_url);
     rctList_editButtonsDiv.appendTo(li);
     li.appendTo(rctList_ul);
@@ -230,12 +246,16 @@ function main() {
   var optionsDiv = $('<div>')
     .addClass('optionsDiv')
     .appendTo(rightColumnDiv);
-  
+  var options_headline = $('<h3>')
+  .addClass('options_headline')
+  .text('Options:')
+  .appendTo(optionsDiv);
   //maxPopupLengthOptions
   var maxPopupLengthOptionsDiv = $('<div>')
     .addClass('maxPopupLengthOptionsDiv')
     .appendTo(optionsDiv);
-  var maxPopupLengthH3 = $('<h3>')
+  var maxPopupLength_headline = $('<h4>')
+    .addClass('maxPopupLength_headline')
     .text('Favorite number of recently closed tabs shown in the popup:')
     .appendTo(maxPopupLengthOptionsDiv);
   var maxPopupLengthRangeMin = 1;
@@ -281,6 +301,35 @@ function main() {
     .text($('#maxPopupLengthRangeInput').val())
     .appendTo(maxPopupLengthOptionsDiv);
   
+  //showTabShots
+  var showTabShotsOptionsDiv = $('<div>')
+    .addClass('showTabShotsOptionsDiv')
+    .appendTo(optionsDiv);
+  var showTabShots_headline = $('<h4>')
+    .addClass('showTabShots_headline')
+    .text('Show the screenshot for a recently closed tab:')
+    .appendTo(showTabShotsOptionsDiv);
+  var showTabShots_checkbox = $('<input>')
+    .addClass('showTabShots_checkbox')
+    .attr({
+      id: 'showTabShots_checkbox',
+      type: 'checkbox'
+    })
+    .appendTo(showTabShotsOptionsDiv);
+  var showTabShots_checkboxLabel = $('<label>')
+    .addClass('showTabShots_checkboxLabel')
+    .attr({
+      for: 'showTabShots_checkbox'
+    })
+    .text('Show screenshots')
+    .appendTo(showTabShotsOptionsDiv);
+  
+  if(bgPage.showTabShot == 'true') {
+    $('#showTabShots_checkbox').attr('checked', true);
+  } else {
+    $('#showTabShots_checkbox').attr('checked', false);
+  }
+  
   //saveOptions
   var saveOptionsDiv = $('<div>')
     .addClass('saveOptionsDiv')
@@ -292,6 +341,13 @@ function main() {
     .click(function() {
       $('#saveOptionsButton').hide();
       localStorage.setItem('maxPopupLength', $('#maxPopupLengthRangeInput').val());
+      var showTabShotOld = localStorage.getItem('showTabShot');
+      var showTabShotNew = $('#showTabShots_checkbox').attr('checked');
+      if (showTabShotOld != showTabShotNew) {
+        localStorage.setItem('showTabShot', $('#showTabShots_checkbox').attr('checked'));
+        //TODO load notification bar with Text: Recently Closed Tabs Extension: Please reload page to see the screenshots for the rectenly closed tabs!
+      }
+      
       var optionsSaveStatus = $('<div>')
         .addClass('optionsSaveStatus')
         .attr({ id: 'optionsSaveStatus' })
@@ -309,6 +365,10 @@ function main() {
     .addClass('filtersDiv')
     .attr({ id: 'filtersDiv' })
     .appendTo(rightColumnDiv);
+  var filters_headline = $('<h3>')
+    .addClass('filters_headline')
+    .text('Active URL filters:')
+    .appendTo(filtersDiv);
   createFiltersList();
   
   //footer

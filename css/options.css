@@ -1,6 +1,6 @@
 body {
   margin-bottom: 0px;
-  margin-left: 11px;
+  margin-left: 0px;
   margin-right: 11px;
   margin-top: 0px;
   width: 100%;
@@ -56,6 +56,19 @@ a:hover {
   font-weight: bold;
   white-space: nowrap;
 }
+.headerLinkDiv {
+  clear: both;
+  position: absolute;
+  top: 91px;
+  right: 9px;
+  font-size: 13px;
+  color: #3500FF;
+/*  width: 100px;*/
+/*  height: 30px;*/
+}
+.headerLinkDiv:hover {
+  cursor: pointer;
+}
 
 .rctListDiv {
 	float: left;
@@ -68,11 +81,12 @@ a:hover {
 
 .rctList_headline {
 	float: left;
+	margin-top: 4px;
 }
 .rctList_deleteAllButtonDiv {
 	float: right;
 }
-.rctList_hint {
+.rctList_placeholder {
 	clear: both;
 }
 
@@ -89,12 +103,12 @@ a:hover {
 .rctList_li:hover {
   border-radius: 5px;
   background-color: #BDD6F5;
-  cursor: hand;
+  cursor: pointer;
   padding: 1px;
 }
 
 .rctList_contentDiv {
-  width: 584px;
+/*  width: 580px or 490px will be set in options.js;*/
   float: left;
   white-space: nowrap;
   overflow: hidden;
@@ -154,6 +168,7 @@ a:hover {
 }
 .rctList_favIconDiv {
 	float: left;
+	width: 20px;
 	height: 15px;
   width: 100%;
   text-align: right;
@@ -169,6 +184,7 @@ a:hover {
 .rctList_dateDiv {
 	float: left;
   height: 15px;
+  width: 20px;
   text-align: right;
   width: 100%;
   padding: 1px;
@@ -184,6 +200,17 @@ a:hover {
   padding: 1px;
   padding-top: 5px;
   padding-right: 3px;
+}
+
+.rctList_tabShotDiv {
+  float: left;
+  width: 40px;
+  text-align: center;
+  padding: 1px 1px 1px 1px;
+}
+.rctList_tabShotImg {
+  max-width: 40px;
+	max-height: 38px;
 }
 
 .rctList_editButtonsDiv {
@@ -258,7 +285,7 @@ a:hover {
 
 .filters_contentDiv {
 	float: left;
-  width: 200px;
+  width: 212px;
   /*height: 21px;*/
   padding-top: 5px;
   padding-bottom: 5px;
@@ -276,6 +303,10 @@ a:hover {
 	float: left;
   with: 50px;
 }
+.filters_editButtonDiv {
+  float: left;
+  with: 50px;
+}
 .rightColumnDiv {
 	float: left;
 	with: 332px;
@@ -289,36 +320,50 @@ a:hover {
   border-radius: 5px;
   border: 1px solid #B7C5E3;
 }
-
+.options_headline {
+	float: left;
+  margin-top: 4px;
+}
 .maxPopupLengthOptionsDiv {
 	with: 200px;
 	height: 80px;
 	border: 1px solid #FFFFFF;
 }
+.maxPopupLength_headline {
+  clear: both;
+  margin-top: 4px;
+}
 .maxPopupLengthRangeDiv {
   float: left;
   width: 200xp;
 }
-
 .maxPopupLengthRangeMinDiv {
   float: left;
 }
-
 .maxPopupLengthRangeMaxDiv {
   float: left;
 }
-
 .maxPopupLengthRangeOutputDiv {
   float: left;
   margin-left: 5px;
 }
-
 .maxPopupLengthRangeOutputText {
   float: left;
   margin-left: 20px;
 }
 
+.showTabShotsOptionsDiv {
+  with: 200px;
+  height: 60px;
+  border: 1px solid #FFFFFF;
+}
+.showTabShots_headline {
+  clear: both;
+  margin-top: 4px;
+}
+
 .saveOptionsDiv {
+	clear: both;
   with: 200px;
   height: 26px;
 	border: 1px solid #FFFFFF;
@@ -339,7 +384,12 @@ a:hover {
   border-radius: 5px;
   border: 1px solid #B7C5E3;
 }
+.filters_headline {
+  float: left;
+  margin-top: 4px;
+}
 .filters_ul {
+	clear: both;
 	padding: 0px;
   margin: 0px;
 }
@@ -353,7 +403,7 @@ a:hover {
 .filters_li:hover {
   border-radius: 5px;
   background-color: #BDD6F5;
-  cursor: hand;
+  cursor: pointer;
   padding: 1px;
 }
 

@@ -11,12 +11,17 @@ var filters;
 var maxPopupLength;
 //Configuration of the extension
 var extensionConfig;
+//true if tabShots should be shown/saved
+var showTabShot;
 
 //Gets all open windows.
 chrome.tabs.getAllInWindow(null, function(tabs){
   for (var key in tabs) {
 	// TODO was machen, wenn key == undefined???
-    allOpenTabs[tabs.id] = tabs[key];
+    allOpenTabs[tabs[key].id] = tabs[key];
+    if (showTabShot == 'true') {
+      setImgDataUrl(tabs[key].id);
+    }
   }
 });
 
@@ -25,6 +30,9 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
   if (changeInfo.status == 'complete') {
     if (tab === undefined) return;
     allOpenTabs[tabId] = tab;
+    if (showTabShot == 'true') {
+      setImgDataUrl(tabId);
+    }
   }
 });
 
@@ -35,6 +43,17 @@ chrome.tabs.onRemoved.addListener(function(tabId) {
   
   delete allOpenTabs[tabId];
   
+  // TODO delete all rcts on all chrome windows closed event
+  // var windowsCounter = 0;
+  // var tabsCounter = 0;
+  // chrome.windows.getAll(null, function(windows) {
+  //   windowsCounter = windows.length;
+  // })
+  // tabsCounter = allOpenTabs.length;
+  // if(tabsCounter == 1 && windowsCounter == 1) {
+  //   storeRcts({});
+  // }
+  
   if (shouldBeIgnored(tabInfo.url)) return;
   
   var timestamp = (new Date()).getTime();
@@ -44,19 +63,24 @@ chrome.tabs.onRemoved.addListener(function(tabId) {
   storeRcts(rcts);
 });
 
-//Fetches the extension configuration
-fetchExtensionConfig();
-loadValues();
+//Listener onSelectionChanged
+chrome.tabs.onSelectionChanged.addListener(function(tabId) {
+  if (showTabShot == 'true') {
+    setImgDataUrl(tabId);
+  }
+});
 
 //Loads the values for the extension.
-function loadValues() {
-  //Fetches the filters.
-  fetchFilters();
-	// Fetches the maxPopupLength.
-	fetchMaxPopupLength();
-	// Fetches the recentlyClosedTabs.
-	fetchRcts();
-}
+//Fetches the extension configuration
+fetchExtensionConfig();
+//Fetches the filters.
+fetchFilters();
+// Fetches the maxPopupLength.
+fetchMaxPopupLength();
+// Fetches the recentlyClosedTabs.
+fetchRcts();
+// Fetches the flag for showing the tabShot.
+fetchShowTabShot();
 
 //Fetches the extension configuration
 function fetchExtensionConfig() {
@@ -282,5 +306,54 @@ function showPrompt(title, url) {
 //@return true if ok is pressed, else false
 function showConfirm(text) {
   return confirm(text);
+}
+
+//Fetches/Initialises the showTabShot from the localStorage.
+function fetchShowTabShot() {
+  showTabShot = localStorage['showTabShot'];
+  if (showTabShot === undefined)
+    storeShowTabShot('false');
+}
+
+// Modifys/Persists the showTabShot to the localStorage.
+// @param newShowTabShot showTabShot to store in the localStorage
+function storeShowTabShot(newShowTabShot) {
+  showTabShot = newShowTabShot;
+  localStorage.setItem('showTabShot', showTabShot);
+}
+
+var orgImage = new Image();
+var canvas = document.createElement('canvas');
+// Puts the dataUrl of the tab specified by the given tabId into the object allOpenedTabs.
+// @param tabId id of the tab to set the image for
+function setImgDataUrl(tabId) {
+  if (allOpenTabs[tabId] !== undefined)
+    chrome.tabs.captureVisibleTab(
+      allOpenTabs[tabId].windowId,
+      function(snapshotData) {
+        // console.log("receiving snapshot data for tabId = " + tabId);
+        orgImage.onload = function() {
+          // console.log("orgImage size = " + orgImage.width + "x" + orgImage.height);
+          var newHeight = 110;
+          var newWidth = orgImage.width * newHeight / orgImage.height;
+          // Create a canvas with the desired dimensions
+          canvas.width = newWidth + 10;
+          canvas.height = newHeight + 10;
+          var context = canvas.getContext("2d");
+
+          // Scale and draw the source image to the canvas
+          context.drawImage(orgImage, 5, 5, newWidth, newHeight);
+
+          // Convert the canvas to a data URL in PNG format
+          allOpenTabs[tabId].tabShot = canvas.toDataURL();
+
+          // Check the result
+          // var chkImage = new Image();
+          // chkImage.onload = function() {
+          // console.log("chkImage size = " + chkImage.width + "x" + chkImage.height); }
+          // chkImage.src = allOpenTabs[tabId].tabShot;
+        }
+        orgImage.src = snapshotData;
+      });
 }
 </script>

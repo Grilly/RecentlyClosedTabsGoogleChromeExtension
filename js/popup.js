@@ -56,4 +56,17 @@ function main() {
 	  }
 	  ul.appendTo('body');
 	}
+  var popupFooter = $('<div>')
+    .addClass('popupFooter')
+    .text('Show all recently closed tabs and the options page')
+    .click(function() {
+      chrome.tabs.create( {
+        'url' : chrome.extension.getURL('options.html'),
+        'selected' : true
+      }, function(tab) {
+        // Tab opened: possible migration procedures
+        });
+      return false;
+    })
+    .appendTo('body');
 }
