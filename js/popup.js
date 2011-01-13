@@ -1,6 +1,10 @@
 function main() {
   var bgPage = chrome.extension.getBackgroundPage();
-  bgPage.loadValues();
+  bgPage.fetchExtensionConfig();
+  // Fetches the maxPopupLength.
+  bgPage.fetchMaxPopupLength();
+  // Fetches the recentlyClosedTabs.
+  bgPage.fetchRcts();
   
   if (bgPage.isEmpty(bgPage.rctTimestamps)) {
     var textDiv = $('<div>').text('No recently closed tabs.').appendTo('body');

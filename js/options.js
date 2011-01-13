@@ -46,6 +46,9 @@ function main() {
   
   var rctListDiv = $('<div>')
     .addClass('rctListDiv')
+    .attr({
+      id: 'rctListDiv'
+    })
     .appendTo('body');
   
   var rctList_headline = $('<h3>')
@@ -88,155 +91,8 @@ function main() {
     rctList_placeholder.text('*If you add a recently closed tab to the filters it will be deleted from the recently closed tabs list.');
   }
   
-  var rctList_ul = $('<ul>')
-    .addClass('rctList_ul');
-  var counter = 0;
-  
-  for (var index in bgPage.rctTimestamps) {
-    counter++;
-    //TODO 30 = maxNumberOfStoredRcts
-    if (counter > 30) {
-      break;
-    }
-    var timestamp = bgPage.rctTimestamps[index];
-    var tab = bgPage.rcts[timestamp];
-    var li = $('<li>')
-      .addClass('rctList_li')
-      .attr({ id: "li_" + timestamp});
-      
-    var rctList_url = $('<a>')
-      .attr({ 
-        href: '#',
-        title: tab.url })
-      //.text(tab.title)
-      .click(function() {
-        chrome.tabs.create({
-          'url' : bgPage.rcts[this.timestamp].url,
-          'selected' : true
-          }, function() { 
-          // Tab opened: possible migration procedures
-          });
-        delete bgPage.rcts[this.timestamp];
-        bgPage.storeRcts(bgPage.rcts);
-        for (var index in bgPage.rctTimestamps) if (bgPage.rctTimestamps[index] == this.timestamp) bgPage.rctTimestamps.splice(index, 1);
-        window.close(); });
-    rctList_url[0].timestamp = timestamp;
-    
-    var rctList_contentDiv = $('<div>')
-      .addClass('rctList_contentDiv');
-    var rctList_titleDiv = $('<div>')
-      .addClass('rctList_titleDiv')
-      .text(tab.title)
-      .appendTo(rctList_contentDiv);
-    var rctList_urlDiv = $('<div>')
-      .addClass('rctList_urlDiv')
-      .text(tab.url)
-      .appendTo(rctList_contentDiv);
-    
-    var rctList_firstColumnDiv = $('<div>')
-      .addClass('rctList_firstColumnDiv');
-    var options_favIconUrl = tab.favIconUrl;
-    if(options_favIconUrl === "" || options_favIconUrl === undefined) {
-      options_favIconUrl = "../images/default_favicon.png";
-    }
-    var rctList_favIconDiv = $('<div>')
-      .addClass('rctList_favIconDiv')
-      .appendTo(rctList_firstColumnDiv);
-    var rctList_favIcon = $('<img>')
-      .addClass('rctList_favIcon')
-      .attr({ src: options_favIconUrl })
-      .appendTo(rctList_favIconDiv);
-    var rctList_dateDiv = $('<div>')
-      .addClass('rctList_dateDiv')
-      .appendTo(rctList_firstColumnDiv);
-    var rctList_dateDivElement = $('<div>')
-	    .attr({ title: bgPage.getDateStringDetail(timestamp) })
-      .addClass('rctList_dateDivElement')
-      .text(bgPage.getDateString(timestamp))
-      .appendTo(rctList_dateDiv);
-    
-    var rctList_editButtonsDiv = $('<div>')
-      .addClass('rctList_editButtonsDiv');
-    var rctList_deleteButton = $('<a>')
-      .addClass('rctList_deleteButton')
-      .attr({ 
-        href: '#',
-        title: 'Delete this recently closed tab from the list.' })
-      .click(function() {
-        delete bgPage.rcts[this.timestamp];
-        bgPage.storeRcts(bgPage.rcts);
-        for (var index in bgPage.rctTimestamps) if (bgPage.rctTimestamps[index] == this.timestamp) bgPage.rctTimestamps.splice(index, 1);
-        $('#li_' + this.timestamp).remove();
-        if (bgPage.isEmpty(bgPage.rcts)) {
-          rctList_placeholder.text('No recently closed tabs.');
-        } else {
-          rctList_placeholder.text('*If you add a recently closed tab to the filters it will be deleted from the recently closed tabs list.');
-        }
-      });
-    rctList_deleteButton[0].timestamp = timestamp;
-    rctList_deleteButton.appendTo(rctList_editButtonsDiv);
-    var rctList_deleteButtonDiv = $('<div>')
-      .addClass('rctList_deleteButtonDiv')
-      .text('Delete')
-      .appendTo(rctList_deleteButton);
-    var rctList_toFiltersButton = $('<a>')
-      .addClass('rctList_toFiltersButton')
-      .attr({ 
-        href: '#',
-        title: 'Add this recently closed tab to the list of filters and delete it from the list.' })
-      .click(function() {
-        // store element as filter
-        var url = bgPage.rcts[this.timestamp].url;
-        var urlPattern = bgPage.showPrompt("Ignore this URL in future?", url);
-        //console.log(urlPattern);
-        if (urlPattern != null) {
-          bgPage.addUrlToFiltersAndCheck(urlPattern);
-          $('#filters_ul').remove();
-          createFiltersList();
-          // delete and remove rct element
-          delete bgPage.rcts[this.timestamp];
-          bgPage.storeRcts(bgPage.rcts);
-          for (var index in bgPage.rctTimestamps) if (bgPage.rctTimestamps[index] == this.timestamp) bgPage.rctTimestamps.splice(index, 1);
-          $('#li_' + this.timestamp).remove();
-        }
-        if (bgPage.isEmpty(bgPage.rcts)) {
-          rctList_placeholder.text('No recently closed tabs.');
-        } else {
-          rctList_placeholder.text('*If you add a recently closed tab to the filters it will be deleted from the recently closed tabs list.');
-        }
-      });
-    rctList_toFiltersButton[0].timestamp = timestamp;
-    rctList_toFiltersButton.appendTo(rctList_editButtonsDiv);
-    var rctList_toFiltersButtonDiv = $('<div>')
-      .addClass('rctList_toFiltersButtonDiv')
-      .text('To Filters')
-      .appendTo(rctList_toFiltersButton);
-    
-    rctList_url.appendTo(li);
-    rctList_firstColumnDiv.appendTo(rctList_url);
-    
-    if (bgPage.showTabShot == 'true') {
-      rctList_contentDiv.css({ width: '544px' });
-      var rctList_tabShotDiv = $('<div>')
-        .addClass('rctList_tabShotDiv')
-        .appendTo(rctList_url);
-      var rctList_tabShotImg = $('<img>')
-        .addClass('rctList_tabShotImg')
-        .appendTo(rctList_tabShotDiv);
-      var tabShot = bgPage.rcts[timestamp].tabShot;
-      if (tabShot !== undefined && tabShot != null) {
-        rctList_tabShotImg.attr({ src: tabShot });
-      } else {
-        rctList_tabShotImg.attr({ src: '../images/default_tabShot.png' });
-      }
-    } else {
-      rctList_contentDiv.css({ width: '580px' });
-    }
-    rctList_contentDiv.appendTo(rctList_url);
-    rctList_editButtonsDiv.appendTo(li);
-    li.appendTo(rctList_ul);
-  }
-  rctList_ul.appendTo(rctListDiv);
+  //TODO create
+  createRctList();
   
   var rightColumnDiv = $('<div>')
     .addClass('rightColumnDiv')
@@ -318,9 +174,7 @@ function main() {
     .appendTo(showTabShotsOptionsDiv);
   var showTabShots_checkboxLabel = $('<label>')
     .addClass('showTabShots_checkboxLabel')
-    .attr({
-      for: 'showTabShots_checkbox'
-    })
+    .attr('for', 'showTabShots_checkbox')
     .text('Show screenshots')
     .appendTo(showTabShotsOptionsDiv);
   
@@ -345,7 +199,8 @@ function main() {
       var showTabShotNew = $('#showTabShots_checkbox').attr('checked');
       if (showTabShotOld != showTabShotNew) {
         localStorage.setItem('showTabShot', $('#showTabShots_checkbox').attr('checked'));
-        //TODO load notification bar with Text: Recently Closed Tabs Extension: Please reload page to see the screenshots for the rectenly closed tabs!
+        $('#rctList_ul').remove();
+        createRctList();
       }
       
       var optionsSaveStatus = $('<div>')
@@ -376,6 +231,163 @@ function main() {
     .addClass('footerDiv')
     .text('©2010 Michael & Draško')
     .appendTo('body');
+}
+
+function createRctList() {
+  bgPage.fetchShowTabShot();
+  var rctList_ul = $('<ul>')
+    .addClass('rctList_ul')
+    .attr({
+      id: 'rctList_ul'
+    });
+  
+  var counter = 0;
+    
+    for (var index in bgPage.rctTimestamps) {
+      counter++;
+      //TODO 30 = maxNumberOfStoredRcts
+      if (counter > 30) {
+        break;
+      }
+      var timestamp = bgPage.rctTimestamps[index];
+      var tab = bgPage.rcts[timestamp];
+      var li = $('<li>')
+        .addClass('rctList_li')
+        .attr({ id: "li_" + timestamp});
+        
+      var rctList_url = $('<a>')
+        .attr({ 
+          href: '#',
+          title: tab.url })
+        //.text(tab.title)
+        .click(function() {
+          chrome.tabs.create({
+            'url' : bgPage.rcts[this.timestamp].url,
+            'selected' : true
+            }, function() { 
+            // Tab opened: possible migration procedures
+            });
+          delete bgPage.rcts[this.timestamp];
+          bgPage.storeRcts(bgPage.rcts);
+          for (var index in bgPage.rctTimestamps) if (bgPage.rctTimestamps[index] == this.timestamp) bgPage.rctTimestamps.splice(index, 1);
+          window.close(); });
+      rctList_url[0].timestamp = timestamp;
+      
+      var rctList_contentDiv = $('<div>')
+        .addClass('rctList_contentDiv');
+      var rctList_titleDiv = $('<div>')
+        .addClass('rctList_titleDiv')
+        .text(tab.title)
+        .appendTo(rctList_contentDiv);
+      var rctList_urlDiv = $('<div>')
+        .addClass('rctList_urlDiv')
+        .text(tab.url)
+        .appendTo(rctList_contentDiv);
+      
+      var rctList_firstColumnDiv = $('<div>')
+        .addClass('rctList_firstColumnDiv');
+      var options_favIconUrl = tab.favIconUrl;
+      if(options_favIconUrl === "" || options_favIconUrl === undefined) {
+        options_favIconUrl = "../images/default_favicon.png";
+      }
+      var rctList_favIconDiv = $('<div>')
+        .addClass('rctList_favIconDiv')
+        .appendTo(rctList_firstColumnDiv);
+      var rctList_favIcon = $('<img>')
+        .addClass('rctList_favIcon')
+        .attr({ src: options_favIconUrl })
+        .appendTo(rctList_favIconDiv);
+      var rctList_dateDiv = $('<div>')
+        .addClass('rctList_dateDiv')
+        .appendTo(rctList_firstColumnDiv);
+      var rctList_dateDivElement = $('<div>')
+        .attr({ title: bgPage.getDateStringDetail(timestamp) })
+        .addClass('rctList_dateDivElement')
+        .text(bgPage.getDateString(timestamp))
+        .appendTo(rctList_dateDiv);
+      
+      var rctList_editButtonsDiv = $('<div>')
+        .addClass('rctList_editButtonsDiv');
+      var rctList_deleteButton = $('<a>')
+        .addClass('rctList_deleteButton')
+        .attr({ 
+          href: '#',
+          title: 'Delete this recently closed tab from the list.' })
+        .click(function() {
+          delete bgPage.rcts[this.timestamp];
+          bgPage.storeRcts(bgPage.rcts);
+          for (var index in bgPage.rctTimestamps) if (bgPage.rctTimestamps[index] == this.timestamp) bgPage.rctTimestamps.splice(index, 1);
+          $('#li_' + this.timestamp).remove();
+          if (bgPage.isEmpty(bgPage.rcts)) {
+            rctList_placeholder.text('No recently closed tabs.');
+          } else {
+            rctList_placeholder.text('*If you add a recently closed tab to the filters it will be deleted from the recently closed tabs list.');
+          }
+        });
+      rctList_deleteButton[0].timestamp = timestamp;
+      rctList_deleteButton.appendTo(rctList_editButtonsDiv);
+      var rctList_deleteButtonDiv = $('<div>')
+        .addClass('rctList_deleteButtonDiv')
+        .text('Delete')
+        .appendTo(rctList_deleteButton);
+      var rctList_toFiltersButton = $('<a>')
+        .addClass('rctList_toFiltersButton')
+        .attr({ 
+          href: '#',
+          title: 'Add this recently closed tab to the list of filters and delete it from the list.' })
+        .click(function() {
+          // store element as filter
+          var url = bgPage.rcts[this.timestamp].url;
+          var urlPattern = bgPage.showPrompt("Ignore this URL in future?", url);
+          //console.log(urlPattern);
+          if (urlPattern != null) {
+            bgPage.addUrlToFiltersAndCheck(urlPattern);
+            $('#filters_ul').remove();
+            createFiltersList();
+            // delete and remove rct element
+            delete bgPage.rcts[this.timestamp];
+            bgPage.storeRcts(bgPage.rcts);
+            for (var index in bgPage.rctTimestamps) if (bgPage.rctTimestamps[index] == this.timestamp) bgPage.rctTimestamps.splice(index, 1);
+            $('#li_' + this.timestamp).remove();
+          }
+          if (bgPage.isEmpty(bgPage.rcts)) {
+            rctList_placeholder.text('No recently closed tabs.');
+          } else {
+            rctList_placeholder.text('*If you add a recently closed tab to the filters it will be deleted from the recently closed tabs list.');
+          }
+        });
+      rctList_toFiltersButton[0].timestamp = timestamp;
+      rctList_toFiltersButton.appendTo(rctList_editButtonsDiv);
+      var rctList_toFiltersButtonDiv = $('<div>')
+        .addClass('rctList_toFiltersButtonDiv')
+        .text('To Filters')
+        .appendTo(rctList_toFiltersButton);
+      
+      rctList_url.appendTo(li);
+      rctList_firstColumnDiv.appendTo(rctList_url);
+      
+      if (bgPage.showTabShot == 'true') {
+        rctList_contentDiv.css({ width: '544px' });
+        var rctList_tabShotDiv = $('<div>')
+          .addClass('rctList_tabShotDiv')
+          .appendTo(rctList_url);
+        var rctList_tabShotImg = $('<img>')
+          .addClass('rctList_tabShotImg')
+          .appendTo(rctList_tabShotDiv);
+        var tabShot = bgPage.rcts[timestamp].tabShot;
+        if (tabShot !== undefined && tabShot != null) {
+          rctList_tabShotImg.attr({ src: tabShot });
+        } else {
+          rctList_tabShotImg.attr({ src: '../images/default_tabShot.png' });
+        }
+      } else {
+        rctList_contentDiv.css({ width: '586px' });
+      }
+      rctList_contentDiv.appendTo(rctList_url);
+      rctList_editButtonsDiv.appendTo(li);
+      li.appendTo(rctList_ul);
+    }
+    rctList_ul.appendTo($('#rctListDiv'));
 }
 
 function createFiltersList() {
