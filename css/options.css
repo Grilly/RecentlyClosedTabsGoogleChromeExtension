@@ -352,6 +352,16 @@ a:hover {
   margin-left: 20px;
 }
 
+.maxNumberOfStoredRctsDiv {
+  with: 200px;
+  height: 80px;
+  border: 1px solid #FFFFFF;
+}
+.maxNumberOfStoredRcts_headline {
+  clear: both;
+  margin-top: 4px;
+}
+
 .showTabShotsOptionsDiv {
   with: 200px;
   height: 60px;

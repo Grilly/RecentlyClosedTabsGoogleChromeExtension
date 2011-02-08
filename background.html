@@ -8,11 +8,29 @@ var rctTimestamps = [];
 //Array of URL blacklist filters
 var filters;
 //Maximum number of rcts shown on popup page
+var maxPopupLengthDefault = 15;
 var maxPopupLength;
 //Configuration of the extension
 var extensionConfig;
 //true if tabShots should be shown/saved
 var showTabShot;
+//maxNumberOfStoredRcts
+var maxNumberOfStoredRctsDefault = 30;
+var maxNumberOfStoredRcts;
+
+//Loads the values for the extension.
+//Fetches the extension configuration
+fetchExtensionConfig();
+//Fetches the filters.
+fetchFilters();
+//Fetches the maxPopupLength.
+fetchMaxPopupLength();
+//Fetches the maxNumberOfStoredRcts.
+fetchMaxNumberOfStoredRcts();
+//Fetches the recentlyClosedTabs.
+fetchRcts();
+//Fetches the flag for showing the tabShot.
+fetchShowTabShot();
 
 //Gets all open windows.
 chrome.tabs.getAllInWindow(null, function(tabs){
@@ -56,6 +74,17 @@ chrome.tabs.onRemoved.addListener(function(tabId) {
   
   if (shouldBeIgnored(tabInfo.url)) return;
   
+  //TODO prüfen
+  for (var i = 0; i <= rctTimestamps.length; i++){
+	  if (maxNumberOfStoredRcts <= rctTimestamps.length) {
+	    // delete all rcts within the latest rct
+	    var deleteTimestamp = rctTimestamps[rctTimestamps.length - 1];
+	    rctTimestamps.splice(rctTimestamps.length - 1, 1);
+	    removeRctByTimestamp(deleteTimestamp);
+	  } else if (maxNumberOfStoredRcts > rctTimestamps.length) {
+      break;
+    }
+  }
   var timestamp = (new Date()).getTime();
   rcts[timestamp] = tabInfo;
   rctTimestamps.unshift(timestamp);
@@ -69,18 +98,6 @@ chrome.tabs.onSelectionChanged.addListener(function(tabId) {
     setImgDataUrl(tabId);
   }
 });
-
-//Loads the values for the extension.
-//Fetches the extension configuration
-fetchExtensionConfig();
-//Fetches the filters.
-fetchFilters();
-// Fetches the maxPopupLength.
-fetchMaxPopupLength();
-// Fetches the recentlyClosedTabs.
-fetchRcts();
-// Fetches the flag for showing the tabShot.
-fetchShowTabShot();
 
 //Fetches the extension configuration
 function fetchExtensionConfig() {
@@ -117,7 +134,8 @@ function fetchRcts() {
     rctTimestamps = [];
   } else {
     rcts = JSON.parse(rctsString);
-    //rctTimestamps = [];
+    //TODO muss das sein?
+    rctTimestamps = [];
     for (var timestamp in rcts) rctTimestamps.unshift(timestamp);
   }
 }
@@ -198,15 +216,27 @@ function addUrlToFiltersAndCheck(url) {
 //Fetches/Initialises the maxPopupLength from the localStorage.
 function fetchMaxPopupLength() {
   maxPopupLength = localStorage['maxPopupLength'];
-  if (localStorage['maxPopupLength'] === undefined)
-    storeMaxPopupLength(15);
+  if (maxPopupLength === undefined)
+    storeMaxPopupLength(maxPopupLengthDefault);
 }
-
 // Modifys/Persists the maxPopupLength to the localStorage.
 // @am newMaxPopupLength maxPopupLength to store in the localStorage
 function storeMaxPopupLength(newMaxPopupLength) {
   maxPopupLength = newMaxPopupLength;
   localStorage.setItem('maxPopupLength', maxPopupLength);
+}
+
+//Fetches/Initialises the maxPopupLength from the localStorage.
+function fetchMaxNumberOfStoredRcts() {
+  maxNumberOfStoredRcts = localStorage['maxNumberOfStoredRcts'];
+  if (maxNumberOfStoredRcts === undefined)
+    storeMaxNumberOfStoredRcts(maxNumberOfStoredRctsDefault);
+}
+//Modifys/Persists the maxNumberOfStoredRcts to the localStorage.
+//@am newMaxNumberOfStoredRcts maxNumberOfStoredRcts to store in the localStorage
+function storeMaxNumberOfStoredRcts(newMaxNumberOfStoredRcts) {
+  maxNumberOfStoredRcts = newMaxNumberOfStoredRcts;
+  localStorage.setItem('maxNumberOfStoredRcts', maxNumberOfStoredRcts);
 }
 
 //Adds a zero to the beginning of a number if it is a single letter number.

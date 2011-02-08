@@ -34,9 +34,7 @@ function main() {
     			  }, function() { 
     			  // Tab opened: possible migration procedures
     			  });
-    			delete bgPage.rcts[this.timestamp];
-    			bgPage.storeRcts(bgPage.rcts);
-    			for (var index in bgPage.rctTimestamps) if (bgPage.rctTimestamps[index] == this.timestamp) bgPage.rctTimestamps.splice(index, 1);
+    			bgPage.removeRctByTimestamp(this.timestamp);
     			window.close();
   		  });
   		url[0].timestamp = timestamp;

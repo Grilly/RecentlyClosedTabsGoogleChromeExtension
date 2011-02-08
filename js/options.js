@@ -2,48 +2,16 @@ var bgPage = chrome.extension.getBackgroundPage();
 
 function main() {
   bgPage.fetchShowTabShot();
+  bgPage.fetchMaxPopupLength();
+  
   //Header
   var headerDiv = $('<div>')
     .addClass('headerDiv')
+    .attr('id', 'headerDiv')
     .appendTo('body');
+  createHeader();
   
-  var headerImgDiv = $('<div>')
-    .addClass('headerImgDiv')
-    .appendTo(headerDiv);
-  var headerImgElement = $('<img>')
-    .addClass('headerImgElement')
-    .attr({
-      src: 'images/rct128.png',
-      alt: 'Recently Closed Tabs'})
-    .appendTo(headerImgDiv);
-  
-  var headerTitleDiv = $('<div>')
-    .addClass('headerTitleDiv')
-    .text(bgPage.extensionConfig.name + ' ' + bgPage.extensionConfig.version)
-    .appendTo(headerDiv);
-  
-  var headerBorderTitle = $('<h1>')
-    .addClass('headerBorderTitle')
-    .text('Extension Options')
-    .appendTo(headerDiv);
-  var headerLinkDiv = $('<div>')
-    .addClass('headerLinkDiv')
-    .text('Show Changelog')
-    .click(function() {
-      chrome.tabs.create( {
-        'url' : chrome.extension.getURL('infonews.html'),
-        'selected' : true
-      }, function(tab) {
-        // Tab opened: possible migration procedures
-      });
-      return false;
-    })
-    .appendTo(headerDiv);
-  
-  var maxPopupLength = localStorage['maxPopupLength'];
-  if (maxPopupLength === undefined)
-    storeMaxPopupLength(15);
-  
+  //rctList
   var rctListDiv = $('<div>')
     .addClass('rctListDiv')
     .attr({
@@ -59,7 +27,6 @@ function main() {
   var rctList_deleteAllButtonDiv = $('<div>')
     .addClass('rctList_deleteAllButtonDiv')
     .appendTo(rctListDiv);
-  
   var rctList_deleteAllButtonDiv = $('<input>')
     .attr({ 
       type: 'button',
@@ -90,8 +57,6 @@ function main() {
   } else {
     rctList_placeholder.text('*If you add a recently closed tab to the filters it will be deleted from the recently closed tabs list.');
   }
-  
-  //TODO create
   createRctList();
   
   var rightColumnDiv = $('<div>')
@@ -101,124 +66,18 @@ function main() {
   //optionsDiv
   var optionsDiv = $('<div>')
     .addClass('optionsDiv')
+    .attr('id', 'optionsDiv')
     .appendTo(rightColumnDiv);
   var options_headline = $('<h3>')
-  .addClass('options_headline')
-  .text('Options:')
-  .appendTo(optionsDiv);
-  //maxPopupLengthOptions
-  var maxPopupLengthOptionsDiv = $('<div>')
-    .addClass('maxPopupLengthOptionsDiv')
+    .addClass('options_headline')
+    .text('Options:')
     .appendTo(optionsDiv);
-  var maxPopupLength_headline = $('<h4>')
-    .addClass('maxPopupLength_headline')
-    .text('Favorite number of recently closed tabs shown in the popup:')
-    .appendTo(maxPopupLengthOptionsDiv);
-  var maxPopupLengthRangeMin = 1;
-  var maxPopupLengthRangeMax = 15;
-  var maxPopupLengthRangeMinDiv = $('<div>')
-    .addClass('maxPopupLengthRangeMinDiv')
-    .attr({ id: 'maxPopupLengthRangeMinDiv' })
-    .text(maxPopupLengthRangeMin)
-    .appendTo(maxPopupLengthOptionsDiv);
-  var maxPopupLengthRangeDiv = $('<div>')
-    .addClass('maxPopupLengthRangeDiv')
-    .attr({ 
-      id: 'maxPopupLengthRangeDiv',
-      name: maxPopupLength })
-    .appendTo(maxPopupLengthOptionsDiv);
-  var maxPopupLengthRangeInput = $('<input>')
-    .attr({
-      id: 'maxPopupLengthRangeInput',
-      type: 'range',
-      min: maxPopupLengthRangeMin,
-      max: maxPopupLengthRangeMax,
-      value: maxPopupLength,
-      input: maxPopupLength })
-    .change(function() {
-      $('#maxPopupLengthRangeOutputDiv').text($('#maxPopupLengthRangeInput').val());
-      return false; })
-    .appendTo(maxPopupLengthRangeDiv);
-  var maxPopupLengthRangeMaxDiv = $('<div>')
-    .addClass('maxPopupLengthRangeMaxDiv')
-    .attr({ id: 'maxPopupLengthRangeMaxDiv' })
-    .text(maxPopupLengthRangeMax)
-    .appendTo(maxPopupLengthOptionsDiv);
-  var maxPopupLengthRangeOutputText = $('<div>')
-    .addClass('maxPopupLengthRangeOutputText')
-    .attr({ id: 'maxPopupLengthRangeOutputText' })
-    .text('Current choice:')
-    .appendTo(maxPopupLengthOptionsDiv);
-  var maxPopupLengthRangeOutputDiv = $('<div>')
-    .addClass('maxPopupLengthRangeOutputDiv')
-    .attr({ 
-      id: 'maxPopupLengthRangeOutputDiv',
-      name: maxPopupLength })
-    .text($('#maxPopupLengthRangeInput').val())
-    .appendTo(maxPopupLengthOptionsDiv);
-  
-  //showTabShots
-  var showTabShotsOptionsDiv = $('<div>')
-    .addClass('showTabShotsOptionsDiv')
-    .appendTo(optionsDiv);
-  var showTabShots_headline = $('<h4>')
-    .addClass('showTabShots_headline')
-    .text('Show the screenshot for a recently closed tab:')
-    .appendTo(showTabShotsOptionsDiv);
-  var showTabShots_checkbox = $('<input>')
-    .addClass('showTabShots_checkbox')
-    .attr({
-      id: 'showTabShots_checkbox',
-      type: 'checkbox'
-    })
-    .appendTo(showTabShotsOptionsDiv);
-  var showTabShots_checkboxLabel = $('<label>')
-    .addClass('showTabShots_checkboxLabel')
-    .attr('for', 'showTabShots_checkbox')
-    .text('Show screenshots')
-    .appendTo(showTabShotsOptionsDiv);
-  
-  if(bgPage.showTabShot == 'true') {
-    $('#showTabShots_checkbox').attr('checked', true);
-  } else {
-    $('#showTabShots_checkbox').attr('checked', false);
-  }
-  
-  //saveOptions
-  var saveOptionsDiv = $('<div>')
-    .addClass('saveOptionsDiv')
-    .attr({ id: 'saveOptionsDiv' })
-    .appendTo(optionsDiv);
-  var saveOptionsButton = $('<button>')
-    .attr({ id: 'saveOptionsButton' })
-    .text('Save Options')
-    .click(function() {
-      $('#saveOptionsButton').hide();
-      localStorage.setItem('maxPopupLength', $('#maxPopupLengthRangeInput').val());
-      var showTabShotOld = localStorage.getItem('showTabShot');
-      var showTabShotNew = $('#showTabShots_checkbox').attr('checked');
-      if (showTabShotOld != showTabShotNew) {
-        localStorage.setItem('showTabShot', $('#showTabShots_checkbox').attr('checked'));
-        $('#rctList_ul').remove();
-        createRctList();
-      }
-      
-      var optionsSaveStatus = $('<div>')
-        .addClass('optionsSaveStatus')
-        .attr({ id: 'optionsSaveStatus' })
-        .text('Options Saved.')
-        .appendTo(saveOptionsDiv);
-      setTimeout(function() {
-        $('#saveOptionsButton').show();
-        $('#optionsSaveStatus').remove();
-        }, 750);
-      return false; })
-    .appendTo(saveOptionsDiv);
+  createOptionsPanel();
   
   //filtersDiv
   var filtersDiv = $('<div>')
     .addClass('filtersDiv')
-    .attr({ id: 'filtersDiv' })
+    .attr('id', 'filtersDiv')
     .appendTo(rightColumnDiv);
   var filters_headline = $('<h3>')
     .addClass('filters_headline')
@@ -233,6 +92,41 @@ function main() {
     .appendTo('body');
 }
 
+function createHeader() {
+  var headerImgDiv = $('<div>')
+    .addClass('headerImgDiv')
+    .appendTo($('#headerDiv'));
+  var headerImgElement = $('<img>')
+    .addClass('headerImgElement')
+    .attr({
+      src: 'images/rct128.png',
+      alt: 'Recently Closed Tabs'})
+    .appendTo(headerImgDiv);
+  
+  var headerTitleDiv = $('<div>')
+    .addClass('headerTitleDiv')
+    .text(bgPage.extensionConfig.name + ' ' + bgPage.extensionConfig.version)
+    .appendTo($('#headerDiv'));
+  
+  var headerBorderTitle = $('<h1>')
+    .addClass('headerBorderTitle')
+    .text('Extension Options')
+    .appendTo($('#headerDiv'));
+  var headerLinkDiv = $('<div>')
+    .addClass('headerLinkDiv')
+    .text('Show Changelog')
+    .click(function() {
+      chrome.tabs.create( {
+        'url' : chrome.extension.getURL('infonews.html'),
+        'selected' : true
+      }, function(tab) {
+        // Tab opened: possible migration procedures
+      });
+      return false;
+    })
+    .appendTo($('#headerDiv'));
+}
+
 function createRctList() {
   bgPage.fetchShowTabShot();
   var rctList_ul = $('<ul>')
@@ -245,8 +139,8 @@ function createRctList() {
     
     for (var index in bgPage.rctTimestamps) {
       counter++;
-      //TODO 30 = maxNumberOfStoredRcts
-      if (counter > 30) {
+      //TODO die folgenden 3 Zeilen löschen, wenn maxNumberOfStoredRcts auch bei Speicherung der Rcts beachtet wird
+      if (counter > bgPage.maxNumberOfStoredRcts) {
         break;
       }
       var timestamp = bgPage.rctTimestamps[index];
@@ -267,9 +161,7 @@ function createRctList() {
             }, function() { 
             // Tab opened: possible migration procedures
             });
-          delete bgPage.rcts[this.timestamp];
-          bgPage.storeRcts(bgPage.rcts);
-          for (var index in bgPage.rctTimestamps) if (bgPage.rctTimestamps[index] == this.timestamp) bgPage.rctTimestamps.splice(index, 1);
+          bgPage.removeRctByTimestamp(this.timestamp);
           window.close(); });
       rctList_url[0].timestamp = timestamp;
       
@@ -314,9 +206,7 @@ function createRctList() {
           href: '#',
           title: 'Delete this recently closed tab from the list.' })
         .click(function() {
-          delete bgPage.rcts[this.timestamp];
-          bgPage.storeRcts(bgPage.rcts);
-          for (var index in bgPage.rctTimestamps) if (bgPage.rctTimestamps[index] == this.timestamp) bgPage.rctTimestamps.splice(index, 1);
+          bgPage.removeRctByTimestamp(this.timestamp);
           $('#li_' + this.timestamp).remove();
           if (bgPage.isEmpty(bgPage.rcts)) {
             rctList_placeholder.text('No recently closed tabs.');
@@ -337,17 +227,14 @@ function createRctList() {
           title: 'Add this recently closed tab to the list of filters and delete it from the list.' })
         .click(function() {
           // store element as filter
-          var url = bgPage.rcts[this.timestamp].url;
-          var urlPattern = bgPage.showPrompt("Ignore this URL in future?", url);
+          var urlPattern = bgPage.showPrompt("Ignore this URL in future?", bgPage.rcts[this.timestamp].url);
           //console.log(urlPattern);
           if (urlPattern != null) {
             bgPage.addUrlToFiltersAndCheck(urlPattern);
             $('#filters_ul').remove();
             createFiltersList();
             // delete and remove rct element
-            delete bgPage.rcts[this.timestamp];
-            bgPage.storeRcts(bgPage.rcts);
-            for (var index in bgPage.rctTimestamps) if (bgPage.rctTimestamps[index] == this.timestamp) bgPage.rctTimestamps.splice(index, 1);
+            bgPage.removeRctByTimestamp(this.timestamp);
             $('#li_' + this.timestamp).remove();
           }
           if (bgPage.isEmpty(bgPage.rcts)) {
@@ -390,10 +277,11 @@ function createRctList() {
     rctList_ul.appendTo($('#rctListDiv'));
 }
 
+
 function createFiltersList() {
   var filters_ul = $('<ul>')
     .addClass('filters_ul')
-    .attr({ id: 'filters_ul' });
+    .attr('id', 'filters_ul');
   
   for (var index in bgPage.filters) {
     var filter = bgPage.filters[index];
@@ -432,7 +320,6 @@ function createFiltersList() {
         type: 'button',
         value: 'Edit'})
       .click(function() {
-
         var newUrl = bgPage.showPrompt('Edit Filter', bgPage.filters[this.index].url);
         while (!bgPage.isFilterUnique(newUrl)) {
           alert('Filter ' + newUrl + '" exists already! Please provide a different filter.');
@@ -460,4 +347,141 @@ function createFiltersList() {
     filters_li.appendTo(filters_ul);
   }
   filters_ul.appendTo('#filtersDiv');
+}
+
+function createOptionsPanel() {
+  //maxPopupLengthOptions
+  var maxPopupLengthOptionsDiv = $('<div>')
+    .addClass('maxPopupLengthOptionsDiv')
+    .appendTo($('#optionsDiv'));
+  var maxPopupLength_headline = $('<h4>')
+    .addClass('maxPopupLength_headline')
+    .text('Favorite number of recently closed tabs shown in the popup:')
+    .appendTo(maxPopupLengthOptionsDiv);
+  var maxPopupLengthRangeMin = 1;
+  var maxPopupLengthRangeMax = 15;
+  var maxPopupLengthRangeMinDiv = $('<div>')
+    .addClass('maxPopupLengthRangeMinDiv')
+    .attr('id', 'maxPopupLengthRangeMinDiv')
+    .text(maxPopupLengthRangeMin)
+    .appendTo(maxPopupLengthOptionsDiv);
+  var maxPopupLengthRangeDiv = $('<div>')
+    .addClass('maxPopupLengthRangeDiv')
+    .attr({ 
+      id: 'maxPopupLengthRangeDiv',
+      name: bgPage.maxPopupLength })
+    .appendTo(maxPopupLengthOptionsDiv);
+  var maxPopupLengthRangeInput = $('<input>')
+    .attr({
+      id: 'maxPopupLengthRangeInput',
+      type: 'range',
+      min: maxPopupLengthRangeMin,
+      max: maxPopupLengthRangeMax,
+      value: bgPage.maxPopupLength,
+      input: bgPage.maxPopupLength })
+    .change(function() {
+      $('#maxPopupLengthRangeOutputDiv').text($('#maxPopupLengthRangeInput').val());
+      return false; })
+    .appendTo(maxPopupLengthRangeDiv);
+  var maxPopupLengthRangeMaxDiv = $('<div>')
+    .addClass('maxPopupLengthRangeMaxDiv')
+    .attr('id', 'maxPopupLengthRangeMaxDiv')
+    .text(maxPopupLengthRangeMax)
+    .appendTo(maxPopupLengthOptionsDiv);
+  var maxPopupLengthRangeOutputText = $('<div>')
+    .addClass('maxPopupLengthRangeOutputText')
+    .attr('id', 'maxPopupLengthRangeOutputText')
+    .text('Current choice:')
+    .appendTo(maxPopupLengthOptionsDiv);
+  var maxPopupLengthRangeOutputDiv = $('<div>')
+    .addClass('maxPopupLengthRangeOutputDiv')
+    .attr({ 
+      id: 'maxPopupLengthRangeOutputDiv',
+      name: bgPage.maxPopupLength })
+    .text($('#maxPopupLengthRangeInput').val())
+    .appendTo(maxPopupLengthOptionsDiv);
+  
+  //showTabShots
+  var showTabShotsOptionsDiv = $('<div>')
+    .addClass('showTabShotsOptionsDiv')
+    .appendTo($('#optionsDiv'));
+  var showTabShots_headline = $('<h4>')
+    .addClass('showTabShots_headline')
+    .text('Show the screenshot for a recently closed tab:')
+    .appendTo(showTabShotsOptionsDiv);
+  var showTabShots_checkbox = $('<input>')
+    .addClass('showTabShots_checkbox')
+    .attr({
+      id: 'showTabShots_checkbox',
+      type: 'checkbox'
+    })
+    .appendTo(showTabShotsOptionsDiv);
+  var showTabShots_checkboxLabel = $('<label>')
+    .addClass('showTabShots_checkboxLabel')
+    .attr('for', 'showTabShots_checkbox')
+    .text('Show screenshots')
+    .appendTo(showTabShotsOptionsDiv);
+  
+  if(bgPage.showTabShot == 'true') {
+    $('#showTabShots_checkbox').attr('checked', true);
+  } else {
+    $('#showTabShots_checkbox').attr('checked', false);
+  }
+  
+  //maxNumberOfStoredRcts
+  var maxNumberOfStoredRctsMin = 5;
+  var maxNumberOfStoredRctsMax = 200;
+  var maxNumberOfStoredRctsDiv = $('<div>')
+    .addClass('maxNumberOfStoredRctsDiv')
+    .appendTo($('#optionsDiv'));
+  var maxNumberOfStoredRcts_headline = $('<h4>')
+    .addClass('maxNumberOfStoredRcts_headline')
+    .text('Favorite number of stored recently closed tabs:')
+    .appendTo(maxNumberOfStoredRctsDiv);
+  var maxNumberOfStoredRctsInput = $('<input>')
+  .attr({
+    id: 'maxNumberOfStoredRctsInput',
+    type: 'number',
+    min: maxNumberOfStoredRctsMin,
+    max: maxNumberOfStoredRctsMax,
+    step: 1,
+    value: bgPage.maxNumberOfStoredRcts })
+  .appendTo(maxNumberOfStoredRctsDiv);
+  
+  //saveOptions
+  var saveOptionsDiv = $('<div>')
+    .addClass('saveOptionsDiv')
+    .attr('id', 'saveOptionsDiv')
+    .appendTo($('#optionsDiv'));
+  var saveOptionsButton = $('<button>')
+    .attr('id', 'saveOptionsButton')
+    .text('Save Options')
+    .click(function() {
+      $('#saveOptionsButton').hide();
+      localStorage.setItem('maxPopupLength', $('#maxPopupLengthRangeInput').val());
+      var showTabShotNew = $('#showTabShots_checkbox').attr('checked');
+      if (localStorage.getItem('showTabShot') != showTabShotNew) {
+        localStorage.setItem('showTabShot', showTabShotNew);
+        $('#rctList_ul').remove();
+        createRctList();
+      }
+      var newMaxNumberOfStoredRctsInput = $('#maxNumberOfStoredRctsInput').val();
+      if(newMaxNumberOfStoredRctsInput >= maxNumberOfStoredRctsMin
+          && newMaxNumberOfStoredRctsInput <= maxNumberOfStoredRctsMax) {
+        bgPage.storeMaxNumberOfStoredRcts(newMaxNumberOfStoredRctsInput);
+      } else {
+        bgPage.storeMaxNumberOfStoredRcts(200);
+        alert('The entered number of stored recently closed tabs is not valid. Please enter a number between ' + maxNumberOfStoredRctsMin + ' and ' + maxNumberOfStoredRctsMax + '. The number 200 was saved.');
+      }
+      var optionsSaveStatus = $('<div>')
+        .addClass('optionsSaveStatus')
+        .attr('id', 'optionsSaveStatus')
+        .text('Options Saved.')
+        .appendTo(saveOptionsDiv);
+      setTimeout(function() {
+        $('#saveOptionsButton').show();
+        $('#optionsSaveStatus').remove();
+        }, 750);
+      return false; })
+    .appendTo(saveOptionsDiv);
 }
