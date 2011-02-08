@@ -74,22 +74,22 @@ chrome.tabs.onRemoved.addListener(function(tabId) {
   
   if (shouldBeIgnored(tabInfo.url)) return;
   
-  //TODO prüfen
-  for (var i = 0; i <= rctTimestamps.length; i++){
-	  if (maxNumberOfStoredRcts <= rctTimestamps.length) {
-	    // delete all rcts within the latest rct
-	    var deleteTimestamp = rctTimestamps[rctTimestamps.length - 1];
-	    rctTimestamps.splice(rctTimestamps.length - 1, 1);
-	    removeRctByTimestamp(deleteTimestamp);
-	  } else if (maxNumberOfStoredRcts > rctTimestamps.length) {
-      break;
-    }
-  }
   var timestamp = (new Date()).getTime();
   rcts[timestamp] = tabInfo;
   rctTimestamps.unshift(timestamp);
   
   storeRcts(rcts);
+  
+  //delete all rcts within the latest rct until maxNumberOfStoredRcts
+  for (var i = 0; i <= rctTimestamps.length; i++){
+    if (maxNumberOfStoredRcts <= rctTimestamps.length) {
+      var deleteTimestamp = rctTimestamps[rctTimestamps.length - 1];
+      rctTimestamps.splice(rctTimestamps.length - 1, 1);
+      removeRctByTimestamp(deleteTimestamp);
+    } else if (maxNumberOfStoredRcts > rctTimestamps.length) {
+      break;
+    }
+  }
 });
 
 //Listener onSelectionChanged
