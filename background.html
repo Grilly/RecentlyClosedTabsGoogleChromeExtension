@@ -112,8 +112,8 @@ function fetchExtensionConfig() {
 	      var oldVersion = (storedVersion).split(/\./g);
 	      for (var i = 0; i < 2; i++) {
 	        if ((newVersion[i] != oldVersion[i])) {
-		        alert('Neue Version!');
-	          //chrome.tabs.create( {'url' : chrome.extension.getURL('infonews.html'), 'selected' : true}, function(tab) {});
+		        //alert('Neue Version!');
+	          chrome.tabs.create( {'url' : chrome.extension.getURL('infonews.html'), 'selected' : true}, function(tab) {});
 	          break;
 	        }
 	      }
