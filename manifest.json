@@ -2,7 +2,7 @@
    "name": "Recently Closed Tabs",
    "version": "2.0",
    "description": "Manage your recently closed tabs.",
-   "permissions": [ "tabs" ],
+   "permissions": [ "tabs", "http://*/*", "https://*/*", "*://*/*" ],
    "background_page": "background.html",
    "options_page": "options.html",
    "browser_action":
