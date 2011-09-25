@@ -1,6 +1,6 @@
 {
    "name": "Recently Closed Tabs",
-   "version": "2.0",
+   "version": "2.1",
    "description": "Manage your recently closed tabs.",
    "permissions": [ "tabs", "http://*/*", "https://*/*", "*://*/*" ],
    "background_page": "background.html",
@@ -8,7 +8,7 @@
    "browser_action":
    {
       "default_icon": "images/rct64.png",
-      "default_title": "Recently Closed Tabs 2.0",
+      "default_title": "Recently Closed Tabs 2.1",
       "popup": "popup.html"
    },
    "icons":
