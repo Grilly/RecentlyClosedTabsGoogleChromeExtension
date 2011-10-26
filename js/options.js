@@ -92,6 +92,7 @@ function main() {
     .appendTo('body');
 }
 
+// Creates the header
 function createHeader() {
   var headerImgDiv = $('<div>')
     .addClass('headerImgDiv')
