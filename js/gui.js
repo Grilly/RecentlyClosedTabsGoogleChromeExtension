@@ -88,7 +88,7 @@ function createHeader(title) {
 
 // Creates the footer.
 function createFooter() {
-	var footerDiv = $('#footerDiv').addClass('footerDiv').text('©2010 Michael & Draško');
+	var footerDiv = $('#footerDiv').addClass('footerDiv').text('©2010-2013 Michael & Draško');
 }
 
 // Creates the rct list element for the options page with the buttons to edit the list.
