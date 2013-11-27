@@ -5,7 +5,10 @@
    "version": "1.3.0.1",
    "description": "Manage your recently closed tabs.",
 
-   "permissions": [ "tabs" ],
+   "permissions": [
+      "tabs",
+      "chrome://favicon/"
+	],
 
    "background": {
       "page": "background.html"

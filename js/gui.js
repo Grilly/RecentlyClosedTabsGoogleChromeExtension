@@ -351,10 +351,10 @@ function createRctDiv(timestamp, isOptions) {
   		  }
 		  }
 			var favIconUrl = bgPage.recentlyClosedTabs[timestamp].favIconUrl;
-			if (favIconUrl !== undefined && favIconUrl != null) {
+			if (favIconUrl !== undefined && favIconUrl != null && favIconUrl != "" && favIconUrl.indexOf("chrome://theme/") != 0) {
 				favIconIMG.attr({ src: favIconUrl });
 			} else {
-				favIconIMG.attr({ src: '../images/default_favicon.png' });
+				favIconIMG.attr({ src: 'chrome://favicon/' + bgPage.recentlyClosedTabs[timestamp].url});
 			}
 		}
 	}
