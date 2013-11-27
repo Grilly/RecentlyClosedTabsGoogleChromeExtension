@@ -44,7 +44,7 @@ function createHeader(title) {
   var headerImgElement = $('<img>')
     .addClass('headerImgElement')
     .attr({
-      src: 'images/rct128.png',
+      src: 'images/RecentlyClosedTabs-128x128.png',
       alt: 'Recently Closed Tabs'})
     .appendTo(headerImgDivElement);
   
